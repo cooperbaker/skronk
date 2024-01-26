@@ -1,6 +1,6 @@
 ### sudo without password
 ---
-edit the file <code>sudo pico /etc/sudoers</code>\
+edit the sudoers file <code>sudo pico /etc/sudoers</code>\
 add this line at the end: <code>pi    ALL=(ALL) NOPASSWD: ALL</code>
 
 ### update raspberry pi os
