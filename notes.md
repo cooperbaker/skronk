@@ -12,3 +12,14 @@ add this line at the end: <code>pi    ALL=(ALL) NOPASSWD: ALL</code>
 ### cpu and memory monitor
 ---
 <code>$ htop</code>
+
+
+### enable spi & i2c
+---
+<code>$ sudo raspi-config</code>
+- Interface Options => SPI => Yes
+- Interface Options => I2C => Yes
+
+### add python smbus api for RPLCD
+---
+<code>sudo apt-get install python-smbus</code>

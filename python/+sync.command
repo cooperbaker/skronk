@@ -19,4 +19,4 @@ echo -e "\033[1mSync Complete"
 echo -e "\033[0m\033[1A"
 echo ""
 
-read -rsp $'Press any key to continue...\n' -n1 key
+# read -rsp $'Press any key to continue...\n' -n1 key
