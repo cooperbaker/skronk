@@ -1,4 +1,12 @@
 #-------------------------------------------------------------------------------
+# ENCODER.py
+# GPIO rotary encoder reader for raspberry pi
+#
+# Cooper Baker (c) 2024
+#-------------------------------------------------------------------------------
+
+
+#-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
 from gpiozero import RotaryEncoder
@@ -14,7 +22,7 @@ class encoder():
 
     #constructor
     def __init__( self, a, b ):
-        self.enc = RotaryEncoder( a, b, max_steps=24)
+        self.enc = RotaryEncoder( a, b, max_steps=32 )
 
     # read encoder steps
     def read( self ):
@@ -31,12 +39,12 @@ class encoder():
                 self.dec( self.val )
 
     # increment handler callback
-    def inc( self, val ):
-        print( "inc - %s" % val )
+    def inc( self ):
+        print( 'encoder increment' )
 
     # decrement handler callback
     def dec( self, val ):
-        print( "dec - %s" % val )
+        print( 'encoder decrement' )
 
 
 #-------------------------------------------------------------------------------
