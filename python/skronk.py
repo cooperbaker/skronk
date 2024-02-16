@@ -15,18 +15,23 @@ import time
 SAMPLE_RATE_HZ = 500
 sleep          = 1 / SAMPLE_RATE_HZ
 
-
 #-------------------------------------------------------------------------------
 # osc
 #-------------------------------------------------------------------------------
-osc = osc_msg( '10.0.0.3', 1234 )
 
-# addresses
+# network
+OSC_IP   = '10.0.0.3'
+OSC_PORT = 1234
+
+# message addresses
 OSC_ENC = '/enc/'
 OSC_SW  = '/sw/'
 OSC_ADC = '/adc/'
 OSC_LED = '/led/'
 OSC_LCD = '/lcd/'
+
+osc = osc_msg( OSC_IP, OSC_PORT )
+
 
 
 #-------------------------------------------------------------------------------
@@ -64,19 +69,19 @@ enc2 = encoder( E2A, E2B )
 # inc / dec callbacks
 def enc1_inc():
     osc.send( OSC_ENC + '1', 1 )
-    print( 'inc' )
+    print( 'Encoder 1 Inc' )
 
 def enc1_dec():
     osc.send( OSC_ENC + '1', -1 )
-    print( 'dec' )
+    print( 'Encoder 1 Dec' )
 
 def enc2_inc():
     osc.send( OSC_ENC + '1', 1 )
-    print( 'inc' )
+    print( 'Encoder 2 Inc' )
 
 def enc2_dec():
     osc.send( OSC_ENC + '1', -1 )
-    print( 'dec' )
+    print( 'Encoder 2 Dec' )
 
 # assign callbacks
 enc1.inc = enc1_inc
@@ -97,7 +102,6 @@ while True:
 
     adc1.read()
     adc2.read()
-    # osc.send( OSC_ADC + '0', adc )
 
     time.sleep( sleep )
 
