@@ -43,7 +43,7 @@ class encoder():
         print( 'encoder increment' )
 
     # decrement handler callback
-    def dec( self, val ):
+    def dec( self ):
         print( 'encoder decrement' )
 
 
