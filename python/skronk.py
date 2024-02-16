@@ -62,19 +62,19 @@ enc1 = encoder( E1A, E1B )
 enc2 = encoder( E2A, E2B )
 
 # inc / dec callbacks
-def enc1_inc( val ):
+def enc1_inc():
     osc.send( OSC_ENC + '1', 1 )
     print( 'inc' )
 
-def enc1_dec( val ):
+def enc1_dec():
     osc.send( OSC_ENC + '1', -1 )
     print( 'dec' )
 
-def enc2_inc( val ):
+def enc2_inc():
     osc.send( OSC_ENC + '1', 1 )
     print( 'inc' )
 
-def enc2_dec( val ):
+def enc2_dec():
     osc.send( OSC_ENC + '1', -1 )
     print( 'dec' )
 
