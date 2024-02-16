@@ -32,11 +32,11 @@ class encoder():
 
         if( self.val > self.old ):
             for i in range( 0, ( self.val - self.old ) ):
-                self.inc( self.val )
+                self.inc()
 
         if( self.val < self.old ):
             for i in range( 0, ( self.old - self.val ) ):
-                self.dec( self.val )
+                self.dec()
 
     # increment handler callback
     def inc( self ):
