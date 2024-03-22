@@ -1,7 +1,10 @@
 ### sudo without password
 ---
-edit the sudoers file <code>sudo pico /etc/sudoers</code>\
-add this line at the end: <code>pi    ALL=(ALL) NOPASSWD: ALL</code>
+- edit the sudoers file\
+<code>$ sudo pico /etc/sudoers</code>
+- add this line at the end:\
+<code>pi    ALL=(ALL) NOPASSWD: ALL</code>
+
 
 ### update raspberry pi os
 ---
@@ -20,6 +23,18 @@ add this line at the end: <code>pi    ALL=(ALL) NOPASSWD: ALL</code>
 - Interface Options => SPI => Yes
 - Interface Options => I2C => Yes
 
+
 ### add python smbus api for RPLCD
 ---
-<code>sudo apt-get install python-smbus</code>
+<code>$ sudo apt-get install python-smbus</code>
+
+
+<!-- ### python virtual environment
+---
+
+- make\
+<code>$ python3 -m venv skronk</code>
+- activate\
+<code>$ source skronk/bin/activate</code>
+- deactivate\
+<code>$ deactivate</code> -->
