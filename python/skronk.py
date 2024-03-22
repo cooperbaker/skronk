@@ -1,42 +1,79 @@
 #-------------------------------------------------------------------------------
+# skronk.py
+# Skronk Hat Open Sound Control Interface
+#
+# Cooper Baker (c) 2024
+#-------------------------------------------------------------------------------
+
+
+#-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
-from PINS    import *
-from SWITCH  import switch
-from MCP3208 import mcp3208
-from ENCODER import encoder
-from OSC_MSG import osc_msg
-import time
+import asyncio
+
+from pythonosc.osc_server import AsyncIOOSCUDPServer
+from RPLCD.i2c            import CharLCD
+from SKRONK.PINS          import *
+from SKRONK.SWITCH        import switch
+from SKRONK.MCP3208       import mcp3208
+from SKRONK.ENCODER       import encoder
+from SKRONK.LAN_IP        import lan_ip
+from SKRONK.OSC           import open_sound_control
 
 
 #-------------------------------------------------------------------------------
-# driver loop sample rate
-#-------------------------------------------------------------------------------
-SAMPLE_RATE_HZ = 500
-sleep          = 1 / SAMPLE_RATE_HZ
-
-#-------------------------------------------------------------------------------
-# osc
+# open sound control
 #-------------------------------------------------------------------------------
 
 # network
-OSC_IP   = '10.0.0.3'
-OSC_PORT = 1234
+OSC_IN_IP    = lan_ip()
+OSC_IN_PORT  = 1000
+OSC_OUT_IP   = '10.0.0.3'
+OSC_OUT_PORT = 1001
 
 # message addresses
 OSC_ENC = '/enc/'
 OSC_SW  = '/sw/'
 OSC_ADC = '/adc/'
-OSC_LED = '/led/'
-OSC_LCD = '/lcd/'
+OSC_LCD = '/lcd'
 
-osc = osc_msg( OSC_IP, OSC_PORT )
+# make osc object: open_sound_control( in_ip, in_port, out_ip, out_port )
+osc = open_sound_control( lan_ip(), OSC_IN_PORT, '10.0.0.3', OSC_OUT_PORT )
+
+# define osc parse callback
+def osc_parse( address, *args ):
+    if address == OSC_LCD:
+        lcd.home()
+        lcd.write_string( str( args[ 0 ] ) )
+        print( OSC_LCD + ' ' + str( args[ 0 ] ) )
+    else:
+        print( f'{ address }: { args }' )
+
+# assign callback
+osc.set_parse( osc_parse )
 
 
+#-------------------------------------------------------------------------------
+# data sample rate ( adc max sample rate ≈ 500Hz )
+#-------------------------------------------------------------------------------
+SAMPLE_RATE_HZ = 500
+sleep          = 1 / SAMPLE_RATE_HZ
+run            = True
+
+
+#-------------------------------------------------------------------------------
+# lcd
+#-------------------------------------------------------------------------------
+
+lcd = CharLCD( i2c_expander='PCF8574', address=0x27, port=1, cols=16, rows=2, dotsize=8 )
+lcd.clear()
+lcd.write_string( lan_ip() )
 
 #-------------------------------------------------------------------------------
 # adcs
 #-------------------------------------------------------------------------------
+
+# make adc objects: mcp3208( i2s_bus, i2s_device )
 adc1 = mcp3208( 0, 0 )
 adc2 = mcp3208( 0, 1 )
 
@@ -44,9 +81,10 @@ adc2 = mcp3208( 0, 1 )
 #-------------------------------------------------------------------------------
 # switches
 #-------------------------------------------------------------------------------
-sw = switch( [ B1 , B2 , B3 , B4 , B5 , B6 , B7 , B8 , B9 , B10 , B11 , B12 ] )
+# make switch object: switch( [ pin_numbers ] )
+sw = switch( [ B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12 ] )
 
-# on / off callbacks
+# define on/off callbacks
 def sw_on( channel ):
     osc.send( OSC_SW + str( channel ), 1 )
     print( 'Switch %s on' % channel )
@@ -63,24 +101,29 @@ sw.off = sw_off
 #-------------------------------------------------------------------------------
 # encoders
 #-------------------------------------------------------------------------------
+# make encoder objects: encoder( pin_a, pin_b )
 enc1 = encoder( E1A, E1B )
 enc2 = encoder( E2A, E2B )
 
-# inc / dec callbacks
+# define inc/dec callbacks
 def enc1_inc():
     osc.send( OSC_ENC + '1', 1 )
+    lcd.clear()
+    lcd.write_string( 'Enc 1 Inc' )
     print( 'Encoder 1 Inc' )
 
 def enc1_dec():
-    osc.send( OSC_ENC + '1', -1 )
+    osc.send( OSC_ENC + '1', 0 )
+    lcd.clear()
+    lcd.write_string( 'Enc 1 Dec' )
     print( 'Encoder 1 Dec' )
 
 def enc2_inc():
-    osc.send( OSC_ENC + '1', 1 )
+    osc.send( OSC_ENC + '2', 1 )
     print( 'Encoder 2 Inc' )
 
 def enc2_dec():
-    osc.send( OSC_ENC + '1', -1 )
+    osc.send( OSC_ENC + '2', 0 )
     print( 'Encoder 2 Dec' )
 
 # assign callbacks
@@ -91,19 +134,40 @@ enc2.dec = enc2_dec
 
 
 #-------------------------------------------------------------------------------
-# driver loop
+# main - async main function
 #-------------------------------------------------------------------------------
-while True:
+async def main():
 
-    sw.read()
+    while run:
+        sw.read()
+        enc1.read()
+        enc2.read()
+        adc1.read()
+        adc2.read()
+        print( str( adc1.value[ 0 ] ) )
+        # lcd.home()
+        # lcd.write_string( str( round( adc1.value[ 0 ], 3 ) ) )
+        await asyncio.sleep( sleep )
 
-    enc1.read()
-    enc2.read()
 
-    adc1.read()
-    adc2.read()
+#-------------------------------------------------------------------------------
+# init - async init function
+#-------------------------------------------------------------------------------
+async def init():
 
-    time.sleep( sleep )
+    # start osc server
+    osc.server = AsyncIOOSCUDPServer( ( osc.in_ip, osc.in_port ), osc.dispatcher, asyncio.get_event_loop() )
+    osc.transport, protocol = await osc.server.create_serve_endpoint()
+
+    # main function
+    await main()
+
+    # stop osc server
+    osc.transport.close()
+
+
+# start the async tasks
+asyncio.run( init() )
 
 #-------------------------------------------------------------------------------
 # eof
