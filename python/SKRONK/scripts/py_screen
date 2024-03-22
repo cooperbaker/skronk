@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Run a python script in a screen instance named skronk
+# Cooper Baker (c) 2024
+
+screen -c $(dirname "$0")/py_rc -S skronk /usr/bin/python3 "$@"
