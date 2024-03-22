@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# Foreground the python screen instance named py
-# Cooper Baker (c) 2024
-
-screen -r py

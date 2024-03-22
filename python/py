@@ -1,8 +1,0 @@
-#!/bin/bash
-
-# Run a python script in a screen instance
-# Cooper Baker (c) 2024
-
-cd "$(dirname "$0")"
-chmod 644 *.py
-screen -c ./pyrc -S py /usr/bin/python3 "$@"
