@@ -23,14 +23,11 @@ gpio = gpiod.Chip( 'gpiochip4', gpiod.Chip.OPEN_BY_NAME )
 #-------------------------------------------------------------------------------
 class switch():
 
-    # locals
-    pin = []
-    obj = []
-    now = []
-    old = []
-
     # constructor
     def __init__( self, pins ):
+        self.obj = []
+        self.now = []
+        self.old = []
         self.pin = pins
         for i, pin in enumerate( self.pin ):
             obj = gpio.get_line( pin )
