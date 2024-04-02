@@ -15,90 +15,86 @@ import spidev
 #-------------------------------------------------------------------------------
 class mcp3208():
 
-    # spi
-    spi     = spidev.SpiDev()
-    bus     = 0
-    device  = 0
-    val     = [ 0 ] * 8
-    val_old = [ 0 ] * 8
-    value   = [ 0 ] * 8
-
-    # lowpass filter
-    y      = [ 0 ] * 8
-    a      = 0.08    # 0 to 1 : larger = less lag
-
-    # moving average filter
-    # avg    = [ [ 0 ] * 10 ] * 8
+    # class-wide static spi object
+    spi = spidev.SpiDev()
 
     # constructor
     def __init__( self, bus, device ):
-        self.bus = bus
+
+        # id
+        self.bus    = bus
         self.device = device
 
+        # channel values
+        self.value     = [ 0 ] * 8
+        self.value_old = [ 0 ] * 8
+
+        # lowpass filter
+        self.y = [ 0 ] * 8
+        self.a = 0.03  # 0 to 1 : larger = less lag
+
+        # moving average filter
+        self.avg_size = 50 # smaller = less lag
+        self.avg = [ [ 0 ] * 8 ] * self.avg_size
+
+    # read and filter adc values
     def read( self ):
-        for i in range( 8 ):
 
-            self.val[ i ] = self.read_ch( i )
-
-            # jit = 0
-            # if self.val[ i ] < self.val_old[ i ]:
-            #     jit = self.val_old[ i ] - self.val[ i ]
-            # elif self.val[ i ] > self.val_old[ i ]:
-            #     jit = self.val[ i ] - self.val_old[ i ]
-
-            # if( jit > 10 ):
-            #     self.value[ i ] = self.val[ i ]
-
-            self.value[ i ] = self.val[ i ]
-
-
-            self.val_old[ i ] = self.val[ i ]
-
-
-    # read the value of a channel
-    def read_ch( self, channel ):
-        # mask 3 channel bits
-        channel &= 0b00000111
-
-        # get two bytes from the adc channel conversion registers
+        # open the chip
         self.spi.open( self.bus, self.device )
-        self.spi.max_speed_hz = 100000
-        self.spi.mode = 0
-        adc = self.spi.xfer2( [ 6 | ( channel & 4 ) >> 2, ( channel & 3 ) << 6, 0 ] )
+        self.spi.max_speed_hz = 1000000
+
+        # get values
+        for channel in range( 8 ):
+            # request three bytes from the adc channel conversion registers
+            adc = self.spi.xfer2( [ 6 | ( channel & 4 ) >> 2, ( channel & 3 ) << 6, 0 ] )
+
+            # shift and mask returned bytes two and three into a single 12 bit value
+            self.value[ channel ] = ( ( ( adc[ 1 ] & 15 ) << 8 ) + adc[ 2 ] ) & 0x0FFF
+
+            # filter the value
+            self.value[ channel ] = self.filter( channel, self.value[ channel ] )
+
+        #close the chip
         self.spi.close()
 
-        # shift the returned 2 bytes into a single 12 bit value
-        val = ( ( adc[ 1 ] & 15 ) << 8 ) + adc[ 2 ]
+        # run callback based on changed values
+        for channel in range( 8 ):
+            if self.value[ channel ] != self.value_old[ channel ]:
+                self.change( channel, self.value[ channel ] )
 
-        # mask 12 bits of the value
-        val = val & 0x0FFF
+            self.value_old[ channel ] = self.value[ channel ]
 
-        # return val
-        return self.filter( channel, val )
 
     # adc input filter
     def filter( self, channel, x ):
-        # lowpass
-        self.y[ channel ] = self.a * x + ( 1 - self.a ) * self.y[ channel ]
 
-        return round( self.y[ channel ] )
+        # moving average filter
+        for i in range( self.avg_size - 1, 0, -1 ):
+            self.avg[ i ][ channel ] = self.avg[ i - 1 ][ channel ]
 
-        # self.avg[ channel ][ 9 ] = self.avg[ channel ][ 8 ]
-        # self.avg[ channel ][ 8 ] = self.avg[ channel ][ 7 ]
-        # self.avg[ channel ][ 7 ] = self.avg[ channel ][ 6 ]
-        # self.avg[ channel ][ 6 ] = self.avg[ channel ][ 5 ]
-        # self.avg[ channel ][ 5 ] = self.avg[ channel ][ 4 ]
-        # self.avg[ channel ][ 4 ] = self.avg[ channel ][ 3 ]
-        # self.avg[ channel ][ 3 ] = self.avg[ channel ][ 2 ]
-        # self.avg[ channel ][ 2 ] = self.avg[ channel ][ 1 ]
-        # self.avg[ channel ][ 1 ] = self.avg[ channel ][ 0 ]
-        # self.avg[ channel ][ 0 ] = self.y[ channel ]
+        self.avg[ 0 ][ channel ] = x
 
-        # return round( self.avg[ channel ][ 0 ] + self.avg[ channel ][ 1 ] + self.avg[ channel ][ 2 ] + self.avg[ channel ][ 3 ] + self.avg[ channel ][ 4 ] + self.avg[ channel ][ 5 ] + self.avg[ channel ][ 6 ] + self.avg[ channel ][ 7 ] + self.avg[ channel ][ 8 ] + self.avg[ channel ][ 9 ] ) / 10
+        x_avg = 0
 
-    # destructor
-    def cleanup( self ):
-        self.spi.close()
+        for i in range( self.avg_size ):
+            x_avg = x_avg + self.avg[ i ][ channel ]
+
+        x_avg = x_avg / self.avg_size
+
+        # lowpass filter
+        self.y[ channel ] = self.a * x_avg + ( 1 - self.a ) * self.y[ channel ]
+
+        # return a scaled integer 0 to 100
+        y = round( ( self.y[ channel ] / 4096 ) * 100 )
+
+        return y
+
+    # change handler callback
+    def change( self, channel, value ):
+        print( 'ADC ' + str( self.bus ) + ' ' + str( self.device ) + ' Channel ' + str( channel ) + ' : ' + str( value ) )
+
+
 
 #-------------------------------------------------------------------------------
 # eof
