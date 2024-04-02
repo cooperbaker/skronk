@@ -16,12 +16,11 @@ from gpiozero import RotaryEncoder
 # encoder class
 #-------------------------------------------------------------------------------
 class encoder():
-    enc = 0
-    val = 0
-    old = 0
 
     #constructor
     def __init__( self, a, b ):
+        self.val = 0
+        self.old = 0
         self.enc = RotaryEncoder( a, b, max_steps=32 )
 
     # read encoder steps
