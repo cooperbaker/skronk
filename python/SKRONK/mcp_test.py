@@ -16,18 +16,16 @@ while True:
     adc1.read()
     adc2.read()
 
-    values = [ 0 ] * 16
+    # values = [ 0 ] * 16
 
-    for i in range( 8 ):
-        values[ i ] = adc1.value[ i ]
+    # for i in range( 8 ):
+    #     values[ i     ] = adc1.value[ i ]
+    #     values[ i + 8 ] = adc2.value[ i ]
 
-    for i in range( 8, 15 ):
-        values[ i ] = adc2.value[ ( i - 8 ) ]
+    # print('{0:>4} | {1:>4} | {2:>4} | {3:>4} | {4:>4} | {5:>4} | {6:>4} | {7:>4} | {8:>4} | {9:>4} | {10:>4} | {11:>4} | {12:>4} | {13:>4} | {14:>4} | {15:>4}'.format( * values ) )
 
-    print('| {0:>4} | {1:>4} | {2:>4} | {3:>4} | {4:>4} | {5:>4} | {6:>4} | {7:>4} | {8:>4} | {9:>4} | {10:>4} | {11:>4} | {12:>4} | {13:>4} | {14:>4} | {15:>4} |'.format( * values ) )
-
-    # Pause for a 2 milliseconds
-    time.sleep(0.002)
+    # Pause for 5 milliseconds
+    time.sleep( 0.001 )
 
 
 #-------------------------------------------------------------------------------
