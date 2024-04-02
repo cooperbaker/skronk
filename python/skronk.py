@@ -54,9 +54,9 @@ osc.set_parse( osc_parse )
 
 
 #-------------------------------------------------------------------------------
-# data sample rate ( adc max sample rate ≈ 500Hz )
+# data sample rate
 #-------------------------------------------------------------------------------
-SAMPLE_RATE_HZ = 500
+SAMPLE_RATE_HZ = 1000
 sleep          = 1 / SAMPLE_RATE_HZ
 run            = True
 
@@ -64,18 +64,35 @@ run            = True
 #-------------------------------------------------------------------------------
 # lcd
 #-------------------------------------------------------------------------------
-
 lcd = CharLCD( i2c_expander='PCF8574', address=0x27, port=1, cols=16, rows=2, dotsize=8 )
 lcd.clear()
 lcd.write_string( lan_ip() )
 
+
 #-------------------------------------------------------------------------------
 # adcs
 #-------------------------------------------------------------------------------
-
 # make adc objects: mcp3208( i2s_bus, i2s_device )
 adc1 = mcp3208( 0, 0 )
 adc2 = mcp3208( 0, 1 )
+
+# define change callbacks
+def adc1_change( channel, value ):
+    osc.send( OSC_ADC + str( channel ), value )
+    # lcd.home()
+    # lcd.write_string( 'ADC ' + str( channel ) + ' ' + str( value ) + '    ' )
+    # print( 'ADC ' + str( channel ) + ' : ' + str( value ) )
+
+def adc2_change( channel, value ):
+    osc.send( OSC_ADC + str( channel + 8 ), value )
+    # lcd.home()
+    # lcd.write_string( 'ADC ' + str( channel + 8 ) + ' ' + str( value )  + '    ' )
+    # print( 'ADC ' + str( channel + 8 ) + ' : ' + str( value ) )
+
+
+# assign callbacks
+adc1.change = adc1_change
+adc2.change = adc2_change
 
 
 #-------------------------------------------------------------------------------
@@ -87,11 +104,11 @@ sw = switch( [ B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12 ] )
 # define on/off callbacks
 def sw_on( channel ):
     osc.send( OSC_SW + str( channel ), 1 )
-    print( 'Switch %s on' % channel )
+    # print( 'Switch %s on' % channel )
 
 def sw_off( channel ):
     osc.send( OSC_SW + str( channel ), 0 )
-    print( 'Switch %s off' % channel )
+    # print( 'Switch %s off' % channel )
 
 # assign callbacks
 sw.on  = sw_on
@@ -108,23 +125,19 @@ enc2 = encoder( E2A, E2B )
 # define inc/dec callbacks
 def enc1_inc():
     osc.send( OSC_ENC + '1', 1 )
-    lcd.clear()
-    lcd.write_string( 'Enc 1 Inc' )
-    print( 'Encoder 1 Inc' )
+    # print( 'Encoder 1 Inc' )
 
 def enc1_dec():
     osc.send( OSC_ENC + '1', 0 )
-    lcd.clear()
-    lcd.write_string( 'Enc 1 Dec' )
-    print( 'Encoder 1 Dec' )
+    # print( 'Encoder 1 Dec' )
 
 def enc2_inc():
     osc.send( OSC_ENC + '2', 1 )
-    print( 'Encoder 2 Inc' )
+    # print( 'Encoder 2 Inc' )
 
 def enc2_dec():
     osc.send( OSC_ENC + '2', 0 )
-    print( 'Encoder 2 Dec' )
+    # print( 'Encoder 2 Dec' )
 
 # assign callbacks
 enc1.inc = enc1_inc
@@ -144,7 +157,6 @@ async def main():
         enc2.read()
         adc1.read()
         adc2.read()
-        print( str( adc1.value[ 0 ] ) )
         # lcd.home()
         # lcd.write_string( str( round( adc1.value[ 0 ], 3 ) ) )
         await asyncio.sleep( sleep )
