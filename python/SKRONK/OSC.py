@@ -12,6 +12,7 @@
 from pythonosc import udp_client
 from pythonosc.dispatcher import Dispatcher
 
+
 #-------------------------------------------------------------------------------
 # open_sound_control
 #-------------------------------------------------------------------------------
