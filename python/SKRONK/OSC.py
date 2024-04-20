@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 # OSC.py
-# Open sound control object for python osc on raspberry pi
+# Threaded full-duplex open sound control client/server
 #
 # Cooper Baker (c) 2024
 #-------------------------------------------------------------------------------
@@ -9,42 +9,42 @@
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
-from pythonosc import udp_client
+import threading
+
+from pythonosc            import udp_client
 from pythonosc.dispatcher import Dispatcher
+from pythonosc            import osc_server
 
 
 #-------------------------------------------------------------------------------
-# open_sound_control
+# osc_io class
 #-------------------------------------------------------------------------------
-class open_sound_control():
+class osc_io():
 
-    # client
-    out_ip   = '0.0.0.0'
-    out_port = 0
-    client   = 0
-
-    # server
-    in_ip      = '0.0.0.0'
-    in_port    = 0
-    server     = 0
-    dispatcher = 0
-    transport  = 0
-
-    # constructor
+    #constructor
     def __init__( self, in_ip, in_port, out_ip, out_port ):
+
+        # network info
         self.out_ip     = out_ip
         self.out_port   = out_port
-        self.client     = udp_client.SimpleUDPClient( self.out_ip, self.out_port )
         self.in_ip      = in_ip
         self.in_port    = in_port
+
+        # client
+        self.client     = udp_client.SimpleUDPClient( self.out_ip, self.out_port )
+
+        # server
         self.dispatcher = Dispatcher()
         self.dispatcher.set_default_handler( self.parse )
+        self.server     = osc_server.ThreadingOSCUDPServer( ( self.in_ip, self.in_port ), self.dispatcher )
+        self.thread     = threading.Thread( target = self.server.serve_forever )
+        self.thread.start()
 
     # send a message
     def send( self, addr, val ):
         self.client.send_message( addr, val )
 
-    # received message parse callback
+    # default received message parse callback
     def parse( address, *args ):
         print( f'{ address }: { args }' )
 
