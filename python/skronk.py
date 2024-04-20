@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 # skronk.py
-# Skronk Hat Open Sound Control Interface
+# Skronk Hat Operating Script
 #
 # Cooper Baker (c) 2024
 #-------------------------------------------------------------------------------
@@ -9,16 +9,16 @@
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
-import asyncio
+import time
 
-from pythonosc.osc_server import AsyncIOOSCUDPServer
 from RPLCD.i2c            import CharLCD
 from SKRONK.PINS          import *
 from SKRONK.SWITCH        import switch
 from SKRONK.MCP3208       import mcp3208
 from SKRONK.ENCODER       import encoder
 from SKRONK.LAN_IP        import lan_ip
-from SKRONK.OSC           import open_sound_control
+from SKRONK.OSC           import osc_io
+from SKRONK.THREAD        import thread
 
 
 #-------------------------------------------------------------------------------
@@ -36,29 +36,33 @@ OSC_ENC = '/enc/'
 OSC_SW  = '/sw/'
 OSC_ADC = '/adc/'
 OSC_LCD = '/lcd'
+OSC_CMD = '/cmd'
 
-# make osc object: open_sound_control( in_ip, in_port, out_ip, out_port )
-osc = open_sound_control( lan_ip(), OSC_IN_PORT, '10.0.0.3', OSC_OUT_PORT )
+# instantiate osc server
+osc = osc_io( OSC_IN_IP, OSC_IN_PORT, OSC_OUT_IP, OSC_OUT_PORT )
 
-# define osc parse callback
+# define message parse callback
 def osc_parse( address, *args ):
+
     if address == OSC_LCD:
         lcd.home()
         lcd.write_string( str( args[ 0 ] ) )
         print( OSC_LCD + ' ' + str( args[ 0 ] ) )
-    else:
+
+    elif address == OSC_CMD:
+        print( 'cmd' )
+
+    elif address:
         print( f'{ address }: { args }' )
 
-# assign callback
+# assign message parse callback
 osc.set_parse( osc_parse )
 
 
 #-------------------------------------------------------------------------------
-# data sample rate
+# run flag
 #-------------------------------------------------------------------------------
-SAMPLE_RATE_HZ = 1000
-sleep          = 1 / SAMPLE_RATE_HZ
-run            = True
+run = True
 
 
 #-------------------------------------------------------------------------------
@@ -94,25 +98,34 @@ def adc2_change( channel, value ):
 adc1.change = adc1_change
 adc2.change = adc2_change
 
+# define adc read callback
+def adc_read():
+    adc1.read()
+    adc2.read()
+
+# start adc read thread
+adc_thread = thread( adc_read, 1 )
+
 
 #-------------------------------------------------------------------------------
 # switches
 #-------------------------------------------------------------------------------
 # make switch object: switch( [ pin_numbers ] )
-sw = switch( [ B1, B2, B3, B4, B5, B6, B7, B8, B9, B10, B11, B12 ] )
+sw = switch( [ S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12 ] )
 
 # define on/off callbacks
 def sw_on( channel ):
     osc.send( OSC_SW + str( channel ), 1 )
-    # print( 'Switch %s on' % channel )
 
 def sw_off( channel ):
     osc.send( OSC_SW + str( channel ), 0 )
-    # print( 'Switch %s off' % channel )
 
 # assign callbacks
 sw.on  = sw_on
 sw.off = sw_off
+
+# start switch read thread
+sw_thread = thread( sw.read, 1 )
 
 
 #-------------------------------------------------------------------------------
@@ -125,19 +138,15 @@ enc2 = encoder( E2A, E2B )
 # define inc/dec callbacks
 def enc1_inc():
     osc.send( OSC_ENC + '1', 1 )
-    # print( 'Encoder 1 Inc' )
 
 def enc1_dec():
     osc.send( OSC_ENC + '1', 0 )
-    # print( 'Encoder 1 Dec' )
 
 def enc2_inc():
     osc.send( OSC_ENC + '2', 1 )
-    # print( 'Encoder 2 Inc' )
 
 def enc2_dec():
     osc.send( OSC_ENC + '2', 0 )
-    # print( 'Encoder 2 Dec' )
 
 # assign callbacks
 enc1.inc = enc1_inc
@@ -145,41 +154,26 @@ enc1.dec = enc1_dec
 enc2.inc = enc2_inc
 enc2.dec = enc2_dec
 
+# define encoder read callback
+def enc_read():
+    enc1.read()
+    enc2.read()
+
+# start encoder read thread
+enc_thread = thread( enc_read, 1 )
+
 
 #-------------------------------------------------------------------------------
-# main - async main function
+# main - main function
 #-------------------------------------------------------------------------------
-async def main():
+def main():
 
     while run:
-        sw.read()
-        enc1.read()
-        enc2.read()
-        adc1.read()
-        adc2.read()
         # lcd.home()
         # lcd.write_string( str( round( adc1.value[ 0 ], 3 ) ) )
-        await asyncio.sleep( sleep )
+        time.sleep( 0.1 )
 
-
-#-------------------------------------------------------------------------------
-# init - async init function
-#-------------------------------------------------------------------------------
-async def init():
-
-    # start osc server
-    osc.server = AsyncIOOSCUDPServer( ( osc.in_ip, osc.in_port ), osc.dispatcher, asyncio.get_event_loop() )
-    osc.transport, protocol = await osc.server.create_serve_endpoint()
-
-    # main function
-    await main()
-
-    # stop osc server
-    osc.transport.close()
-
-
-# start the async tasks
-asyncio.run( init() )
+main()
 
 #-------------------------------------------------------------------------------
 # eof
