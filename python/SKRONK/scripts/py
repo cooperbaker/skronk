@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# Join the screen instance named skronk
-# Cooper Baker (c) 2024
-
-screen -r skronk
