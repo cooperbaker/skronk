@@ -17,11 +17,13 @@ from gpiozero import RotaryEncoder
 #-------------------------------------------------------------------------------
 class encoder():
 
-    #constructor
-    def __init__( self, a, b ):
-        self.val = 0
-        self.old = 0
-        self.enc = RotaryEncoder( a, b, max_steps=32 )
+    # constructor
+    # def callback( state )
+    def __init__( self, a, b, callback ):
+        self.val      = 0
+        self.old      = 0
+        self.enc      = RotaryEncoder( a, b, max_steps=32 )
+        self.callback = callback
 
     # read encoder steps
     def read( self ):
@@ -31,19 +33,11 @@ class encoder():
 
         if( self.val > self.old ):
             for i in range( 0, ( self.val - self.old ) ):
-                self.inc()
+                self.callback( 1 )
 
         if( self.val < self.old ):
             for i in range( 0, ( self.old - self.val ) ):
-                self.dec()
-
-    # increment handler callback
-    def inc( self ):
-        print( 'encoder increment' )
-
-    # decrement handler callback
-    def dec( self ):
-        print( 'encoder decrement' )
+                self.callback( 0 )
 
 
 #-------------------------------------------------------------------------------

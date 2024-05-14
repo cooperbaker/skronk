@@ -11,7 +11,6 @@
 #-------------------------------------------------------------------------------
 import gpiod
 
-
 #-------------------------------------------------------------------------------
 # gpio setup
 #-------------------------------------------------------------------------------
@@ -24,11 +23,14 @@ gpio = gpiod.Chip( 'gpiochip4', gpiod.Chip.OPEN_BY_NAME )
 class switch():
 
     # constructor
-    def __init__( self, pins ):
-        self.obj = []
-        self.now = []
-        self.old = []
-        self.pin = pins
+    # def callback( channel, state )
+    def __init__( self, pins, callback ):
+        self.obj  = []
+        self.now  = []
+        self.old  = []
+        self.pin  = pins
+        self.call = callback
+
         for i, pin in enumerate( self.pin ):
             obj = gpio.get_line( pin )
             obj.request( consumer=__file__, type=gpiod.LINE_REQ_DIR_IN )
@@ -38,8 +40,11 @@ class switch():
 
     # destructor
     def cleanup( self ):
+        self.thread.run = False
+
         for obj in self.obj:
             obj.release()
+
         gpio.close()
 
     # read button states
@@ -49,21 +54,13 @@ class switch():
 
             # press detect
             if self.now[ i ] and ( self.now[ i ] != self.old[ i ] ):
-                self.on( i + 1 )
+                self.call( i + 1, 1 )
                 self.old[ i ] = self.now[ i ]
 
             # release detect
             if not( self.now[ i ] ) and ( self.now[ i ] != self.old[ i ] ):
-                self.off( i + 1 )
+                self.call( i + 1, 0 )
                 self.old[ i ] = self.now[ i ]
-
-    # on handler callback
-    def on( self, channel ):
-        print( 'Switch %s on' % channel )
-
-    # off handler callback
-    def off( self, channel ):
-        print( 'Switch %s off' % channel )
 
 
 #-------------------------------------------------------------------------------

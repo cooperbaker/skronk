@@ -19,11 +19,13 @@ class mcp3208():
     spi = spidev.SpiDev()
 
     # constructor
-    def __init__( self, bus, device ):
+    # def callback( channel, value ):
+    def __init__( self, bus, device, callback ):
 
-        # id
-        self.bus    = bus
-        self.device = device
+        # init vars
+        self.bus      = bus
+        self.device   = device
+        self.callback = callback
 
         # channel values
         self.value     = [ 0 ] * 8
@@ -61,7 +63,7 @@ class mcp3208():
         # run callback based on changed values
         for channel in range( 8 ):
             if self.value[ channel ] != self.value_old[ channel ]:
-                self.change( channel, self.value[ channel ] )
+                self.callback( channel, self.value[ channel ] )
 
             self.value_old[ channel ] = self.value[ channel ]
 
@@ -89,11 +91,6 @@ class mcp3208():
         y = round( ( self.y[ channel ] / 4096 ) * 100 )
 
         return y
-
-    # change handler callback
-    def change( self, channel, value ):
-        print( 'ADC ' + str( self.bus ) + ' ' + str( self.device ) + ' Channel ' + str( channel ) + ' : ' + str( value ) )
-
 
 
 #-------------------------------------------------------------------------------
