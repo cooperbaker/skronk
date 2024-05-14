@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 # LAN_IP.py
-# Reports local area network ip address of a raspberry pi
+# Reports local area network wifi ip address of a raspberry pi
 #
 # Cooper Baker (c) 2024
 #-------------------------------------------------------------------------------
