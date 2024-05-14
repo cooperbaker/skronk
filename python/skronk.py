@@ -147,7 +147,7 @@ def main():
     print( ' \n' )
     print( 'Skronk Hat' )
     print( ' \n' )
-    print( 'ip : ' + lan_ip() )
+    print( 'ip : ' + OSC_IN_IP )
     print( ' \n' )
 
     while True:
