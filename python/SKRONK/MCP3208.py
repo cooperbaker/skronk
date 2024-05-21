@@ -15,7 +15,7 @@ import spidev
 #-------------------------------------------------------------------------------
 class mcp3208():
 
-    # class-wide static spi object
+    # class-wide static spi interface object
     spi = spidev.SpiDev()
 
     # constructor
