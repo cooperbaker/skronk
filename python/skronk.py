@@ -9,14 +9,14 @@
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
-import time
-from SKRONK.PINS    import *
-from SKRONK.LCD     import lcd_disp
-from SKRONK.SWITCH  import switch
-from SKRONK.MCP3208 import mcp3208
+from time           import sleep
+from SKRONK.DISPLAY import display
 from SKRONK.ENCODER import encoder
 from SKRONK.LAN_IP  import lan_ip
+from SKRONK.MCP3208 import mcp3208
 from SKRONK.OSC     import osc_io
+from SKRONK.PINS    import *
+from SKRONK.SWITCH  import switch
 from SKRONK.THREAD  import thread
 
 
@@ -46,12 +46,10 @@ OSC_ADC = '/adc/'
 
 
 #-------------------------------------------------------------------------------
-# lcd - for PCF8574 Family
+# display - display( lcd/oled, cols, rows, fps )
 #-------------------------------------------------------------------------------
-lcd = lcd_disp( 20, 4, 15 )
-lcd.clear()
-lcd.write( lan_ip() )
-lcd.write_xy( 16, 2, ':)' )
+disp = display( 'oled', 20, 4, 30 )
+disp.clear()
 
 
 #-------------------------------------------------------------------------------
@@ -60,12 +58,12 @@ lcd.write_xy( 16, 2, ':)' )
 # define osc message callback
 def osc_message( address, *args ):
     if address == OSC_LCD:
-        lcd.write( str( args[ 0 ] ) )
+        disp.buf_fill( str( args[ 0 ] ) )
     elif address == OSC_CMD:
         if args[ 0 ] == 'lcd_off':
-            lcd.off()
+            disp.off()
         elif args[ 0 ] == 'lcd_on':
-            lcd.on()
+            disp.on()
 
 # make osc server: osc_io( in_ip, in_port, out_ip, out_port, message_callback )
 osc = osc_io( OSC_IN_IP, OSC_IN_PORT, OSC_OUT_IP, OSC_OUT_PORT, osc_message )
@@ -117,8 +115,8 @@ enc_thread = thread( enc_read, 1 )
 # define change callbacks
 def adc_change( channel, value ):
     osc.send( OSC_ADC + str( channel ), value )
-    lcd.write_xy( 8, 3, '     ' )
-    lcd.write_xy( 8, 3, str( channel ) + '~' + str( value ) )
+    disp.buf_write( 8, 3, '     ' )
+    disp.buf_write( 8, 3, str( channel ) + ':' + str( value ) )
 
 def adc1_change( channel, value ):
     adc_change( channel, value )
@@ -145,13 +143,30 @@ adc_thread = thread( adc_read, 1 )
 def main():
 
     print( ' \n' )
-    print( 'Skronk Hat' )
-    print( ' \n' )
-    print( 'ip : ' + OSC_IN_IP )
+    print( 'Skronk Hat @ ' + OSC_IN_IP )
     print( ' \n' )
 
+    disp.fade_blink( 0 )
+    disp.buf_write( 0, 0, OSC_IN_IP )
+
+    # x  = 0
+    # xi = 0.048
+    # y  = 0
+    # yi = 0.024
+
     while True:
-        time.sleep( 0.1 )
+        # disp.buf_write( int( x ), int( y ), '  ' )
+        # x = x + xi
+        # if( x < 0 or x > 19 ):
+        #     xi = xi * -1
+        # y = y + yi
+        # if( y < 0 or y > 4 ):
+        #     yi = yi * -1
+
+        # disp.buf_write( int( x ), int( y ), '()' )
+        # sleep( 0.001 )
+
+        sleep( 0.1 )
 
 main()
 
