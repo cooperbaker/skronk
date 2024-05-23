@@ -5,10 +5,12 @@
 # Cooper Baker (c) 2024
 #-------------------------------------------------------------------------------
 
+
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
 import spidev
+
 
 #-------------------------------------------------------------------------------
 # mcp3208 class
@@ -30,14 +32,28 @@ class mcp3208():
         # channel values
         self.value     = [ 0 ] * 8
         self.value_old = [ 0 ] * 8
+        self.steps     = 200
 
-        # lowpass filter
-        self.y = [ 0 ] * 8
-        self.a = 0.03  # 0 to 1 : larger = less lag
+        # lowpass filter cascade
+        self.y0 = [ 0 ] * 8
+        self.y1 = [ 0 ] * 8
+        self.y2 = [ 0 ] * 8
+        self.y3 = [ 0 ] * 8
+        self.a = 20 * 6.28318530718 / 1000 # frequency * two_pi / sample_rate
 
         # moving average filter
-        self.avg_size = 50 # smaller = less lag
+        self.avg_size = 20 # smaller = less lag
+        self.avg_index = 0
         self.avg = [ [ 0 ] * 8 ] * self.avg_size
+
+        # clipping filter
+        self.clip_amt = 10
+        self.clip_min = self.clip_amt
+        self.clip_max = 4096 - self.clip_amt
+        self.clip_rng = self.clip_max - self.clip_min
+
+
+
 
     # read and filter adc values
     def read( self ):
@@ -71,25 +87,30 @@ class mcp3208():
     # adc input filter
     def filter( self, channel, x ):
 
+        # iir lowpass filter cascade : y = y + a * ( x - y1 )
+        self.y0[ channel ] = self.y0[ channel ] + self.a * ( x                  - self.y0[ channel ] )
+        self.y1[ channel ] = self.y1[ channel ] + self.a * ( self.y0[ channel ] - self.y1[ channel ] )
+        self.y2[ channel ] = self.y2[ channel ] + self.a * ( self.y1[ channel ] - self.y2[ channel ] )
+        self.y3[ channel ] = self.y3[ channel ] + self.a * ( self.y2[ channel ] - self.y3[ channel ] )
+        y = self.y3[ channel ]
+
         # moving average filter
-        for i in range( self.avg_size - 1, 0, -1 ):
-            self.avg[ i ][ channel ] = self.avg[ i - 1 ][ channel ]
+        self.avg_index += 1
+        if self.avg_index >= self.avg_size:
+            self.avg_index = 0
+        self.avg[ self.avg_index ][ channel ] = y
+        for i in range( self.avg_size - 1 ):
+            y = y + self.avg[ i ][ channel ]
+        y = y / self.avg_size
 
-        self.avg[ 0 ][ channel ] = x
+        # clip and normalize 0.0 to 1.0
+        if y < self.clip_min:
+            y = self.clip_min
+        if y > self.clip_max:
+            y = self.clip_max
+        y = ( y - self.clip_min ) / self.clip_rng
 
-        x_avg = 0
-
-        for i in range( self.avg_size ):
-            x_avg = x_avg + self.avg[ i ][ channel ]
-
-        x_avg = x_avg / self.avg_size
-
-        # lowpass filter
-        self.y[ channel ] = self.a * x_avg + ( 1 - self.a ) * self.y[ channel ]
-
-        # return a scaled integer 0 to 100
-        y = round( ( self.y[ channel ] / 4096 ) * 100 )
-
+        y = round( y * self.steps ) / self.steps
         return y
 
 
