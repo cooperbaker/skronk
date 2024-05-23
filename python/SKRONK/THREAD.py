@@ -10,7 +10,7 @@
 # imports
 #-------------------------------------------------------------------------------
 import threading
-import time
+from time import sleep
 
 
 #-------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ class thread():
     def driver( self ):
         while self.run:
             self.callback()
-            time.sleep( self.sleep )
+            sleep( self.sleep )
 
     # stop thread
     def stop( self ):
