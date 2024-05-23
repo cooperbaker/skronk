@@ -24,16 +24,16 @@ from SKRONK.THREAD  import thread
 # open sound control config
 #-------------------------------------------------------------------------------
 # network
-OSC_IN_IP    = lan_ip()
-OSC_IN_PORT  = 1000
-OSC_OUT_IP   = '10.0.0.3'
-OSC_OUT_PORT = 1001
+# OSC_IN_IP    = lan_ip()
+# OSC_IN_PORT  = 1000
+# OSC_OUT_IP   = '10.0.0.3'
+# OSC_OUT_PORT = 1001
 
 # internal
-# OSC_IN_IP    = '127.0.0.1'
-# OSC_IN_PORT  = 1000
-# OSC_OUT_IP   = '127.0.0.1'
-# OSC_OUT_PORT = 1001
+OSC_IN_IP    = '127.0.0.1'
+OSC_IN_PORT  = 1000
+OSC_OUT_IP   = '127.0.0.1'
+OSC_OUT_PORT = 1001
 
 # input addresses
 OSC_LCD = '/lcd'
@@ -112,11 +112,11 @@ enc_thread = thread( enc_read, 1 )
 #-------------------------------------------------------------------------------
 # adcs
 #-------------------------------------------------------------------------------
-# define change callbacks
+#define change callbacks
 def adc_change( channel, value ):
     osc.send( OSC_ADC + str( channel ), value )
-    disp.buf_write( 8, 3, '     ' )
-    disp.buf_write( 8, 3, str( channel ) + ':' + str( value ) )
+    disp.buf_write( 6, 3, '         ' )
+    disp.buf_write( 6, 3, str( channel ) + ':' + str( value ) )
 
 def adc1_change( channel, value ):
     adc_change( channel, value )
@@ -165,6 +165,8 @@ def main():
 
         # disp.buf_write( int( x ), int( y ), '()' )
         # sleep( 0.001 )
+
+        print( adc1.value[ 4 ] )
 
         sleep( 0.1 )
 
