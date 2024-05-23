@@ -406,25 +406,25 @@ class display():
         self.lcd_byte( self.backlight_ctl )
         sleep( 1 )
         data = 0x30 | self.backlight_ctl            # put lcd in 4 bit mode
-        self.lcd_byte( data)
+        self.lcd_byte( data )
         self.lcd_byte( data | self.LCD_ENABLE_ON )  # set the enable bit and write again
         sleep(.001)
         self.lcd_byte( data | self.LCD_ENABLE_OFF ) # clear the enable bit and write again
         sleep(.004300)                              # wait min 4.1ms
         data = 0x30 | self.backlight_ctl            # put lcd in 4 bit mode again
-        self.lcd_byte( data)
+        self.lcd_byte( data )
         self.lcd_byte( data | self.LCD_ENABLE_ON )  # set the enable bit and write again
         sleep(.001)
         self.lcd_byte( data | self.LCD_ENABLE_OFF ) # clear the enable bit and write again
         sleep(.004300)                              # wait min 4.1ms
         data = 0x30 | self.backlight_ctl            # put lcd in 4 bit mode again
-        self.lcd_byte( data)
+        self.lcd_byte( data )
         self.lcd_byte( data | self.LCD_ENABLE_ON )  # set the enable bit and write again
         sleep(.001)
         self.lcd_byte( data | self.LCD_ENABLE_OFF ) # clear the enable bit and write again
         sleep(.004300)                              # wait min 4.1ms
         data = 0x20 | self.backlight_ctl            # set up 4 bit interface
-        self.lcd_byte( data)
+        self.lcd_byte( data )
         self.lcd_byte( data | self.LCD_ENABLE_ON )  # set the enable bit and write again
         sleep(.001)
         self.lcd_byte( data | self.LCD_ENABLE_OFF ) # clear the enable bit and write again
