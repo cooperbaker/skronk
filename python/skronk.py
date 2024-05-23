@@ -149,25 +149,7 @@ def main():
     disp.fade_blink( 0 )
     disp.buf_write( 0, 0, OSC_IN_IP )
 
-    # x  = 0
-    # xi = 0.048
-    # y  = 0
-    # yi = 0.024
-
     while True:
-        # disp.buf_write( int( x ), int( y ), '  ' )
-        # x = x + xi
-        # if( x < 0 or x > 19 ):
-        #     xi = xi * -1
-        # y = y + yi
-        # if( y < 0 or y > 4 ):
-        #     yi = yi * -1
-
-        # disp.buf_write( int( x ), int( y ), '()' )
-        # sleep( 0.001 )
-
-        print( adc1.value[ 4 ] )
-
         sleep( 0.1 )
 
 main()
