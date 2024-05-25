@@ -53,14 +53,22 @@ class mcp3208():
         self.clip_rng = self.clip_max - self.clip_min
 
 
-
-
     # read and filter adc values
     def read( self ):
 
+        # MCP3208 datasheet page 3 : 2.0 MHz clock with 5V supply
+        # 24 bit word @ 2MHz       = 0.012 msec per word i.e. 83.333 kHz sample rate
+        #  8 channels @ 83.3kHz    = 0.096 msec or 27.777kHz per chip
+        # 16 channels @ 83.3kHz    = 0.192 msec or 13.888kHz for two chips
+        # 0.192 msec + 0.808 sleep = 1 msec or 1kHz for 16 channels or two chips
+        # Note: Python is not capable of realtime precison at millisecond
+        # intervals, and adc reads occur with a somewhat jittery sample rate.
+        # On a raspberry pi 5, my scope indicates 1kHz is the best read interval
+        # in terms of stability and speed.
+
         # open the chip
         self.spi.open( self.bus, self.device )
-        self.spi.max_speed_hz = 1000000
+        self.spi.max_speed_hz = 2000000
 
         # get values
         for channel in range( 8 ):
@@ -73,7 +81,7 @@ class mcp3208():
             # filter the value
             self.value[ channel ] = self.filter( channel, self.value[ channel ] )
 
-        #close the chip
+        # close the chip
         self.spi.close()
 
         # run callback based on changed values
@@ -110,8 +118,7 @@ class mcp3208():
             y = self.clip_max
         y = ( y - self.clip_min ) / self.clip_rng
 
-        y = round( y * self.steps ) / self.steps
-        return y
+        return round( y * self.steps ) / self.steps
 
 
 #-------------------------------------------------------------------------------
