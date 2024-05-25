@@ -76,6 +76,9 @@ osc = osc_io( OSC_IN_IP, OSC_IN_PORT, OSC_OUT_IP, OSC_OUT_PORT, osc_message )
 def sw_change( channel, state ):
     osc.send( OSC_SW + str( channel ), state )
 
+    if( channel == 5 and state == 1 ):
+        adc_thread.stop()
+
 # make switch object: switch( [ pin_numbers ], change_callback )
 sw = switch( [ S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12 ], sw_change )
 
@@ -134,6 +137,7 @@ def adc_read():
     adc2.read()
 
 # start adc read thread at 1 msec interval
+# adc_thread = thread( adc_read, 0.808 )
 adc_thread = thread( adc_read, 1 )
 
 
