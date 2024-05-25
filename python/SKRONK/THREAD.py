@@ -10,7 +10,7 @@
 # imports
 #-------------------------------------------------------------------------------
 import threading
-from time import sleep
+import time
 
 
 #-------------------------------------------------------------------------------
@@ -22,19 +22,21 @@ class thread():
     def __init__( self, callback, milliseconds ):
         self.callback = callback
         self.sleep    = milliseconds / 1000
-        self.run      = True
-        self.thread   = threading.Thread( target = self.driver )
-        self.thread.start()
+        self.spin     = True
+        threading.stack_size( 65536 )
+        threading.Thread( target = self.run ).start()
 
-    # thread driver
-    def driver( self ):
-        while self.run:
+    # run a callback loop with a sleep timer
+    def run( self ):
+        start = 0
+        while self.spin:
+            start = time.clock_gettime( time.CLOCK_MONOTONIC )
             self.callback()
-            sleep( self.sleep )
+            time.sleep( max( 0, self.sleep - ( time.clock_gettime( time.CLOCK_MONOTONIC ) - start ) ) )
 
     # stop thread
     def stop( self ):
-        self.run = False
+        self.spin = False
 
 
 #-------------------------------------------------------------------------------
