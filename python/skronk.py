@@ -72,18 +72,35 @@ osc = osc_io( OSC_IN_IP, OSC_IN_PORT, OSC_OUT_IP, OSC_OUT_PORT, osc_message )
 #-------------------------------------------------------------------------------
 # switches
 #-------------------------------------------------------------------------------
-# define change handler callback
-def sw_change( channel, state ):
-    osc.send( OSC_SW + str( channel ), state )
+# switch event handler callback - edit to customize switch event behavior
+def sw_event( channel, value ):
+    osc.send( OSC_SW + str( channel ), value )
+    print( 'sw ' + str( channel ) + ' ' + str( value ) )
 
-    if( channel == 5 and state == 1 ):
-        adc_thread.stop()
+ # create switch object: switch( [ pin_numbers ], event_callback )
+sw = switch( [ S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12 ], sw_event )
 
-# make switch object: switch( [ pin_numbers ], change_callback )
-sw = switch( [ S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12 ], sw_change )
 
-# start switch read thread at 1 msec interval
-sw_thread = thread( sw.read, 1 )
+#-------------------------------------------------------------------------------
+# adcs
+#-------------------------------------------------------------------------------
+# adc event handler callback - edit to customize adc event behavior
+def adc_event( channel, value ):
+    osc.send( OSC_ADC + str( channel ), value )
+    disp.buf_write( 6, 3, '         ' )
+    disp.buf_write( 6, 3, str( channel ) + ':' + str( value ) )
+
+# adc1 event handler callback
+def adc1_event( channel, value ):
+    adc_event( channel, value )
+
+# adc2 event handler callback
+def adc2_event( channel, value ):
+    adc_event( channel + 8, value )
+
+# make adc objects: mcp3208( i2s_bus, i2s_device, event_callback )
+adc1 = mcp3208( 0, 0, adc1_event )
+adc2 = mcp3208( 0, 1, adc2_event )
 
 
 #-------------------------------------------------------------------------------
@@ -113,32 +130,27 @@ enc_thread = thread( enc_read, 1 )
 
 
 #-------------------------------------------------------------------------------
-# adcs
+# read thread
 #-------------------------------------------------------------------------------
-#define change callbacks
-def adc_change( channel, value ):
-    osc.send( OSC_ADC + str( channel ), value )
-    disp.buf_write( 6, 3, '         ' )
-    disp.buf_write( 6, 3, str( channel ) + ':' + str( value ) )
-
-def adc1_change( channel, value ):
-    adc_change( channel, value )
-
-def adc2_change( channel, value ):
-    adc_change( channel + 8, value )
-
-# make adc objects: mcp3208( i2s_bus, i2s_device, change_callback )
-adc1 = mcp3208( 0, 0, adc1_change )
-adc2 = mcp3208( 0, 1, adc2_change )
-
-# define adc read callback for threading
-def adc_read():
+def read():
+    sw.read()
     adc1.read()
     adc2.read()
 
-# start adc read thread at 1 msec interval
-# adc_thread = thread( adc_read, 0.808 )
-adc_thread = thread( adc_read, 1 )
+# create read thread at 1 msec interval
+read_thread = thread( read, 1 )
+
+
+#-------------------------------------------------------------------------------
+# event thread
+#-------------------------------------------------------------------------------
+def events():
+    sw.events()
+    adc1.events()
+    adc2.events()
+
+# create event thread at 1 msec interval
+event_thread = thread( events, 1 )
 
 
 #-------------------------------------------------------------------------------
