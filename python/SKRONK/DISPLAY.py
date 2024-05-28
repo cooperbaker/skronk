@@ -10,8 +10,8 @@
 # imports
 #-------------------------------------------------------------------------------
 from smbus2 import SMBus
-from time import sleep
 import threading
+from time import sleep, clock_gettime, CLOCK_MONOTONIC
 
 
 #-------------------------------------------------------------------------------
@@ -75,8 +75,9 @@ class display():
 
     #---------------------------------------------------------------------------
     # constructor
-    # display(  'lcd', 16, 2, 15 ) : 16x2 lcd  @ 15fps
-    # display( 'oled', 20, 4, 60 ) : 20x4 oled @ 60fps
+    # display(  'lcd', 16, 2, 10 ) : 16x2 lcd  @ 15fps
+    # display( 'oled', 20, 4, 30 ) : 20x4 oled @ 30fps
+    #                              : 20x4 full frame ≈ 25 msec i2c message
     #---------------------------------------------------------------------------
 
     def __init__( self, type, cols, rows, fps ):
@@ -99,8 +100,9 @@ class display():
             self.i2c_addr = self.OLED_I2C_ADDR
             self.init_oled()
 
-        self.thread = threading.Thread( target = self.buf_draw )
-        self.thread.start()
+        threading.stack_size( 65536 )
+        self.thread = threading.Thread( target = self.buf_draw ).start()
+
 
     #---------------------------------------------------------------------------
     # character buffer methods
@@ -123,26 +125,29 @@ class display():
 
     # buf_draw - character buffer drawing callback at fps interval
     def buf_draw( self ):
+        start = 0
         while True:
+            start = clock_gettime( CLOCK_MONOTONIC )
             if self.update:
                 self.update = False
                 buffer = self.buffer
                 self.home()
                 self.writeString( buffer )
-            sleep( self.fps )
+            # sleep( self.fps )
+            sleep( max( 0, self.fps - ( clock_gettime( CLOCK_MONOTONIC ) - start ) ) )
 
     #---------------------------------------------------------------------------
     # direct methods
     #---------------------------------------------------------------------------
 
     # write - write an ascii character (value) to the display
-    def write(self, value):
-        self.data(ord(value))
+    def write( self, value ):
+        self.data( ord( value ) )
 
     # write a string ( formatting options - https:#mkaz.tech/python-string-format.html )
-    def writeString(self, value):
+    def writeString( self, value ):
         for char in value:
-            self.write(char)
+            self.write( char )
 
     # clear - clear the display
     def clear( self ):
