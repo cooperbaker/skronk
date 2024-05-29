@@ -132,8 +132,8 @@ class display():
                 self.update = False
                 buffer = self.buffer
                 self.home()
-                self.writeString( buffer )
-            # sleep( self.fps )
+                for char in buffer:
+                    self.data( ord( char ) )
             sleep( max( 0, self.fps - ( clock_gettime( CLOCK_MONOTONIC ) - start ) ) )
 
     #---------------------------------------------------------------------------
