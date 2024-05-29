@@ -72,7 +72,7 @@ osc = osc_io( OSC_IN_IP, OSC_IN_PORT, OSC_OUT_IP, OSC_OUT_PORT, osc_message )
 #-------------------------------------------------------------------------------
 # switches
 #-------------------------------------------------------------------------------
-# switch event handler callback - edit to customize switch event behavior
+# switch event handler callback - edit this function to customize switch behavior
 def sw_event( channel, value ):
     osc.send( OSC_SW + str( channel ), value )
     print( 'sw ' + str( channel ) + ' ' + str( value ) )
@@ -84,7 +84,7 @@ sw = switch( [ S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12 ], sw_event )
 #-------------------------------------------------------------------------------
 # adcs
 #-------------------------------------------------------------------------------
-# adc event handler callback - edit to customize adc event behavior
+# adc event handler callback - edit this function to customize adc behavior
 def adc_event( channel, value ):
     osc.send( OSC_ADC + str( channel ), value )
     disp.buf_write( 6, 3, '         ' )

@@ -46,7 +46,7 @@ class encoder():
 #-------------------------------------------------------------------------------
 # example implementation
 #-------------------------------------------------------------------------------
-# encoder event handler callback - edit to customize encoder event behavior
+# encoder event handler callback - edit this function to customize encoder behavior
 # def enc_event( channel, value ):
 #     osc.send( OSC_ENC + str( channel ), direction )
 #
