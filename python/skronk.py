@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 # skronk.py
-# Skronk Hat Operating Script
+# Skronk Hat Realtime Operating Script
 #
 # Cooper Baker (c) 2024
 #-------------------------------------------------------------------------------
@@ -46,16 +46,16 @@ OSC_ADC = '/adc/'
 
 
 #-------------------------------------------------------------------------------
-# display - display( lcd/oled, cols, rows, fps )
+# display
 #-------------------------------------------------------------------------------
+# make display object: display( lcd/oled, cols, rows, fps )
 disp = display( 'oled', 20, 4, 30 )
-disp.clear()
 
 
 #-------------------------------------------------------------------------------
 # open sound control
 #-------------------------------------------------------------------------------
-# define osc message callback
+# osc message handler callback
 def osc_message( address, *args ):
     if address == OSC_LCD:
         disp.buf_fill( str( args[ 0 ] ) )
@@ -98,35 +98,9 @@ def adc1_event( channel, value ):
 def adc2_event( channel, value ):
     adc_event( channel + 8, value )
 
-# make adc objects: mcp3208( i2s_bus, i2s_device, event_callback )
+# create adc objects: mcp3208( i2s_bus, i2s_device, event_callback )
 adc1 = mcp3208( 0, 0, adc1_event )
 adc2 = mcp3208( 0, 1, adc2_event )
-
-
-#-------------------------------------------------------------------------------
-# encoders
-#-------------------------------------------------------------------------------
-# define change callbacks
-def enc_change( channel, direction ):
-    osc.send( OSC_ENC + str( channel ), direction )
-
-def enc1_change( direction ):
-    enc_change( 1, direction )
-
-def enc2_change( direction ):
-    enc_change( 2, direction )
-
-# make encoder objects: encoder( pin_a, pin_b, change_callback )
-enc1 = encoder( E1A, E1B, enc1_change )
-enc2 = encoder( E2A, E2B, enc2_change )
-
-# define read callback for threading
-def enc_read():
-    enc1.read()
-    enc2.read()
-
-# start encoder read thread at 1 msec interval
-enc_thread = thread( enc_read, 1 )
 
 
 #-------------------------------------------------------------------------------
