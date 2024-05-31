@@ -1,0 +1,17 @@
+# python screen instance config file
+# Cooper Baker (c) 2024
+
+# Allow bold colors
+attrcolor b ".I"
+
+# enable scrolling for mouse and bar
+termcapinfo xterm* ti@:te@
+
+# Enable 256 color term
+term xterm-256color
+
+# put status at bottom of window
+hardstatus alwayslastline
+
+# status string
+hardstatus string '%{= WK} %{= Wb}%w skronk console %{-} %= %{= Wk}%c:%s%{-} %= %{= Wr}[ctrl-a] [d](detach) [ky](stop)%{-} %{-}'
