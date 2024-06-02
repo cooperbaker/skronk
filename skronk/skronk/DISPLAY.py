@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# DISPLAY.py
+# display.py
 # I2C driver for PCA8574 + HD44780 lcd or US2066 oled character displays
 #
 # Cooper Baker (c) 2024
@@ -12,7 +12,6 @@
 from smbus2 import SMBus
 import threading
 from time import sleep, clock_gettime, CLOCK_MONOTONIC
-
 
 #-------------------------------------------------------------------------------
 # display class
@@ -105,7 +104,7 @@ class display():
 
 
     #---------------------------------------------------------------------------
-    # character buffer methods
+    # character buffer draw methods
     #---------------------------------------------------------------------------
 
     # buf_write - write a string into the character buffer at ( col, row ) location
@@ -123,7 +122,7 @@ class display():
         self.buffer = ' ' * self.rows * self.cols
         self.update = True
 
-    # buf_draw - character buffer drawing callback at fps interval
+    # buf_draw - character buffer draw callback at fps interval
     def buf_draw( self ):
         start = 0
         while True:
@@ -137,7 +136,7 @@ class display():
             sleep( max( 0, self.fps - ( clock_gettime( CLOCK_MONOTONIC ) - start ) ) )
 
     #---------------------------------------------------------------------------
-    # direct methods
+    # direct draw methods
     #---------------------------------------------------------------------------
 
     # write - write an ascii character (value) to the display
@@ -152,7 +151,7 @@ class display():
     # clear - clear the display
     def clear( self ):
         self.cmd( self.LCD_CLEAR_DISPLAY )
-        sleep( .002 ) # 1.53ms pause
+        sleep( 0.002 ) # 1.53ms pause
 
     # home - move cursor to upper left corner
     def home( self ):

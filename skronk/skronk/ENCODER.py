@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# ENCODER.py
+# encoder.py
 # GPIO rotary encoder reader for raspberry pi
 #
 # Cooper Baker (c) 2024

@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# THREAD.py
+# thread.py
 # Threaded callback at millisecond intervals
 #
 # Cooper Baker (c) 2024
