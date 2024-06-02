@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SWITCH.py
+# switch.py
 # GPIO switch reader for raspberry pi
 #
 # Cooper Baker (c) 2024
