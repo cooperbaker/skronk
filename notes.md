@@ -24,17 +24,6 @@
 - Interface Options => I2C => Yes
 
 
-### add python smbus api for RPLCD
+### add python smbus api for i2c support
 ---
 <code>$ sudo apt-get install python-smbus</code>
-
-
-<!-- ### python virtual environment
----
-
-- make\
-<code>$ python3 -m venv skronk</code>
-- activate\
-<code>$ source skronk/bin/activate</code>
-- deactivate\
-<code>$ deactivate</code> -->

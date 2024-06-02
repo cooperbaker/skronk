@@ -9,22 +9,25 @@
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
-from time           import sleep
-from skronk.DISPLAY import display
-from skronk.ENCODER import encoder
-from skronk.LAN_IP  import lan_ip
-from skronk.MCP3208 import mcp3208
-from skronk.OSC     import osc_io
-from skronk.PINS    import *
-from skronk.SWITCH  import switch
-from skronk.THREAD  import thread
+from time                       import sleep
+from skronk.display             import display
+from skronk.encoder             import encoder
+from skronk.pure_data           import pure_data
+from skronk.mcp3208             import mcp3208
+from skronk.open_sound_control  import open_sound_control
+from skronk.pins                import *
+from skronk.switch              import switch
+from skronk.thread              import thread
+from skronk.wlan0_ip            import wlan0_ip
+
+import threading
 
 
 #-------------------------------------------------------------------------------
 # open sound control config
 #-------------------------------------------------------------------------------
 # network
-# OSC_IN_IP    = lan_ip()
+# OSC_IN_IP    = wlan0_ip()
 # OSC_IN_PORT  = 1000
 # OSC_OUT_IP   = '10.0.0.3'
 # OSC_OUT_PORT = 1001
@@ -44,11 +47,17 @@ OSC_ENC = '/enc/'
 OSC_SW  = '/sw/'
 OSC_ADC = '/adc/'
 
+#-------------------------------------------------------------------------------
+# pure data
+#-------------------------------------------------------------------------------
+# create pure data object: pure_data( 'path to patches' )
+pd = pure_data( '/home/pi/pd' )
+
 
 #-------------------------------------------------------------------------------
 # display
 #-------------------------------------------------------------------------------
-# make display object: display( lcd/oled, cols, rows, fps )
+# create display object: display( lcd/oled, cols, rows, fps )
 disp = display( 'oled', 20, 4, 30 )
 
 
@@ -65,8 +74,8 @@ def osc_message( address, *args ):
         elif args[ 0 ] == 'lcd_on':
             disp.on()
 
-# make osc server: osc_io( in_ip, in_port, out_ip, out_port, message_callback )
-osc = osc_io( OSC_IN_IP, OSC_IN_PORT, OSC_OUT_IP, OSC_OUT_PORT, osc_message )
+# create osc server: open_sound_control( in_ip, in_port, out_ip, out_port, message_callback )
+osc = open_sound_control( OSC_IN_IP, OSC_IN_PORT, OSC_OUT_IP, OSC_OUT_PORT, osc_message )
 
 
 #-------------------------------------------------------------------------------
@@ -76,6 +85,9 @@ osc = osc_io( OSC_IN_IP, OSC_IN_PORT, OSC_OUT_IP, OSC_OUT_PORT, osc_message )
 def sw_event( channel, value ):
     osc.send( OSC_SW + str( channel ), value )
     print( 'sw ' + str( channel ) + ' ' + str( value ) )
+    if( channel == 5 and value == 1 ):
+        x = 0
+        # pd.stop()
 
  # create switch object: switch( [ pin_numbers ], event_callback )
 sw = switch( [ S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12 ], sw_event )
@@ -111,7 +123,7 @@ def read():
     adc1.read()
     adc2.read()
 
-# create read thread at 1 msec interval
+# create read thread a 1 msec interval
 read_thread = thread( read, 1 )
 
 
@@ -127,6 +139,7 @@ def events():
 event_thread = thread( events, 1 )
 
 
+
 #-------------------------------------------------------------------------------
 # main - main function
 #-------------------------------------------------------------------------------
@@ -138,6 +151,8 @@ def main():
 
     disp.fade_blink( 0 )
     disp.buf_write( 0, 0, OSC_IN_IP )
+
+    pd.run( 'test.pd' )
 
     while True:
         sleep( 0.1 )

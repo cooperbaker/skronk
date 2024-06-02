@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# OSC.py
+# open_sound_control.py
 # Threaded full-duplex open sound control client/server
 #
 # Cooper Baker (c) 2024
@@ -18,7 +18,7 @@ from pythonosc            import osc_server
 #-------------------------------------------------------------------------------
 # osc_io class
 #-------------------------------------------------------------------------------
-class osc_io():
+class open_sound_control():
 
     #constructor
     def __init__( self, in_ip, in_port, out_ip, out_port, message_callback ):
