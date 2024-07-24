@@ -8,13 +8,13 @@
 
 ### update raspberry pi os
 ---
-<code>$ sudo apt upgrade</code>\
-<code>$ sudo apt update</code>
+<code>$ sudo apt update</code>\
+<code>$ sudo apt upgrade</code>
 
 
 ### cpu and memory monitor
 ---
-<code>$ htop</code>
+<code>$ sudo htop</code>
 
 
 ### enable spi & i2c
@@ -26,4 +26,10 @@
 
 ### add python smbus api for i2c support
 ---
-<code>$ sudo apt-get install python-smbus</code>
+<code>$ sudo apt install python3-smbus</code>
+
+
+### start skronk on boot
+---
+<code>$ sudo ln -s /home/pi/skronk/skronk/skronk.service /etc/systemd/system/skronk.service</code>\
+<code>$ sudo systemctl enable skronk.service</code>
