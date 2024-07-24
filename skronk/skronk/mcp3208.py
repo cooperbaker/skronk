@@ -30,9 +30,9 @@ class mcp3208():
         self.callback = callback
 
         # channel values
+        self.steps     = 200
         self.value     = [ 0 ] * 8
         self.value_old = [ 0 ] * 8
-        self.steps     = 200
 
         # lowpass filter cascade
         self.y0 = [ 0 ] * 8
@@ -63,8 +63,7 @@ class mcp3208():
         # 0.192 msec + 0.808 sleep = 1 msec or 1kHz for 16 channels or two chips
         # Note: Python is not capable of realtime precison at millisecond
         # intervals, and adc reads occur with a somewhat jittery sample rate.
-        # On a raspberry pi 5, my scope indicates 1kHz is the best read interval
-        # in terms of stability and speed.
+        # On a raspberry pi 5, 1kHz seems to be the best read interval for 2 chips
 
         # open the chip
         self.spi.open( self.bus, self.device )
@@ -99,7 +98,7 @@ class mcp3208():
         # run callbacks based on changed values
         for channel in range( 8 ):
             if self.value[ channel ] != self.value_old[ channel ]:
-                self.callback( channel, self.value[ channel ] )
+                self.callback( channel + 1, self.value[ channel ] )
             self.value_old[ channel ] = self.value[ channel ]
 
     # adc input filter
