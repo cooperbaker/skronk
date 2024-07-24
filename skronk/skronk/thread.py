@@ -29,11 +29,11 @@ class thread():
 
     # run a callback loop with a sleep timer
     def run( self ):
-        start = 0
+        start_time = 0
         while self.spin:
-            start = clock_gettime( CLOCK_MONOTONIC )
+            start_time = clock_gettime( CLOCK_MONOTONIC )
             self.callback()
-            sleep( max( 0, self.sleep - ( clock_gettime( CLOCK_MONOTONIC ) - start ) ) )
+            sleep( max( 0, self.sleep - ( clock_gettime( CLOCK_MONOTONIC ) - start_time ) ) )
 
     # stop thread
     def stop( self ):
