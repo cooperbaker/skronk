@@ -1,0 +1,21 @@
+# start skronk at boot as a persistent systemd service:
+#
+# $ sudo ln -s /home/pi/skronk/skronk/skronk.service /etc/systemd/system/skronk.service
+# $ sudo systemctl enable skronk.service
+#
+# Cooper Baker (c) 2024
+
+[Unit]
+Description=Skronk Script
+After=network.target
+
+[Service]
+User=root
+Type=simple
+Restart=always
+KillMode=process
+WorkingDirectory=/home/pi/skronk
+ExecStart=/usr/bin/python3 /home/pi/skronk/skronk.py
+
+[Install]
+WantedBy=multi-user.target
