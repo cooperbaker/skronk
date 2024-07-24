@@ -13,6 +13,8 @@ from smbus2 import SMBus
 import threading
 from time import sleep, clock_gettime, CLOCK_MONOTONIC
 
+from skronk.char_buf import char_buf
+
 #-------------------------------------------------------------------------------
 # display class
 #-------------------------------------------------------------------------------
@@ -73,24 +75,102 @@ class display():
     LCD_SHIFT_LEFT            = 0x00    #
 
     #---------------------------------------------------------------------------
-    # constructor
-    # display(  'lcd', 16, 2, 10 ) : 16x2 lcd  @ 15fps
-    # display( 'oled', 20, 4, 30 ) : 20x4 oled @ 30fps
-    #                              : 20x4 full frame ≈ 25 msec i2c message
+    # custom glyphs
     #---------------------------------------------------------------------------
+    GLYPH_0         = '\0'
+    GLYPH_0_BYTES   = [ 0b00000 ,
+                        0b01110 ,
+                        0b10001 ,
+                        0b00100 ,
+                        0b01010 ,
+                        0b00000 ,
+                        0b00100 ,
+                        0b00000 ]
+    GLYPH_1         = '\1'
+    GLYPH_1_BYTES   = [ 0b00100 ,
+                        0b11100 ,
+                        0b01100 ,
+                        0b01100 ,
+                        0b11110 ,
+                        0b00000 ,
+                        0b01100 ,
+                        0b11110 ]
+    GLYPH_2         = '\2'
+    GLYPH_2_BYTES   = [ 0b01100 ,
+                        0b11110 ,
+                        0b00110 ,
+                        0b01100 ,
+                        0b11110 ,
+                        0b00000 ,
+                        0b01100 ,
+                        0b11110 ]
+    GLYPH_3         = '\3'
+    GLYPH_3_BYTES   = [ 0b11110 ,
+                        0b00100 ,
+                        0b01110 ,
+                        0b00110 ,
+                        0b11100 ,
+                        0b00000 ,
+                        0b01100 ,
+                        0b11110 ]
+    GLYPH_4         = '\4'
+    GLYPH_4_BYTES   = [ 0b00110 ,
+                        0b01010 ,
+                        0b10110 ,
+                        0b11110 ,
+                        0b00110 ,
+                        0b00000 ,
+                        0b01100 ,
+                        0b11110 ]
+    GLYPH_5         = '\5'
+    GLYPH_5_BYTES   = [ 0b00010 ,
+                        0b00011 ,
+                        0b00010 ,
+                        0b00010 ,
+                        0b00010 ,
+                        0b01110 ,
+                        0b11110 ,
+                        0b01100 ]
+    GLYPH_6         = '\6'
+    GLYPH_6_BYTES   = [ 0b00100 ,
+                        0b01100 ,
+                        0b00100 ,
+                        0b00100 ,
+                        0b01110 ,
+                        0b00000 ,
+                        0b01110 ,
+                        0b11111 ]
+    GLYPH_7         = '\7'
+    GLYPH_7_BYTES   = [ 0b00000 ,
+                        0b00000 ,
+                        0b00000 ,
+                        0b00100 ,
+                        0b00100 ,
+                        0b00000 ,
+                        0b00000 ,
+                        0b00000 ]
 
-    def __init__( self, type, cols, rows, fps ):
+    #---------------------------------------------------------------------------
+    # constructor
+    # display(  'lcd', 16, 2, 10 ) : 16x2 lcd  @ 10fps
+    # display( 'oled', 20, 4, 30 ) : 20x4 oled @ 30fps
+    #                              : 20x4 full frame ≈ 25 msec i2c tx time
+    #---------------------------------------------------------------------------
+    def __init__( self, screen_type, cols, rows, fps ):
 
-        self.type           = type
+        self.run            = True
+        self.update         = False
+        self.type           = screen_type
         self.fps            = 1 / fps
         self.rows           = rows
         self.cols           = cols
+        self.buf            = char_buf( cols, rows )
+        self.buffer         = self.buf
+        self.i2c_addr       = 0
         self.backlight_ctl  = self.LCD_BACKLIGHT_ON
         self.entry_mode_cmd = 0
         self.disp_ctl_cmd   = 0
         self.func_set_cmd   = 0
-        self.buffer         = ' ' * rows * cols
-        self.update         = False
 
         if self.type == self.LCD:
             self.i2c_addr = self.LCD_I2C_ADDR
@@ -99,57 +179,81 @@ class display():
             self.i2c_addr = self.OLED_I2C_ADDR
             self.init_oled()
 
+        self.store_glyph( 0, self.GLYPH_0_BYTES )
+        self.store_glyph( 1, self.GLYPH_1_BYTES )
+        self.store_glyph( 2, self.GLYPH_2_BYTES )
+        self.store_glyph( 3, self.GLYPH_3_BYTES )
+        self.store_glyph( 4, self.GLYPH_4_BYTES )
+        self.store_glyph( 5, self.GLYPH_5_BYTES )
+        self.store_glyph( 6, self.GLYPH_6_BYTES )
+        self.store_glyph( 7, self.GLYPH_7_BYTES )
+
         threading.stack_size( 65536 )
-        self.thread = threading.Thread( target = self.buf_draw ).start()
-
+        threading.Thread( target = self.draw, name='display' ).start()
 
     #---------------------------------------------------------------------------
-    # character buffer draw methods
+    # character buffer methods
     #---------------------------------------------------------------------------
-
-    # buf_write - write a string into the character buffer at ( col, row ) location
-    def buf_write( self, col, row, string ):
-        self.buffer = self.buffer[ 0 : col + row * self.cols ] + string + self.buffer[ col + row * self.cols + len( string ) : len( self.buffer ) ]
+    # set_buffer - set the buffer to use for drawing
+    def set_buffer( self, buffer ):
+        self.buffer = buffer
         self.update = True
 
-    # buf_fill - write a string into the character buffer at ( 0, 0 ) location
-    def buf_fill( self, string ):
-        self.buffer = string + self.buffer[ len( string ) : len( self.buffer ) ]
+    # write - write a string into the character buffer at ( col, row ) location
+    def write( self, col, row, string ):
+        self.buffer.write( col, row, string )
         self.update = True
 
-    # buf_clear - clear the character buffer
-    def buf_clear( self ):
-        self.buffer = ' ' * self.rows * self.cols
+    # clear - clear the character buffer
+    def clear( self ):
+        self.buffer.clear()
         self.update = True
 
-    # buf_draw - character buffer draw callback at fps interval
-    def buf_draw( self ):
-        start = 0
-        while True:
-            start = clock_gettime( CLOCK_MONOTONIC )
+    # draw - character buffer draw thread callback at fps interval
+    def draw( self ):
+        start_time = 0
+        while self.run:
+            start_time = clock_gettime( CLOCK_MONOTONIC )
             if self.update:
                 self.update = False
-                buffer = self.buffer
+                buffer = self.buffer.buffer
+                # 4 row lcd needs interleaved rows
+                if ( self.rows == 4 ) and ( self.type == self.LCD ) :
+                    buffer = buffer[ 0 : 20 ] + buffer[ 40 : 60 ] + buffer[ 20 : 40 ] + buffer[ 60 : 80 ]
                 self.home()
                 for char in buffer:
                     self.data( ord( char ) )
-            sleep( max( 0, self.fps - ( clock_gettime( CLOCK_MONOTONIC ) - start ) ) )
+            sleep( max( 0, self.fps - ( clock_gettime( CLOCK_MONOTONIC ) - start_time ) ) )
+
+
+    # shutdown - stop draw thread and turn off display
+    def shutdown( self ):
+        self.run = False
+        if self.type == 'lcd'  :
+            self.backlight_off()
+        if self.type == 'oled' :
+            self.brightness( 0 )
+        self.clear()
+        self.off()
 
     #---------------------------------------------------------------------------
     # direct draw methods
     #---------------------------------------------------------------------------
 
     # write - write an ascii character (value) to the display
-    def write( self, value ):
+    def write_char( self, value ):
+### HOW TO DO ord() with numpy?
         self.data( ord( value ) )
+### HOW TO DO ord() with numpy?
+
 
     # write a string ( formatting options - https:#mkaz.tech/python-string-format.html )
-    def writeString( self, value ):
+    def write_string( self, value ):
         for char in value:
-            self.write( char )
+            self.write_char( char )
 
     # clear - clear the display
-    def clear( self ):
+    def clear_disp( self ):
         self.cmd( self.LCD_CLEAR_DISPLAY )
         sleep( 0.002 ) # 1.53ms pause
 
@@ -239,10 +343,10 @@ class display():
         self.cmd( self.LCD_ENTRY_MODE |self.entry_mode_cmd )
 
     # store_char - store a custom character in display CGRAM ( address: 0 - 7 )
-    def store_char( self, address, map ):
+    def store_glyph( self, address, map ):
         address &= 0x7
         self.cmd( self.LCD_SET_CGRAM_ADDR | ( address << 3 ) )
-        for i in range( 0, 7 ):
+        for i in range( 8 ):
             self.data( map[ i ] )
 
     # backlight_off - turn the backlight off ( lcd only )
@@ -437,6 +541,7 @@ class display():
         # function set command
         self.func_set_cmd = self.LCD_4_BIT_MODE | self.LCD_1_LINE | self.LCD_5x8_DOTS
         if self.rows > 1: self.func_set_cmd |= self.LCD_2_LINES
+
         self.cmd( self.LCD_FUNCTION_SET | self.func_set_cmd )
 
         # display control - display on, no cursor, no blinking
