@@ -51,9 +51,9 @@ OSC_LCD = '/lcd'
 OSC_CMD = '/cmd'
 
 # output addresses
-OSC_ENC = '/enc/'
 OSC_SW  = '/sw/'
 OSC_ADC = '/adc/'
+
 
 #-------------------------------------------------------------------------------
 # pure data
@@ -139,7 +139,7 @@ def read():
     adc1.read()
     adc2.read()
 
-# create read thread a 1 msec interval
+# create read thread at 1 msec interval
 read_thread = thread( read, 1 )
 
 
