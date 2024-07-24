@@ -5,11 +5,15 @@
 # Cooper Baker (c) 2024
 #-------------------------------------------------------------------------------
 
+# name this process 'skronk'
+with open( f'/proc/self/comm', 'w' ) as f: f.write( 'skronk' )
+
 
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
-from time                       import sleep
+import sys
+import signal
 from skronk.display             import display
 from skronk.encoder             import encoder
 from skronk.pure_data           import pure_data
@@ -20,8 +24,12 @@ from skronk.switch              import switch
 from skronk.thread              import thread
 from skronk.wlan0_ip            import wlan0_ip
 
-import threading
 
+### unfinished:
+from skronk.files import files
+
+dir = files()
+dir.ls( '/home/pi/pd' )
 
 #-------------------------------------------------------------------------------
 # open sound control config
@@ -50,15 +58,16 @@ OSC_ADC = '/adc/'
 #-------------------------------------------------------------------------------
 # pure data
 #-------------------------------------------------------------------------------
-# create pure data object: pure_data( 'path to patches' )
-pd = pure_data( '/home/pi/pd' )
+# create pure data object: pure_data()
+pd = pure_data()
 
 
 #-------------------------------------------------------------------------------
 # display
 #-------------------------------------------------------------------------------
 # create display object: display( lcd/oled, cols, rows, fps )
-disp = display( 'oled', 20, 4, 30 )
+# disp = display( 'oled', 20, 4, 30 )
+disp = display( 'lcd', 20, 4, 10 )
 
 
 #-------------------------------------------------------------------------------
@@ -67,12 +76,14 @@ disp = display( 'oled', 20, 4, 30 )
 # osc message handler callback
 def osc_message( address, *args ):
     if address == OSC_LCD:
-        disp.buf_fill( str( args[ 0 ] ) )
+        disp.write( 0, 0, str( args[ 0 ] ) )
     elif address == OSC_CMD:
         if args[ 0 ] == 'lcd_off':
-            disp.off()
+            # disp.off() # oled
+            disp.backlight_off() # lcd
         elif args[ 0 ] == 'lcd_on':
-            disp.on()
+            # disp.on() # oled
+            disp.backlight_on() # lcd
 
 # create osc server: open_sound_control( in_ip, in_port, out_ip, out_port, message_callback )
 osc = open_sound_control( OSC_IN_IP, OSC_IN_PORT, OSC_OUT_IP, OSC_OUT_PORT, osc_message )
@@ -85,12 +96,9 @@ osc = open_sound_control( OSC_IN_IP, OSC_IN_PORT, OSC_OUT_IP, OSC_OUT_PORT, osc_
 def sw_event( channel, value ):
     osc.send( OSC_SW + str( channel ), value )
     print( 'sw ' + str( channel ) + ' ' + str( value ) )
-    if( channel == 5 and value == 1 ):
-        x = 0
-        # pd.stop()
 
  # create switch object: switch( [ pin_numbers ], event_callback )
-sw = switch( [ S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12 ], sw_event )
+sw = switch( [ S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, S15, S16, S17 ], sw_event )
 
 
 #-------------------------------------------------------------------------------
@@ -99,8 +107,16 @@ sw = switch( [ S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12 ], sw_event )
 # adc event handler callback - edit this function to customize adc behavior
 def adc_event( channel, value ):
     osc.send( OSC_ADC + str( channel ), value )
-    disp.buf_write( 6, 3, '         ' )
-    disp.buf_write( 6, 3, str( channel ) + ':' + str( value ) )
+    disp.write( 6, 2, '         ' )
+    disp.write( 6, 2, str( channel ) + ':' + str( value ) )
+
+    # print( 'adc ' + str( channel ) + ' ' + str( value ) )
+
+    if( channel == 14 and value == 1 ):
+        pd.run( '/home/pi/pd/test.pd' )
+    if( channel == 14 and value == 0 ):
+        pd.stop()
+    return
 
 # adc1 event handler callback
 def adc1_event( channel, value ):
@@ -139,23 +155,54 @@ def events():
 event_thread = thread( events, 1 )
 
 
+#-------------------------------------------------------------------------------
+# shutdown
+#-------------------------------------------------------------------------------
+def shutdown():
+    osc.server.shutdown()
+    event_thread.stop()
+    read_thread.stop()
+    pd.stop()
+    disp.shutdown()
+    sys.exit()
+
+# signal callback
+def sig( signal, frame ):
+    if signal ==  2: sig_name = 'SIGINT'
+    if signal == 15: sig_name = 'SIGTERM'
+    print( '\n\n' + sig_name + ' Received - Shutting Down...\n' )
+    shutdown()
+
+# register signal handler callbakcks
+signal.signal( signal.SIGTERM, sig )
+signal.signal( signal.SIGINT,  sig )
+
 
 #-------------------------------------------------------------------------------
 # main - main function
 #-------------------------------------------------------------------------------
+
 def main():
-
     print( ' \n' )
-    print( 'Skronk Hat @ ' + OSC_IN_IP )
+    print( 'Skronk Script @ ' + OSC_IN_IP )
     print( ' \n' )
 
-    disp.fade_blink( 0 )
-    disp.buf_write( 0, 0, OSC_IN_IP )
+    # disp.fade_blink( 0 )
+    disp.write( 0, 0, OSC_IN_IP )
+    pd.run( '/home/pi/pd/test.pd' )
 
-    pd.run( 'test.pd' )
+    disp.write( 19, 3, disp.GLYPH_5 )
 
-    while True:
-        sleep( 0.1 )
+    # from time import sleep
+    # values = [ 0 ] * 16
+    # while True:
+    #     for i in range( 8 ):
+    #         values[ i     ] = adc1.value[ i ]
+    #         values[ i + 8 ] = adc2.value[ i ]
+    #     print('{0:>4} | {1:>4} | {2:>4} | {3:>4} | {4:>4} | {5:>4} | {6:>4} | {7:>4} | {8:>4} | {9:>4} | {10:>4} | {11:>4} | {12:>4} | {13:>4} | {14:>4} | {15:>4}'.format( * values ) )
+    #     sleep( 0.001 )
+
+
 
 main()
 
