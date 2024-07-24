@@ -156,11 +156,11 @@ class display():
     # display( 'oled', 20, 4, 30 ) : 20x4 oled @ 30fps
     #                              : 20x4 full frame ≈ 25 msec i2c tx time
     #---------------------------------------------------------------------------
-    def __init__( self, screen_type, cols, rows, fps ):
+    def __init__( self, type, cols, rows, fps ):
 
         self.run            = True
         self.update         = False
-        self.type           = screen_type
+        self.type           = type
         self.fps            = 1 / fps
         self.rows           = rows
         self.cols           = cols
@@ -189,7 +189,7 @@ class display():
         self.store_glyph( 7, self.GLYPH_7_BYTES )
 
         threading.stack_size( 65536 )
-        threading.Thread( target = self.draw, name='display' ).start()
+        threading.Thread( target = self.draw, name = 'display' ).start()
 
     #---------------------------------------------------------------------------
     # character buffer methods
