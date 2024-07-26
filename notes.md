@@ -1,35 +1,61 @@
+# skronk notes
+
+&nbsp;
 ### sudo without password
 ---
 - edit the sudoers file\
-<code>$ sudo pico /etc/sudoers</code>
-- add this line at the end:\
-<code>pi    ALL=(ALL) NOPASSWD: ALL</code>
+  ```$ sudo pico /etc/sudoers```
 
+- add this line at the end\
+  ```pi    ALL=(ALL) NOPASSWD: ALL```
 
+&nbsp;
 ### update raspberry pi os
 ---
-<code>$ sudo apt update</code>\
-<code>$ sudo apt upgrade</code>
+- upgrade to latest packages\
+  ```$ sudo apt update```\
+  ```$ sudo apt upgrade```
 
-
-### cpu and memory monitor
----
-<code>$ sudo htop</code>
-
-
+&nbsp;
 ### enable spi & i2c
 ---
-<code>$ sudo raspi-config</code>
-- Interface Options => SPI => Yes
-- Interface Options => I2C => Yes
+- run raspberry pi config\
+  ```$ sudo raspi-config```
 
+- change settings
+  - Interface Options &rarr; SPI &rarr; Yes
+  - Interface Options &rarr; I2C &rarr; Yes
 
+&nbsp;
 ### add python smbus api for i2c support
 ---
-<code>$ sudo apt install python3-smbus</code>
+- install smbus package\
+  ```$ sudo apt install python3-smbus```
 
-
-### start skronk on boot
+&nbsp;
+### create system skronk service
 ---
-<code>$ sudo ln -s /home/pi/skronk/skronk/skronk.service /etc/systemd/system/skronk.service</code>\
-<code>$ sudo systemctl enable skronk.service</code>
+  - link skronk.service file\
+    ```$ sudo ln -s /home/pi/skronk/skronk/skronk.service /etc/systemd/system/skronk.service```
+
+  - enable the service at boot\
+    ```$ sudo systemctl enable skronk.service```
+
+  - commands:
+    - display service status\
+      ```$ sudo systemctl status skronk.service```
+
+    - start now and always run at boot\
+      ```$ sudo systemctl start skronk.service```
+
+    - restart now and always run at boot\
+      ```$ sudo systemctl restart skronk.service```
+
+    - stop now and do not run again\
+      ```$ sudo systemctl stop skronk.service```
+
+&nbsp;
+### cpu and memory monitor
+---
+- terminal-based process manager\
+  ```$ sudo htop```
