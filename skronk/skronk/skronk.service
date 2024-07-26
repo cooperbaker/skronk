@@ -1,9 +1,20 @@
-# start skronk at boot as a persistent systemd service:
+#-------------------------------------------------------------------------------
+# skronk.service
+# Systemd service configuration file for skronk script
 #
+# Start skronk at boot as a persistent systemd service:
 # $ sudo ln -s /home/pi/skronk/skronk/skronk.service /etc/systemd/system/skronk.service
 # $ sudo systemctl enable skronk.service
 #
+# Commands:
+# $ sudo systemctl status skronk.service  - display sercvice status
+# $ sudo systemctl start skronk.service   - start now and always run at boot
+# $ sudo systemctl restart skronk.service - restart now and always run at boot
+# $ sudo systemctl stop skronk.service    - stop now and do not run again
+#
 # Cooper Baker (c) 2024
+#-------------------------------------------------------------------------------
+
 
 [Unit]
 Description=Skronk Script
@@ -19,3 +30,8 @@ ExecStart=/usr/bin/python3 /home/pi/skronk/skronk.py
 
 [Install]
 WantedBy=multi-user.target
+
+
+#-------------------------------------------------------------------------------
+# eof
+#-------------------------------------------------------------------------------
