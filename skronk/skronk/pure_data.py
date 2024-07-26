@@ -10,9 +10,9 @@
 # imports
 #-------------------------------------------------------------------------------
 import os
-from signal import SIGTERM
+from signal     import SIGTERM
 from subprocess import Popen
-from pathlib import Path
+from pathlib    import Path
 
 
 #-------------------------------------------------------------------------------
