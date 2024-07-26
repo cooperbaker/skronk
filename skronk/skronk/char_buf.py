@@ -13,9 +13,9 @@ class char_buf():
 
     # constructor
     def __init__( self, cols, rows ):
-        self.cols = cols
-        self.rows = rows
-        self.size = self.cols * self.rows
+        self.cols   = cols
+        self.rows   = rows
+        self.size   = self.cols * self.rows
         self.buffer = ' ' * self.size
 
     # clear - fill the character buffer with spaces
