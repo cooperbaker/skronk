@@ -13,8 +13,7 @@
 ### update raspberry pi os
 ---
 - upgrade to latest packages\
-  ```$ sudo apt update```\
-  ```$ sudo apt upgrade```
+  ```$ sudo apt update && sudo apt upgrade```
 
 &nbsp;
 ### enable spi & i2c
@@ -27,10 +26,16 @@
   - Interface Options &rarr; I2C &rarr; Yes
 
 &nbsp;
-### add python smbus api for i2c support
+### add python smbus api
 ---
-- install smbus package\
+- install smbus package for i2c support\
   ```$ sudo apt install python3-smbus```
+
+&nbsp;
+### copy skronk library
+---
+- run the upload script\
+  ```$ ./upload.command```
 
 &nbsp;
 ### create system skronk service
