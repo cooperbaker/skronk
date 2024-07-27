@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# rsync python files onto the raspberry pi
+# rsync skronk files onto the raspberry pi
 
 USERNAME="pi"
 HOSTNAME="skronk"
