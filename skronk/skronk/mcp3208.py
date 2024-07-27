@@ -52,6 +52,15 @@ class mcp3208():
         self.clip_max = 4096 - self.clip_amt
         self.clip_rng = self.clip_max - self.clip_min
 
+        # raw adc registers
+        self.adc0 = [ 0 ] * 3
+        self.adc1 = [ 0 ] * 3
+        self.adc2 = [ 0 ] * 3
+        self.adc3 = [ 0 ] * 3
+        self.adc4 = [ 0 ] * 3
+        self.adc5 = [ 0 ] * 3
+        self.adc6 = [ 0 ] * 3
+        self.adc7 = [ 0 ] * 3
 
     # read and filter adc values - polling thread
     def read( self ):
@@ -70,28 +79,28 @@ class mcp3208():
         self.spi.max_speed_hz = 2000000
 
         # request three bytes of data from the adc channel conversion registers
-        adc0 = self.spi.xfer2( [ 6 | ( 0 & 4 ) >> 2, ( 0 & 3 ) << 6, 0 ] )
-        adc1 = self.spi.xfer2( [ 6 | ( 1 & 4 ) >> 2, ( 1 & 3 ) << 6, 0 ] )
-        adc2 = self.spi.xfer2( [ 6 | ( 2 & 4 ) >> 2, ( 2 & 3 ) << 6, 0 ] )
-        adc3 = self.spi.xfer2( [ 6 | ( 3 & 4 ) >> 2, ( 3 & 3 ) << 6, 0 ] )
-        adc4 = self.spi.xfer2( [ 6 | ( 4 & 4 ) >> 2, ( 4 & 3 ) << 6, 0 ] )
-        adc5 = self.spi.xfer2( [ 6 | ( 5 & 4 ) >> 2, ( 5 & 3 ) << 6, 0 ] )
-        adc6 = self.spi.xfer2( [ 6 | ( 6 & 4 ) >> 2, ( 6 & 3 ) << 6, 0 ] )
-        adc7 = self.spi.xfer2( [ 6 | ( 7 & 4 ) >> 2, ( 7 & 3 ) << 6, 0 ] )
+        self.adc0 = self.spi.xfer2( [ 6 | ( 0 & 4 ) >> 2, ( 0 & 3 ) << 6, 0 ] )
+        self.adc1 = self.spi.xfer2( [ 6 | ( 1 & 4 ) >> 2, ( 1 & 3 ) << 6, 0 ] )
+        self.adc2 = self.spi.xfer2( [ 6 | ( 2 & 4 ) >> 2, ( 2 & 3 ) << 6, 0 ] )
+        self.adc3 = self.spi.xfer2( [ 6 | ( 3 & 4 ) >> 2, ( 3 & 3 ) << 6, 0 ] )
+        self.adc4 = self.spi.xfer2( [ 6 | ( 4 & 4 ) >> 2, ( 4 & 3 ) << 6, 0 ] )
+        self.adc5 = self.spi.xfer2( [ 6 | ( 5 & 4 ) >> 2, ( 5 & 3 ) << 6, 0 ] )
+        self.adc6 = self.spi.xfer2( [ 6 | ( 6 & 4 ) >> 2, ( 6 & 3 ) << 6, 0 ] )
+        self.adc7 = self.spi.xfer2( [ 6 | ( 7 & 4 ) >> 2, ( 7 & 3 ) << 6, 0 ] )
 
         # close the chip
         self.spi.close()
 
         # assemble and filter returned adc data
         # value = ( ( ( adc[ 1 ] & 15 ) << 8 ) + adc[ 2 ] ) & 0x0FFF
-        self.value[ 0 ] = self.filter( 0, ( ( ( adc0[ 1 ] & 15 ) << 8 ) + adc0[ 2 ] ) & 0x0FFF )
-        self.value[ 1 ] = self.filter( 1, ( ( ( adc1[ 1 ] & 15 ) << 8 ) + adc1[ 2 ] ) & 0x0FFF )
-        self.value[ 2 ] = self.filter( 2, ( ( ( adc2[ 1 ] & 15 ) << 8 ) + adc2[ 2 ] ) & 0x0FFF )
-        self.value[ 3 ] = self.filter( 3, ( ( ( adc3[ 1 ] & 15 ) << 8 ) + adc3[ 2 ] ) & 0x0FFF )
-        self.value[ 4 ] = self.filter( 4, ( ( ( adc4[ 1 ] & 15 ) << 8 ) + adc4[ 2 ] ) & 0x0FFF )
-        self.value[ 5 ] = self.filter( 5, ( ( ( adc5[ 1 ] & 15 ) << 8 ) + adc5[ 2 ] ) & 0x0FFF )
-        self.value[ 6 ] = self.filter( 6, ( ( ( adc6[ 1 ] & 15 ) << 8 ) + adc6[ 2 ] ) & 0x0FFF )
-        self.value[ 7 ] = self.filter( 7, ( ( ( adc7[ 1 ] & 15 ) << 8 ) + adc7[ 2 ] ) & 0x0FFF )
+        self.value[ 0 ] = self.filter( 0, ( ( ( self.adc0[ 1 ] & 15 ) << 8 ) + self.adc0[ 2 ] ) & 0x0FFF )
+        self.value[ 1 ] = self.filter( 1, ( ( ( self.adc1[ 1 ] & 15 ) << 8 ) + self.adc1[ 2 ] ) & 0x0FFF )
+        self.value[ 2 ] = self.filter( 2, ( ( ( self.adc2[ 1 ] & 15 ) << 8 ) + self.adc2[ 2 ] ) & 0x0FFF )
+        self.value[ 3 ] = self.filter( 3, ( ( ( self.adc3[ 1 ] & 15 ) << 8 ) + self.adc3[ 2 ] ) & 0x0FFF )
+        self.value[ 4 ] = self.filter( 4, ( ( ( self.adc4[ 1 ] & 15 ) << 8 ) + self.adc4[ 2 ] ) & 0x0FFF )
+        self.value[ 5 ] = self.filter( 5, ( ( ( self.adc5[ 1 ] & 15 ) << 8 ) + self.adc5[ 2 ] ) & 0x0FFF )
+        self.value[ 6 ] = self.filter( 6, ( ( ( self.adc6[ 1 ] & 15 ) << 8 ) + self.adc6[ 2 ] ) & 0x0FFF )
+        self.value[ 7 ] = self.filter( 7, ( ( ( self.adc7[ 1 ] & 15 ) << 8 ) + self.adc7[ 2 ] ) & 0x0FFF )
 
     # detect events and run callbacks - event thread
     def events( self ):
@@ -105,7 +114,7 @@ class mcp3208():
     def filter( self, channel, x ):
 
         # iir lowpass filter cascade : y = y1 + a * ( x - y1 )
-        self.y0[ channel ] = self.y0[ channel ] + self.a * ( x                  - self.y0[ channel ] )
+        self.y0[ channel ] = self.y0[ channel ] + self.a * (                  x - self.y0[ channel ] )
         self.y1[ channel ] = self.y1[ channel ] + self.a * ( self.y0[ channel ] - self.y1[ channel ] )
         self.y2[ channel ] = self.y2[ channel ] + self.a * ( self.y1[ channel ] - self.y2[ channel ] )
         self.y3[ channel ] = self.y3[ channel ] + self.a * ( self.y2[ channel ] - self.y3[ channel ] )
