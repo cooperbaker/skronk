@@ -5,54 +5,37 @@
 # Cooper Baker (c) 2024
 #-------------------------------------------------------------------------------
 
-# name this process 'skronk'
-with open( f'/proc/self/comm', 'w' ) as f: f.write( 'skronk' )
-
 
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
-import sys
-import signal
 from skronk.display             import display
 from skronk.encoder             import encoder
 from skronk.pure_data           import pure_data
+from skronk.rainbow             import rainbow
 from skronk.mcp3208             import mcp3208
 from skronk.open_sound_control  import open_sound_control
 from skronk.pins                import *
 from skronk.switch              import switch
 from skronk.thread              import thread
-from skronk.wlan0_ip            import wlan0_ip
+from skronk.system              import system
 
 
-### unfinished:
+#-------------------------------------------------------------------------------
+# process name
+#-------------------------------------------------------------------------------
+with open( f'/proc/self/comm', 'w' ) as f: f.write( 'skronk' )
+
+
+#-------------------------------------------------------------------------------
+# dev sandbox area
+#-------------------------------------------------------------------------------
 from skronk.files import files
-
 dir = files()
-dir.ls( '/home/pi/pd' )
+# dir.ls( '/home/pi/skronk/skronk' )
 
-#-------------------------------------------------------------------------------
-# open sound control config
-#-------------------------------------------------------------------------------
-# network
-# OSC_IN_IP    = wlan0_ip()
-# OSC_IN_PORT  = 1000
-# OSC_OUT_IP   = '10.0.0.3'
-# OSC_OUT_PORT = 1001
-
-# internal
-OSC_IN_IP    = '127.0.0.1'
-OSC_IN_PORT  = 1000
-OSC_OUT_IP   = '127.0.0.1'
-OSC_OUT_PORT = 1001
-
-# input addresses
-OSC_LCD = '/lcd'
-OSC_CMD = '/cmd'
-
-# output addresses
-OSC_SW  = '/sw/'
-OSC_ADC = '/adc/'
+from skronk.menu import menu
+sk_menu = menu()
 
 
 #-------------------------------------------------------------------------------
@@ -63,30 +46,45 @@ pd = pure_data()
 
 
 #-------------------------------------------------------------------------------
+# rnbo
+#-------------------------------------------------------------------------------
+# create rnbo object: rainbow()
+rnbo = rainbow()
+
+
+#-------------------------------------------------------------------------------
 # display
 #-------------------------------------------------------------------------------
 # create display object: display( lcd/oled, cols, rows, fps )
-# disp = display( 'oled', 20, 4, 30 )
-disp = display( 'lcd', 20, 4, 10 )
+disp = display( 'oled', 20, 4, 30 )
+# disp = display( 'lcd', 20, 4, 10 )
 
 
 #-------------------------------------------------------------------------------
 # open sound control
 #-------------------------------------------------------------------------------
+# input addresses
+OSC_DISP = '/disp' # display
+OSC_CMD  = '/cmd'  # command
+
+# output addresses
+OSC_SW  = '/sw/'    # switches
+OSC_ADC = '/adc/'   # analog to digital converters
+
 # osc message handler callback
 def osc_message( address, *args ):
-    if address == OSC_LCD:
-        disp.write( 0, 0, str( args[ 0 ] ) )
-    elif address == OSC_CMD:
-        if args[ 0 ] == 'lcd_off':
-            # disp.off() # oled
-            disp.backlight_off() # lcd
-        elif args[ 0 ] == 'lcd_on':
-            # disp.on() # oled
-            disp.backlight_on() # lcd
 
-# create osc server: open_sound_control( in_ip, in_port, out_ip, out_port, message_callback )
-osc = open_sound_control( OSC_IN_IP, OSC_IN_PORT, OSC_OUT_IP, OSC_OUT_PORT, osc_message )
+    # turn rnbo @meta {'osc':'/messages'} into normal osc messages
+    address, *args = rnbo.osc_message( address, *args )
+
+    # route osc messages to command handlers
+    if address == OSC_DISP :
+        disp.command( *args )
+    elif address == OSC_CMD :
+        skronk.command( *args )
+
+# create osc server: open_sound_control( message_callback )
+osc = open_sound_control( osc_message )
 
 
 #-------------------------------------------------------------------------------
@@ -95,7 +93,19 @@ osc = open_sound_control( OSC_IN_IP, OSC_IN_PORT, OSC_OUT_IP, OSC_OUT_PORT, osc_
 # switch event handler callback - edit this function to customize switch behavior
 def sw_event( channel, value ):
     osc.send( OSC_SW + str( channel ), value )
-    print( 'sw ' + str( channel ) + ' ' + str( value ) )
+
+    # dev sandbox --------------------------------------------------------------
+    if ( channel == 17 ) and ( value ):
+        disp.set_buffer( sk_menu.main.buffer )
+    else:
+        disp.set_buffer( disp.buffer )
+    if( channel == 7 ) and value :
+        osc.send( '/rnbo/inst/control/unload', [ 'i', -1 ] )
+        print( 'unload' )
+    if( channel == 8 ) and value :
+        osc.send( '/rnbo/inst/control/load', [ 0, 'osc_messages' ]  )
+        print( 'load' )
+    # dev sandbox end ----------------------------------------------------------
 
  # create switch object: switch( [ pin_numbers ], event_callback )
 sw = switch( [ S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, S15, S16, S17 ], sw_event )
@@ -107,16 +117,6 @@ sw = switch( [ S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, S15,
 # adc event handler callback - edit this function to customize adc behavior
 def adc_event( channel, value ):
     osc.send( OSC_ADC + str( channel ), value )
-    disp.write( 6, 2, '         ' )
-    disp.write( 6, 2, str( channel ) + ':' + str( value ) )
-
-    # print( 'adc ' + str( channel ) + ' ' + str( value ) )
-
-    if( channel == 14 and value == 1 ):
-        pd.run( '/home/pi/pd/test.pd' )
-    if( channel == 14 and value == 0 ):
-        pd.stop()
-    return
 
 # adc1 event handler callback
 def adc1_event( channel, value ):
@@ -134,75 +134,51 @@ adc2 = mcp3208( 0, 1, adc2_event )
 #-------------------------------------------------------------------------------
 # read thread
 #-------------------------------------------------------------------------------
-def read():
+def read_thread():
     sw.read()
     adc1.read()
     adc2.read()
 
 # create read thread at 1 msec interval
-read_thread = thread( read, 1 )
+read = thread( read_thread, 1 )
 
 
 #-------------------------------------------------------------------------------
 # event thread
 #-------------------------------------------------------------------------------
-def events():
+def event_thread():
     sw.events()
     adc1.events()
     adc2.events()
 
 # create event thread at 1 msec interval
-event_thread = thread( events, 1 )
+event = thread( event_thread, 1 )
 
 
 #-------------------------------------------------------------------------------
-# shutdown
+# system
 #-------------------------------------------------------------------------------
-def shutdown():
-    osc.server.shutdown()
-    event_thread.stop()
-    read_thread.stop()
-    pd.stop()
-    disp.shutdown()
-    sys.exit()
-
-# signal callback
-def sig( signal, frame ):
-    if signal ==  2: sig_name = 'SIGINT'
-    if signal == 15: sig_name = 'SIGTERM'
-    print( '\n\n' + sig_name + ' Received - Shutting Down...\n' )
-    shutdown()
-
-# register signal handler callbakcks
-signal.signal( signal.SIGTERM, sig )
-signal.signal( signal.SIGINT,  sig )
+# create system object - system( skronk objects )
+skronk = system( osc, disp, pd, rnbo, read, event )
 
 
 #-------------------------------------------------------------------------------
-# main - main function
+# main
 #-------------------------------------------------------------------------------
-
 def main():
     print( ' \n' )
-    print( 'Skronk Script @ ' + OSC_IN_IP )
+    print( 'Skronk @ ' + skronk.wlan0_ip() + ':' + str( osc.in_port ) )
     print( ' \n' )
 
-    # disp.fade_blink( 0 )
-    disp.write( 0, 0, OSC_IN_IP )
-    pd.run( '/home/pi/pd/test.pd' )
+    # ask rnbo to send this script osc messages
+    osc.send( '/rnbo/listeners/add', osc.in_ip + ':' + str( osc.in_port ) )
 
-    disp.write( 19, 3, disp.GLYPH_5 )
-
-    # from time import sleep
-    # values = [ 0 ] * 16
-    # while True:
-    #     for i in range( 8 ):
-    #         values[ i     ] = adc1.value[ i ]
-    #         values[ i + 8 ] = adc2.value[ i ]
-    #     print('{0:>4} | {1:>4} | {2:>4} | {3:>4} | {4:>4} | {5:>4} | {6:>4} | {7:>4} | {8:>4} | {9:>4} | {10:>4} | {11:>4} | {12:>4} | {13:>4} | {14:>4} | {15:>4}'.format( * values ) )
-    #     sleep( 0.001 )
-
-
+    disp.write(  2, 1, 'Skronk ' + chr( 0b10100000 ) )
+    disp.write(  2, 2, skronk.wlan0_ip() + ':' + str( osc.in_port ) )
+    disp.write(  0, 0, chr( 0b10010000 ) )
+    disp.write( 19, 0, chr( 0b10010000 ) )
+    disp.write(  0, 3, chr( 0b10010000 ) )
+    disp.write( 19, 3, chr( 0b10010000 ) )
 
 main()
 
