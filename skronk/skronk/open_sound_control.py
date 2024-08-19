@@ -20,28 +20,34 @@ from pythonosc            import osc_server
 #-------------------------------------------------------------------------------
 class open_sound_control():
 
+    # port config
+    rnbo_port = 1234
+    in_port   = 1235
+    pd_port   = 1236
+    in_ip     = '127.0.0.1'
+    out_ip    = in_ip
+
     #constructor
-    def __init__( self, in_ip, in_port, out_ip, out_port, message_callback ):
+    def __init__( self, message_callback ):
 
-        # network info
-        self.out_ip   = out_ip
-        self.out_port = out_port
-        self.in_ip    = in_ip
-        self.in_port  = in_port
-        self.message  = message_callback
+        self.message = message_callback
 
-        # client
-        self.client = udp_client.SimpleUDPClient( self.out_ip, self.out_port )
+        # clients
+        self.client_pd   = udp_client.SimpleUDPClient( self.out_ip, self.pd_port )
+        self.client_rnbo = udp_client.SimpleUDPClient( self.out_ip, self.rnbo_port )
 
         # server
         self.dispatcher = Dispatcher()
         self.dispatcher.set_default_handler( self.message )
         self.server     = osc_server.ThreadingOSCUDPServer( ( self.in_ip, self.in_port ), self.dispatcher )
-        self.thread     = threading.Thread( target = self.server.serve_forever ).start()
+
+        threading.stack_size( 65536 )
+        threading.Thread( target = self.server.serve_forever ).start()
 
     # send a message
     def send( self, addr, val ):
-        self.client.send_message( addr, val )
+        self.client_pd.send_message( addr, val )
+        self.client_rnbo.send_message( addr, val )
 
 
 #-------------------------------------------------------------------------------
