@@ -3,17 +3,19 @@
 # I2C driver for PCA8574 + HD44780 lcd or US2066 oled character displays
 #
 # Cooper Baker (c) 2024
+#
+# pylint: disable = line-too-long
 #-------------------------------------------------------------------------------
 
 
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
-from smbus2 import SMBus
 import threading
 from time import sleep, clock_gettime, CLOCK_MONOTONIC
-
+from smbus2 import SMBus
 from skronk.char_buf import char_buf
+
 
 #-------------------------------------------------------------------------------
 # display class
@@ -164,8 +166,8 @@ class display():
         self.fps            = 1 / fps
         self.rows           = rows
         self.cols           = cols
-        self.buf            = char_buf( cols, rows )
-        self.buffer         = self.buf
+        self.buffer         = char_buf( cols, rows )
+        self.draw_buffer    = self.buffer
         self.i2c_addr       = 0
         self.backlight_ctl  = self.LCD_BACKLIGHT_ON
         self.entry_mode_cmd = 0
@@ -191,12 +193,52 @@ class display():
         threading.stack_size( 65536 )
         threading.Thread( target = self.draw, name = 'display' ).start()
 
+    # command - command handler
+    def command( self, *args ):
+        if     args[ 0 ] == 'string':   # string 0 0 info                   ~ write info at ( column 0, row 0 )
+            if args[ 1 ] == 'clear' :   # string clear 10 0 0 info          ~ clear 10 spaces at ( 0, 0 ) then write info
+                self.write( int( args[ 3 ] ), int( args[ 4 ] ), ' ' * int( args[ 2 ] ) )
+                self.write( int( args[ 3 ] ), int( args[ 4 ] ), ' '.join( map( str, args[ 5 : ] ) ) )
+            else:
+                self.write( int( args[ 1 ] ), int( args[ 2 ] ), ' '.join( map( str, args[ 3 : ] ) ) )
+        elif   args[ 0 ] == 'int'   :   # int 0 0 label i                   ~ write label and int at ( 0, 0 )
+            if args[ 1 ] == 'clear' :   # int clear 10 0 0 label i          ~ clear 10 spaces at ( 0, 0 ) then write label and int
+                self.write( int( args[ 3 ] ), int( args[ 4 ] ), ' ' * int( args[ 2 ] ) )
+                self.write( int( args[ 3 ] ), int( args[ 4 ] ), ' '.join( map( str, args[ 5 : -1 ] ) ) + ' {:.0f}'.format( args[ -1 ] ) )
+            else:
+                self.write( int( args[ 1 ] ), int( args[ 2 ] ), ' '.join( map( str, args[ 3 : -1 ] ) ) + ' {:.0f}'.format( args[ -1 ] ) )
+        elif   args[ 0 ] == 'float' :   # float 0 0 label f                 ~ write label and float at ( 0, 0 )
+            if args[ 1 ] == 'clear' :   # float clear 10 0 0 label f        ~ clear 10 spaces at ( 0, 0 ) then write label and float
+                self.write( int( args[ 3 ] ), int( args[ 4 ] ), ' ' * int( args[ 2 ] ) )
+                self.write( int( args[ 3 ] ), int( args[ 4 ] ), ' '.join( map( str, args[ 5 : -1 ] ) ) + ' {:.3f}'.format( args[ -1 ] ) )
+            else:
+                self.write( int( args[ 1 ] ), int( args[ 2 ] ), ' '.join( map( str, args[ 3 : -1 ] ) ) + ' {:.3f}'.format( args[ -1 ] ) )
+        elif   args[ 0 ] == 'list'  :   # list 0 0 a b c i                  ~ write item i at ( 0, 0 )
+            if args[ 1 ] == 'clear' :   # list clear 10 0 0 a c b i         ~ clear 10 spaces at ( 0, 0 ) then write item i
+                self.write( int( args[ 3 ] ), int( args[ 4 ] ), ' ' * int( args[ 2 ] ) )
+                self.write( int( args[ 3 ] ), int( args[ 4 ] ), str( args[ int( args[ -1 ] ) + 5 ] ) )
+            else:
+                self.write( int( args[ 1 ] ), int( args[ 2 ] ), str( args[ int( args[ -1 ] ) + 3 ] ) )
+        elif   args[ 0 ] == 'format':   # format 3.1f 0 0 label n           ~ write label and formatted number at ( 0, 0 )
+            if args[ 1 ] == 'clear' :   # format clear 3.1f 10 0 0 label n  ~ clear 10 spaces at ( 0, 0 ) then write label and formatted number
+                self.write( int( args[ 4 ] ), int( args[ 5 ] ), ' ' * int( args[ 3 ] ) )
+                self.write( int( args[ 4 ] ), int( args[ 5 ] ), ' '.join( map( str, args[ 6 : -1 ] ) ) + ( ' {:' + args[ 2 ] + '}' ).format( args[ -1 ] ) )
+            else:
+                self.write( int( args[ 2 ] ), int( args[ 3 ] ), ' '.join( map( str, args[ 4 : -1 ] ) ) + ( ' {:' + args[ 1 ] + '}' ).format( args[ -1 ] ) )
+        elif args[ 0 ] == 'clear'   :   # clear the display
+            self.clear()
+        elif args[ 0 ] == 'off'     :   # turn off the display
+            self.off()
+        elif args[ 0 ] == 'on'      :   # turn on the display
+            self.on()
+
+
     #---------------------------------------------------------------------------
     # character buffer methods
     #---------------------------------------------------------------------------
-    # set_buffer - set the buffer to use for drawing
+    # set_buffer - set the char_buf to draw to the screen (internal or external)
     def set_buffer( self, buffer ):
-        self.buffer = buffer
+        self.draw_buffer = buffer
         self.update = True
 
     # write - write a string into the character buffer at ( col, row ) location
@@ -216,7 +258,7 @@ class display():
             start_time = clock_gettime( CLOCK_MONOTONIC )
             if self.update:
                 self.update = False
-                buffer = self.buffer.buffer
+                buffer = self.draw_buffer.buffer
                 # 4 row lcd needs interleaved rows
                 if ( self.rows == 4 ) and ( self.type == self.LCD ) :
                     buffer = buffer[ 0 : 20 ] + buffer[ 40 : 60 ] + buffer[ 20 : 40 ] + buffer[ 60 : 80 ]
@@ -224,7 +266,6 @@ class display():
                 for char in buffer:
                     self.data( ord( char ) )
             sleep( max( 0, self.fps - ( clock_gettime( CLOCK_MONOTONIC ) - start_time ) ) )
-
 
     # shutdown - stop draw thread and turn off display
     def shutdown( self ):
@@ -236,16 +277,14 @@ class display():
         self.clear()
         self.off()
 
+
     #---------------------------------------------------------------------------
     # direct draw methods
     #---------------------------------------------------------------------------
 
     # write - write an ascii character (value) to the display
     def write_char( self, value ):
-### HOW TO DO ord() with numpy?
-        self.data( ord( value ) )
-### HOW TO DO ord() with numpy?
-
+        self.data( ord( value ) ) # maybe do ord() with numpy?
 
     # write a string ( formatting options - https:#mkaz.tech/python-string-format.html )
     def write_string( self, value ):
@@ -263,13 +302,13 @@ class display():
 
     # move - move cursor to ( col, row )
     def move( self, col, row ):
-        if( row > self.rows ):
+        if row > self.rows :
             row = self.rows
-        if( self.rows <= 2 ):
+        if self.rows <= 2 :
             row_offset = [ 0x00, 0x40 ]
             self.cmd( self.LCD_SET_DDRAM_ADDR | ( col + row_offset[ row ] ) )
         else:
-            if( self.type == self.LCD ):
+            if self.type == self.LCD :
                 row_offset = [ 0x00, 0x40, 0x14, 0x54 ]
                 self.cmd( self.LCD_SET_DDRAM_ADDR | ( col + row_offset[ row ] ) )
             else:
@@ -278,11 +317,15 @@ class display():
 
     # off - display off
     def off( self ):
+        if self.type == self.LCD :
+            self.backlight_off()
         self.disp_ctl_cmd &= ~self.LCD_DISPLAY_ON
         self.cmd( self.LCD_DISPLAY_CONTROL | self.disp_ctl_cmd )
 
     # on - display on
     def on( self ):
+        if self.type == self.LCD :
+            self.backlight_on()
         self.disp_ctl_cmd |= self.LCD_DISPLAY_ON
         self.cmd( self.LCD_DISPLAY_CONTROL | self.disp_ctl_cmd )
 
@@ -387,19 +430,20 @@ class display():
         self.cmd( self.OLED_FADE_OFF )
         self.oled_cmd_stop()
 
-    # fade_once - turn on fade once ( rate: 0 - 15 )
+    # fade_once - turn on fade once ( rate: 0 - 15 ) ( oled only )
     def fade_once( self, rate ):
         self.oled_cmd_start()
         self.cmd( self.OLED_SET_FADE )
         self.cmd( self.OLED_FADE_ON | ( 0x0f & rate ) )
         self.oled_cmd_stop()
 
-    # fade_blink - turn on fade blink ( rate: 0 - 15 )
+    # fade_blink - turn on fade blink ( rate: 0 - 15 ) ( oled only )
     def fade_blink( self, rate ):
         self.oled_cmd_start()
         self.cmd( self.OLED_SET_FADE )
         self.cmd( self.OLED_FADE_BLINK | ( 0x0f & rate ) )
         self.oled_cmd_stop()
+
 
     #---------------------------------------------------------------------------
     # internal methods
@@ -407,16 +451,16 @@ class display():
 
     # cmd - send a command to the display
     def cmd( self, command ):
-        if( self.type == self.LCD ):
+        if self.type == self.LCD :
             self.lcd_cmd( command )
-        elif( self.type == self.OLED ):
+        elif self.type == self.OLED :
             self.oled_cmd( command )
 
     # data - send data to the display
     def data( self, data ):
-        if( self.type == self.LCD ):
+        if self.type == self.LCD :
             self.lcd_data( data )
-        elif( self.type == self.OLED ):
+        elif self.type == self.OLED :
             self.oled_data( data )
 
     # lcd_byte - send one byte to the LCD module
@@ -555,6 +599,7 @@ class display():
         # clear the display
         self.clear()
         self.home()
+
 
 #-------------------------------------------------------------------------------
 # eof
