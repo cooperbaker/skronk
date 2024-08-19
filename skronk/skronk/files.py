@@ -1,13 +1,11 @@
 import os
 from skronk.char_buf import char_buf
 
-
 class files():
 
     def __init__( self ):
         self.list = ''
         self.path = ''
-        self.buffer = char_buf( 20, 4 )
 
     def ls( self, path  ):
         self.path = path
@@ -19,7 +17,3 @@ class files():
                 print( item.name )
             if item.is_dir():
                 print( item.name + '/' )
-
-
-
-

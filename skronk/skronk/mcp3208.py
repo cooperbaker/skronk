@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 # mcp3208.py
-# mcp3208 spi reader for raspberry pi
+# MCP3208 spi reader for raspberry pi
 #
 # Cooper Baker (c) 2024
 #-------------------------------------------------------------------------------
@@ -39,7 +39,7 @@ class mcp3208():
         self.y1 = [ 0 ] * 8
         self.y2 = [ 0 ] * 8
         self.y3 = [ 0 ] * 8
-        self.a  = 20 * 6.28318530718 / 1000 # frequency * two_pi / sample_rate
+        self.a  = 10 * 6.28318530718 / 1000 # frequency * two_pi / sample_rate
 
         # moving average filter
         self.avg_size = 20 # smaller = less lag
@@ -62,7 +62,7 @@ class mcp3208():
         self.adc6 = [ 0 ] * 3
         self.adc7 = [ 0 ] * 3
 
-    # read and filter adc values - polling thread
+    # read - read and filter adc values - polling thread
     def read( self ):
 
         # MCP3208 datasheet page 3 : 2.0 MHz clock with 5V supply
@@ -71,8 +71,8 @@ class mcp3208():
         # 16 channels @ 83.3kHz    = 0.192 msec or 13.888kHz for two chips
         # 0.192 msec + 0.808 sleep = 1 msec or 1kHz for 16 channels or two chips
         # Note: Python is not capable of realtime precison at millisecond
-        # intervals, and adc reads occur with a somewhat jittery sample rate.
-        # On a raspberry pi 5, 1kHz seems to be the best read interval for 2 chips
+        # intervals, so adc reads occur with a jittery sample rate...
+        # On a raspberry pi 5, 1kHz seems to work ok for 2 chips with filtering
 
         # open the chip
         self.spi.open( self.bus, self.device )
@@ -102,7 +102,7 @@ class mcp3208():
         self.value[ 6 ] = self.filter( 6, ( ( ( self.adc6[ 1 ] & 15 ) << 8 ) + self.adc6[ 2 ] ) & 0x0FFF )
         self.value[ 7 ] = self.filter( 7, ( ( ( self.adc7[ 1 ] & 15 ) << 8 ) + self.adc7[ 2 ] ) & 0x0FFF )
 
-    # detect events and run callbacks - event thread
+    # events - detect events and run callbacks - event thread
     def events( self ):
         # run callbacks based on changed values
         for channel in range( 8 ):
@@ -110,7 +110,7 @@ class mcp3208():
                 self.callback( channel + 1, self.value[ channel ] )
             self.value_old[ channel ] = self.value[ channel ]
 
-    # adc input filter
+    # filter - adc input filter
     def filter( self, channel, x ):
 
         # iir lowpass filter cascade : y = y1 + a * ( x - y1 )
@@ -137,6 +137,14 @@ class mcp3208():
         y = ( y - self.clip_min ) / self.clip_rng
 
         return int( y * self.steps ) / self.steps
+
+    # debug - print all values
+    def debug( self, adc1, adc2 ):
+        values = [] * 16
+        for i in range( 8 ):
+            values[ i     ] = adc1.value[ i ]
+            values[ i + 8 ] = adc2.value[ i ]
+        print('{0:>4} | {1:>4} | {2:>4} | {3:>4} | {4:>4} | {5:>4} | {6:>4} | {7:>4} | {8:>4} | {9:>4} | {10:>4} | {11:>4} | {12:>4} | {13:>4} | {14:>4} | {15:>4}'.format( * values ) )
 
 
 #-------------------------------------------------------------------------------
