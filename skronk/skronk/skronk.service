@@ -7,10 +7,11 @@
 # $ sudo systemctl enable skronk.service
 #
 # Commands:
-# $ sudo systemctl status skronk.service  - display sercvice status
-# $ sudo systemctl start skronk.service   - start now and always run at boot
-# $ sudo systemctl restart skronk.service - restart now and always run at boot
-# $ sudo systemctl stop skronk.service    - stop now and do not run again
+# $ sudo systemctl enable  skronk.service - enable skronk and always run at boot
+# $ sudo systemctl status  skronk.service - display skronk status
+# $ sudo systemctl start   skronk.service - start now
+# $ sudo systemctl restart skronk.service - restart now
+# $ sudo systemctl stop    skronk.service - stop now
 #
 # Cooper Baker (c) 2024
 #-------------------------------------------------------------------------------

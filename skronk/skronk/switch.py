@@ -32,7 +32,7 @@ class switch():
         # set up gpio line objects
         for i, pin in enumerate( self.pin ):
             obj = self.gpio.get_line( pin )
-            obj.request( consumer=__file__, type=gpiod.LINE_REQ_DIR_IN )
+            obj.request( consumer = __file__, type = gpiod.LINE_REQ_DIR_IN )
             self.obj.append( obj )
             self.now.append( 0 )
             self.old.append( 0 )
@@ -40,7 +40,7 @@ class switch():
     # read button states - polling thread
     def read( self ):
         for i, obj in enumerate( self.obj ):
-            self.now[ i ] = int( not ( obj.get_value() ) )
+            self.now[ i ] = int( not obj.get_value() )
 
     # detect events and run callbacks - event thread
     def events( self ):
