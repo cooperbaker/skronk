@@ -1,10 +1,16 @@
 # skronk notes
 
 &nbsp;
+### copy skronk library
+---
+- run the upload script\
+  ```$ ./upload.command```
+
+&nbsp;
 ### sudo without password
 ---
 - edit the sudoers file\
-  ```$ sudo pico /etc/sudoers```
+  ```$ sudo visudo```
 
 - add this line at the end\
   ```pi    ALL=(ALL) NOPASSWD: ALL```
@@ -32,10 +38,10 @@
   ```$ sudo apt install python3-smbus```
 
 &nbsp;
-### copy skronk library
+### add pure data
 ---
-- run the upload script\
-  ```$ ./upload.command```
+- install with apt\
+  ```$ sudo apt install puredata```
 
 &nbsp;
 ### create system skronk service
@@ -46,21 +52,58 @@
   - enable the service at boot\
     ```$ sudo systemctl enable skronk.service```
 
-  - commands:
-    - display service status\
-      ```$ sudo systemctl status skronk.service```
+  - relevant commands:
+    - enable and always run at boot\
+      ```$ sudo systemctl enable skronk.service```
 
-    - start now and always run at boot\
+    - start now\
       ```$ sudo systemctl start skronk.service```
 
-    - restart now and always run at boot\
+    - restart now\
       ```$ sudo systemctl restart skronk.service```
 
-    - stop now and do not run again\
+    - stop now\
       ```$ sudo systemctl stop skronk.service```
+
+    - display status\
+      ```$ sudo systemctl status skronk.service```
+
+&nbsp;
+### command-line skronk
+---
+- run skronk from the command line\
+  ```$ cd /home/pi/skronk```
+
+  ```$ sudo python3 skronk.py```
+    - note: must stop skronk.service first
 
 &nbsp;
 ### cpu and memory monitor
 ---
 - terminal-based process manager\
   ```$ sudo htop```
+
+&nbsp;
+### alsa audio system
+---
+- list all devices\
+  ```$ aplay -l```
+
+- list device names only\
+  ```$ aplay -l | awk -F \: '/,/{print $2}' | awk '{print $1}' | uniq```
+
+- termainal-based mixer\
+  ```$ alsamixer```
+
+
+&nbsp;
+### rnbo control ?
+---
+- start now\
+  ```$ sudo systemctl start rnbooscquery.service```
+
+- stop now\
+  ```$ sudo systemctl stop rnbooscquery.service```
+
+- display status\
+  ```$ sudo systemctl status rnbooscquery.service```
