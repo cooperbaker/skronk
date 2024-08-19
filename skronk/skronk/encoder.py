@@ -22,7 +22,7 @@ class encoder():
     def __init__( self, a, b, callback ):
         self.val      = 0
         self.old      = 0
-        self.enc      = RotaryEncoder( a, b, max_steps=32 )
+        self.enc      = RotaryEncoder( a, b, max_steps = 32 )
         self.callback = callback
 
     # read encoder steps - polling thread
