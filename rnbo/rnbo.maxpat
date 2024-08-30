@@ -65,7 +65,7 @@
 						}
 ,
 						"classnamespace" : "rnbo",
-						"rect" : [ 110.0, 87.0, 1032.0, 861.0 ],
+						"rect" : [ 138.0, 92.0, 1032.0, 840.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -96,12 +96,23 @@
 						"title" : "osc_messages",
 						"boxes" : [ 							{
 								"box" : 								{
+									"id" : "obj-11",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 889.5, 800.0, 109.0, 21.0 ],
+									"text" : "cooper baker 2024"
+								}
+
+							}
+, 							{
+								"box" : 								{
 									"id" : "obj-75",
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 140.0, 414.0, 21.0 ],
-									"text" : "output strings hidden in rnbo osc metadata addresses and decoded by skronk"
+									"patching_rect" : [ 27.5, 271.0, 325.0, 21.0 ],
+									"text" : "display commands are sent as rnbo metadata osc addresses"
 								}
 
 							}
@@ -111,8 +122,8 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 117.0, 288.0, 21.0 ],
-									"text" : "input sources are specified by rnbo osc metadata"
+									"patching_rect" : [ 28.0, 122.0, 325.0, 21.0 ],
+									"text" : "input sources are specified by rnbo metadata osc addresses"
 								}
 
 							}
@@ -122,7 +133,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 510.0, 538.0, 21.0 ],
+									"patching_rect" : [ 27.5, 499.0, 538.0, 21.0 ],
 									"text" : "----------------------------------------------------------------------------------------------------------------------"
 								}
 
@@ -133,7 +144,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 811.0, 171.0, 21.0 ],
+									"patching_rect" : [ 27.5, 800.0, 171.0, 21.0 ],
 									"text" : "clear"
 								}
 
@@ -144,7 +155,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 200.5, 811.0, 365.0, 21.0 ],
+									"patching_rect" : [ 200.5, 800.0, 365.0, 21.0 ],
 									"text" : "clear entire display"
 								}
 
@@ -155,8 +166,8 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 755.0, 171.0, 21.0 ],
-									"text" : "format 3.1f 0 0 label n"
+									"patching_rect" : [ 27.5, 744.0, 171.0, 21.0 ],
+									"text" : "format 2.1f 0 0 label n"
 								}
 
 							}
@@ -166,7 +177,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 200.5, 755.0, 365.0, 21.0 ],
+									"patching_rect" : [ 200.5, 744.0, 365.0, 21.0 ],
 									"text" : "write label and formatted number at ( 0, 0 ) "
 								}
 
@@ -177,7 +188,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 778.0, 171.0, 21.0 ],
+									"patching_rect" : [ 27.5, 767.0, 171.0, 21.0 ],
 									"text" : "format clear 2.1f 10 0 0 label "
 								}
 
@@ -188,7 +199,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 200.5, 778.0, 365.0, 21.0 ],
+									"patching_rect" : [ 200.5, 767.0, 365.0, 21.0 ],
 									"text" : "clear 10 spaces at ( 0, 0 ) then write label and formatted number"
 								}
 
@@ -199,7 +210,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 533.0, 171.0, 21.0 ],
+									"patching_rect" : [ 27.5, 522.0, 171.0, 21.0 ],
 									"text" : "string 0 0 info"
 								}
 
@@ -210,7 +221,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 200.5, 533.0, 365.0, 21.0 ],
+									"patching_rect" : [ 200.5, 522.0, 365.0, 21.0 ],
 									"text" : "write info at ( column 0, row 0 )"
 								}
 
@@ -221,7 +232,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 556.0, 171.0, 21.0 ],
+									"patching_rect" : [ 27.5, 545.0, 171.0, 21.0 ],
 									"text" : "string clear 10 0 0 info"
 								}
 
@@ -232,7 +243,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 200.5, 556.0, 365.0, 21.0 ],
+									"patching_rect" : [ 200.5, 545.0, 365.0, 21.0 ],
 									"text" : "clear 10 spaces at ( 0, 0 ) then write info"
 								}
 
@@ -243,7 +254,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 589.0, 171.0, 21.0 ],
+									"patching_rect" : [ 27.5, 578.0, 171.0, 21.0 ],
 									"text" : "int 0 0 label"
 								}
 
@@ -254,7 +265,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 200.5, 589.0, 365.0, 21.0 ],
+									"patching_rect" : [ 200.5, 578.0, 365.0, 21.0 ],
 									"text" : "write label and int at ( 0, 0 )"
 								}
 
@@ -265,7 +276,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 612.0, 171.0, 21.0 ],
+									"patching_rect" : [ 27.5, 601.0, 171.0, 21.0 ],
 									"text" : "int clear 10 0 0 label"
 								}
 
@@ -276,7 +287,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 200.5, 612.0, 365.0, 21.0 ],
+									"patching_rect" : [ 200.5, 601.0, 365.0, 21.0 ],
 									"text" : "clear 10 spaces at ( 0, 0 ) then write label and int"
 								}
 
@@ -287,7 +298,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 645.0, 171.0, 21.0 ],
+									"patching_rect" : [ 27.5, 634.0, 171.0, 21.0 ],
 									"text" : "float 0 0 label"
 								}
 
@@ -298,7 +309,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 200.5, 645.0, 365.0, 21.0 ],
+									"patching_rect" : [ 200.5, 634.0, 365.0, 21.0 ],
 									"text" : "write label and float at ( 0, 0 )"
 								}
 
@@ -309,7 +320,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 668.0, 171.0, 21.0 ],
+									"patching_rect" : [ 27.5, 657.0, 171.0, 21.0 ],
 									"text" : "float clear 10 0 0 label"
 								}
 
@@ -320,7 +331,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 200.5, 668.0, 365.0, 21.0 ],
+									"patching_rect" : [ 200.5, 657.0, 365.0, 21.0 ],
 									"text" : "clear 10 spaces at ( 0, 0 ) then write label and float"
 								}
 
@@ -331,7 +342,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 701.0, 171.0, 21.0 ],
+									"patching_rect" : [ 27.5, 690.0, 171.0, 21.0 ],
 									"text" : "list 0 0 a b c i"
 								}
 
@@ -342,7 +353,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 200.5, 701.0, 365.0, 21.0 ],
+									"patching_rect" : [ 200.5, 690.0, 365.0, 21.0 ],
 									"text" : "write item i at ( 0, 0 )"
 								}
 
@@ -353,7 +364,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 724.0, 171.0, 21.0 ],
+									"patching_rect" : [ 27.5, 713.0, 171.0, 21.0 ],
 									"text" : "list clear 10 0 0 a c b i"
 								}
 
@@ -364,7 +375,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 200.5, 724.0, 365.0, 21.0 ],
+									"patching_rect" : [ 200.5, 713.0, 365.0, 21.0 ],
 									"text" : "clear 10 spaces at ( 0, 0 ) then write item i"
 								}
 
@@ -375,7 +386,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 487.0, 222.0, 21.0 ],
+									"patching_rect" : [ 27.5, 476.0, 222.0, 21.0 ],
 									"text" : "display commands  ( for 20 x 4 display )"
 								}
 
@@ -403,7 +414,7 @@
 										"meta" : ""
 									}
 ,
-									"rnbo_serial" : 17,
+									"rnbo_serial" : 1,
 									"rnbo_uniqueid" : "outport_obj-6",
 									"text" : "outport /disp format clear 4.2g 10 10 1 ad4"
 								}
@@ -419,20 +430,20 @@
 									"patching_rect" : [ 761.5, 299.0, 243.0, 23.0 ],
 									"rnbo_classname" : "param",
 									"rnbo_extra_attributes" : 									{
-										"order" : "0",
-										"sendinit" : 1,
-										"displayname" : "",
-										"maximum" : 1.0,
-										"displayorder" : "-",
-										"preset" : 1,
-										"fromnormalized" : "",
-										"value" : 0.0,
-										"tonormalized" : "",
-										"exponent" : 1.0,
-										"enum" : "",
 										"ctlin" : 0.0,
+										"tonormalized" : "",
+										"sendinit" : 1,
+										"maximum" : 1.0,
+										"minimum" : 0.0,
+										"displayname" : "",
+										"enum" : "",
+										"fromnormalized" : "",
+										"exponent" : 1.0,
+										"preset" : 1,
+										"displayorder" : "-",
 										"unit" : "",
-										"minimum" : 0.0
+										"order" : "0",
+										"value" : 0.0
 									}
 ,
 									"rnbo_serial" : 1,
@@ -1456,8 +1467,8 @@
 													"patching_rect" : [ 28.0, 333.0, 36.0, 23.0 ],
 													"rnbo_classname" : "out",
 													"rnbo_extra_attributes" : 													{
-														"comment" : "",
-														"meta" : ""
+														"meta" : "",
+														"comment" : ""
 													}
 ,
 													"rnbo_serial" : 1,
@@ -1539,8 +1550,8 @@
 													"patching_rect" : [ 128.0, 333.0, 36.0, 23.0 ],
 													"rnbo_classname" : "out",
 													"rnbo_extra_attributes" : 													{
-														"comment" : "",
-														"meta" : ""
+														"meta" : "",
+														"comment" : ""
 													}
 ,
 													"rnbo_serial" : 2,
@@ -1694,14 +1705,14 @@
 										"bgfillcolor_autogradient" : 0.0
 									}
 ,
-									"patching_rect" : [ 27.5, 386.0, 64.0, 23.0 ],
+									"patching_rect" : [ 27.5, 373.0, 64.0, 23.0 ],
 									"rnbo_classname" : "p",
 									"rnbo_extra_attributes" : 									{
-										"args" : [  ],
-										"receivemode" : "local",
 										"polyphony" : -1.0,
-										"notecontroller" : 0,
+										"receivemode" : "local",
+										"args" : [  ],
 										"voicecontrol" : "simple",
+										"notecontroller" : 0,
 										"exposevoiceparams" : 0
 									}
 ,
@@ -1931,7 +1942,7 @@
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 611.5, 442.0, 286.0, 23.0 ],
+									"patching_rect" : [ 611.5, 425.0, 286.0, 23.0 ],
 									"rnbo_classname" : "outport",
 									"rnbo_extra_attributes" : 									{
 										"meta" : ""
@@ -1949,7 +1960,7 @@
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 442.0, 177.0, 23.0 ],
+									"patching_rect" : [ 27.5, 425.0, 177.0, 23.0 ],
 									"rnbo_classname" : "outport",
 									"rnbo_extra_attributes" : 									{
 										"meta" : ""
@@ -1967,7 +1978,7 @@
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 418.5, 442.0, 182.0, 23.0 ],
+									"patching_rect" : [ 418.5, 425.0, 182.0, 23.0 ],
 									"rnbo_classname" : "outport",
 									"rnbo_extra_attributes" : 									{
 										"meta" : ""
@@ -1985,7 +1996,7 @@
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 215.5, 442.0, 192.0, 23.0 ],
+									"patching_rect" : [ 215.5, 425.0, 192.0, 23.0 ],
 									"rnbo_classname" : "outport",
 									"rnbo_extra_attributes" : 									{
 										"meta" : ""
@@ -2003,7 +2014,7 @@
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 510.5, 339.0, 183.0, 23.0 ],
+									"patching_rect" : [ 505.5, 339.0, 183.0, 23.0 ],
 									"rnbo_classname" : "outport",
 									"rnbo_extra_attributes" : 									{
 										"meta" : ""
@@ -2054,7 +2065,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 505.5, 213.0, 33.0, 23.0 ],
+									"patching_rect" : [ 505.5, 184.0, 33.0, 23.0 ],
 									"rnbo_classname" : "sel",
 									"rnbo_serial" : 1,
 									"rnbo_uniqueid" : "sel_obj-33",
@@ -2161,7 +2172,7 @@
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 505.5, 246.0, 198.0, 23.0 ],
+									"patching_rect" : [ 505.5, 217.0, 198.0, 23.0 ],
 									"rnbo_classname" : "outport",
 									"rnbo_extra_attributes" : 									{
 										"meta" : ""
@@ -2179,7 +2190,7 @@
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 761.5, 246.0, 106.0, 23.0 ],
+									"patching_rect" : [ 761.5, 217.0, 106.0, 23.0 ],
 									"rnbo_classname" : "outport",
 									"rnbo_extra_attributes" : 									{
 										"meta" : ""
@@ -2198,7 +2209,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 761.5, 213.0, 33.0, 23.0 ],
+									"patching_rect" : [ 761.5, 184.0, 33.0, 23.0 ],
 									"rnbo_classname" : "sel",
 									"rnbo_serial" : 2,
 									"rnbo_uniqueid" : "sel_obj-29",
@@ -2306,7 +2317,7 @@
 									"numinlets" : 0,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 761.5, 180.0, 75.0, 23.0 ],
+									"patching_rect" : [ 761.5, 151.0, 75.0, 23.0 ],
 									"rnbo_classname" : "inport",
 									"rnbo_extra_attributes" : 									{
 										"meta" : ""
@@ -2326,7 +2337,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 216.5, 213.0, 33.0, 23.0 ],
+									"patching_rect" : [ 216.5, 184.0, 33.0, 23.0 ],
 									"rnbo_classname" : "sel",
 									"rnbo_serial" : 3,
 									"rnbo_uniqueid" : "sel_obj-25",
@@ -2434,7 +2445,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 27.5, 213.0, 33.0, 23.0 ],
+									"patching_rect" : [ 27.5, 184.0, 33.0, 23.0 ],
 									"rnbo_classname" : "sel",
 									"rnbo_serial" : 4,
 									"rnbo_uniqueid" : "sel_obj-24",
@@ -2542,24 +2553,24 @@
 									"numinlets" : 2,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 505.5, 180.0, 177.0, 23.0 ],
+									"patching_rect" : [ 505.5, 151.0, 177.0, 23.0 ],
 									"rnbo_classname" : "param",
 									"rnbo_extra_attributes" : 									{
-										"order" : "0",
-										"sendinit" : 1,
-										"displayname" : "",
-										"maximum" : 1.0,
-										"displayorder" : "-",
-										"steps" : 0.0,
-										"preset" : 1,
-										"fromnormalized" : "",
-										"value" : 0.0,
-										"tonormalized" : "",
-										"exponent" : 1.0,
-										"enum" : "",
 										"ctlin" : 0.0,
+										"tonormalized" : "",
+										"sendinit" : 1,
+										"maximum" : 1.0,
+										"minimum" : 0.0,
+										"steps" : 0.0,
+										"displayname" : "",
+										"enum" : "",
+										"fromnormalized" : "",
+										"exponent" : 1.0,
+										"preset" : 1,
+										"displayorder" : "-",
 										"unit" : "",
-										"minimum" : 0.0
+										"order" : "0",
+										"value" : 0.0
 									}
 ,
 									"rnbo_serial" : 2,
@@ -2962,23 +2973,23 @@
 									"numinlets" : 2,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 510.5, 299.0, 243.0, 23.0 ],
+									"patching_rect" : [ 505.5, 299.0, 243.0, 23.0 ],
 									"rnbo_classname" : "param",
 									"rnbo_extra_attributes" : 									{
-										"order" : "0",
-										"sendinit" : 1,
-										"displayname" : "",
-										"maximum" : 1.0,
-										"displayorder" : "-",
-										"preset" : 1,
-										"fromnormalized" : "",
-										"value" : 0.0,
-										"tonormalized" : "",
-										"exponent" : 1.0,
-										"enum" : "",
 										"ctlin" : 0.0,
+										"tonormalized" : "",
+										"sendinit" : 1,
+										"maximum" : 1.0,
+										"minimum" : 0.0,
+										"displayname" : "",
+										"enum" : "",
+										"fromnormalized" : "",
+										"exponent" : 1.0,
+										"preset" : 1,
+										"displayorder" : "-",
 										"unit" : "",
-										"minimum" : 0.0
+										"order" : "0",
+										"value" : 0.0
 									}
 ,
 									"rnbo_serial" : 3,
@@ -3381,7 +3392,7 @@
 									"numinlets" : 0,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 216.5, 180.0, 176.0, 23.0 ],
+									"patching_rect" : [ 216.5, 151.0, 176.0, 23.0 ],
 									"rnbo_classname" : "inport",
 									"rnbo_serial" : 2,
 									"rnbo_uniqueid" : "inport_obj-14",
@@ -3396,7 +3407,7 @@
 									"numinlets" : 0,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 27.5, 180.0, 75.0, 23.0 ],
+									"patching_rect" : [ 27.5, 151.0, 75.0, 23.0 ],
 									"rnbo_classname" : "inport",
 									"rnbo_extra_attributes" : 									{
 										"meta" : ""
@@ -3414,7 +3425,7 @@
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 216.5, 246.0, 282.0, 23.0 ],
+									"patching_rect" : [ 216.5, 217.0, 282.0, 23.0 ],
 									"rnbo_classname" : "outport",
 									"rnbo_serial" : 11,
 									"rnbo_uniqueid" : "outport_obj-9",
@@ -3428,7 +3439,7 @@
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 27.5, 246.0, 182.0, 23.0 ],
+									"patching_rect" : [ 27.5, 217.0, 182.0, 23.0 ],
 									"rnbo_classname" : "outport",
 									"rnbo_extra_attributes" : 									{
 										"meta" : ""
@@ -3629,6 +3640,12 @@
 ,
 					"patching_rect" : [ 80.0, 94.0, 157.0, 22.0 ],
 					"rnboattrcache" : 					{
+						"sw3" : 						{
+							"label" : "sw3",
+							"isEnum" : 0,
+							"parsestring" : ""
+						}
+,
 						"adc3" : 						{
 							"label" : "adc3",
 							"isEnum" : 0,
@@ -3637,12 +3654,6 @@
 ,
 						"adc4" : 						{
 							"label" : "adc4",
-							"isEnum" : 0,
-							"parsestring" : ""
-						}
-,
-						"sw3" : 						{
-							"label" : "sw3",
 							"isEnum" : 0,
 							"parsestring" : ""
 						}
