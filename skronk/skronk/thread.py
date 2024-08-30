@@ -9,7 +9,7 @@
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
-import threading
+from threading import stack_size, Thread
 from time import sleep, clock_gettime, CLOCK_MONOTONIC
 
 
@@ -24,8 +24,8 @@ class thread():
         self.sleep    = milliseconds / 1000
         self.spin     = True
 
-        threading.stack_size( 65536 )
-        threading.Thread( target = self.run ).start()
+        stack_size( 65536 )
+        Thread( target = self.run ).start()
 
     # run a callback loop with a sleep timer
     def run( self ):
