@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 # mcp3208.py
-# MCP3208 spi reader for raspberry pi
+# MCP3208 analog-to-digital converter interface
 #
 # Cooper Baker (c) 2024
 #-------------------------------------------------------------------------------
@@ -113,6 +113,11 @@ class mcp3208():
     # filter - adc input filter
     def filter( self, channel, x ):
 
+        # note: this would obviously be much faster as a c module,
+        # however, it is nice in python for the pedagogy and quick coding.
+        # Please get in touch if you know of filter optimizations that might
+        # improve performance here :)
+
         # iir lowpass filter cascade : y = y1 + a * ( x - y1 )
         self.y0[ channel ] = self.y0[ channel ] + self.a * (                  x - self.y0[ channel ] )
         self.y1[ channel ] = self.y1[ channel ] + self.a * ( self.y0[ channel ] - self.y1[ channel ] )
@@ -139,12 +144,12 @@ class mcp3208():
         return int( y * self.steps ) / self.steps
 
     # debug - print all values
-    def debug( self, adc1, adc2 ):
-        values = [] * 16
-        for i in range( 8 ):
-            values[ i     ] = adc1.value[ i ]
-            values[ i + 8 ] = adc2.value[ i ]
-        print('{0:>4} | {1:>4} | {2:>4} | {3:>4} | {4:>4} | {5:>4} | {6:>4} | {7:>4} | {8:>4} | {9:>4} | {10:>4} | {11:>4} | {12:>4} | {13:>4} | {14:>4} | {15:>4}'.format( * values ) )
+    # def debug( self, adc1, adc2 ):
+    #     values = [] * 16
+    #     for i in range( 8 ):
+    #         values[ i     ] = adc1.value[ i ]
+    #         values[ i + 8 ] = adc2.value[ i ]
+    #     print('{0:>4} | {1:>4} | {2:>4} | {3:>4} | {4:>4} | {5:>4} | {6:>4} | {7:>4} | {8:>4} | {9:>4} | {10:>4} | {11:>4} | {12:>4} | {13:>4} | {14:>4} | {15:>4}'.format( * values ) )
 
 
 #-------------------------------------------------------------------------------
