@@ -9,7 +9,8 @@
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
-import gpiod
+# import gpiod
+from gpiod import Chip, LINE_REQ_DIR_IN
 
 
 #-------------------------------------------------------------------------------
@@ -18,7 +19,7 @@ import gpiod
 class switch():
 
     # class-wide static gpio interface object
-    gpio = gpiod.Chip( 'gpiochip4', gpiod.Chip.OPEN_BY_NAME )
+    gpio = Chip( 'gpiochip4', Chip.OPEN_BY_NAME )
 
     # constructor
     # def callback( channel, state )
@@ -32,7 +33,7 @@ class switch():
         # set up gpio line objects
         for i, pin in enumerate( self.pin ):
             obj = self.gpio.get_line( pin )
-            obj.request( consumer = __file__, type = gpiod.LINE_REQ_DIR_IN )
+            obj.request( consumer = __file__, type = LINE_REQ_DIR_IN )
             self.obj.append( obj )
             self.now.append( 0 )
             self.old.append( 0 )
