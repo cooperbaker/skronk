@@ -2,19 +2,24 @@
 # display.py
 # I2C driver for PCA8574 + HD44780 lcd or US2066 oled character displays
 #
+# disp = display(  'lcd', 16, 2, 10 ) : 16x2 lcd  @ 10fps
+# disp = display( 'oled', 20, 4, 30 ) : 20x4 oled @ 30fps
+#                                     : 20x4 full frame ≈ 25 msec i2c tx time
 # Cooper Baker (c) 2024
 #
 # pylint: disable = line-too-long
 #-------------------------------------------------------------------------------
 
 
+# buffer overlay...
+
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
-import threading
+from threading import stack_size, Thread
 from time import sleep, clock_gettime, CLOCK_MONOTONIC
 from smbus2 import SMBus
-from skronk.char_buf import char_buf
+from .buffer import buffer
 
 
 #-------------------------------------------------------------------------------
@@ -79,78 +84,81 @@ class display():
     #---------------------------------------------------------------------------
     # custom glyphs
     #---------------------------------------------------------------------------
-    GLYPH_0         = '\0'
-    GLYPH_0_BYTES   = [ 0b00000 ,
-                        0b01110 ,
-                        0b10001 ,
-                        0b00100 ,
-                        0b01010 ,
-                        0b00000 ,
-                        0b00100 ,
-                        0b00000 ]
-    GLYPH_1         = '\1'
-    GLYPH_1_BYTES   = [ 0b00100 ,
-                        0b11100 ,
-                        0b01100 ,
-                        0b01100 ,
-                        0b11110 ,
-                        0b00000 ,
-                        0b01100 ,
-                        0b11110 ]
-    GLYPH_2         = '\2'
-    GLYPH_2_BYTES   = [ 0b01100 ,
-                        0b11110 ,
-                        0b00110 ,
-                        0b01100 ,
-                        0b11110 ,
-                        0b00000 ,
-                        0b01100 ,
-                        0b11110 ]
-    GLYPH_3         = '\3'
-    GLYPH_3_BYTES   = [ 0b11110 ,
-                        0b00100 ,
-                        0b01110 ,
-                        0b00110 ,
-                        0b11100 ,
-                        0b00000 ,
-                        0b01100 ,
-                        0b11110 ]
-    GLYPH_4         = '\4'
-    GLYPH_4_BYTES   = [ 0b00110 ,
-                        0b01010 ,
-                        0b10110 ,
-                        0b11110 ,
-                        0b00110 ,
-                        0b00000 ,
-                        0b01100 ,
-                        0b11110 ]
-    GLYPH_5         = '\5'
-    GLYPH_5_BYTES   = [ 0b00010 ,
-                        0b00011 ,
-                        0b00010 ,
-                        0b00010 ,
-                        0b00010 ,
-                        0b01110 ,
-                        0b11110 ,
-                        0b01100 ]
-    GLYPH_6         = '\6'
-    GLYPH_6_BYTES   = [ 0b00100 ,
-                        0b01100 ,
-                        0b00100 ,
-                        0b00100 ,
-                        0b01110 ,
-                        0b00000 ,
-                        0b01110 ,
-                        0b11111 ]
-    GLYPH_7         = '\7'
-    GLYPH_7_BYTES   = [ 0b00000 ,
-                        0b00000 ,
-                        0b00000 ,
-                        0b00100 ,
-                        0b00100 ,
-                        0b00000 ,
-                        0b00000 ,
-                        0b00000 ]
+    UP         = '\x00'
+    UP_BYTES   = [  0b00000 ,
+                    0b00100 ,
+                    0b00100 ,
+                    0b01110 ,
+                    0b01110 ,
+                    0b11111 ,
+                    0b00000 ,
+                    0b00000 ]
+
+    DN         = '\x07'
+    DN_BYTES   = [  0b00000 ,
+                    0b11111 ,
+                    0b01110 ,
+                    0b01110 ,
+                    0b00100 ,
+                    0b00100 ,
+                    0b00000 ,
+                    0b00000 ]
+
+    S1         = '\x01'
+    S1_BYTES   = [  0b00000 ,
+                    0b00100 ,
+                    0b11100 ,
+                    0b01100 ,
+                    0b01100 ,
+                    0b11110 ,
+                    0b00000 ,
+                    0b00000 ]
+    S2         = '\x02'
+    S2_BYTES   = [  0b00000 ,
+                    0b01100 ,
+                    0b11110 ,
+                    0b00110 ,
+                    0b01100 ,
+                    0b11110 ,
+                    0b00000 ,
+                    0b00000 ]
+    S3         = '\x03'
+    S3_BYTES   = [  0b00000 ,
+                    0b11110 ,
+                    0b00100 ,
+                    0b01110 ,
+                    0b00110 ,
+                    0b11100 ,
+                    0b00000 ,
+                    0b00000 ]
+    S4         = '\x04'
+    S4_BYTES   = [  0b00000 ,
+                    0b00110 ,
+                    0b01010 ,
+                    0b10110 ,
+                    0b11110 ,
+                    0b00110 ,
+                    0b00000 ,
+                    0b00000 ]
+    S5         = '\x05'
+    S5_BYTES   = [  0b00000 ,
+                    0b11110 ,
+                    0b11000 ,
+                    0b11110 ,
+                    0b00110 ,
+                    0b11100 ,
+                    0b00000 ,
+                    0b00000 ]
+    S6         = '\x06'
+    S6_BYTES   = [  0b00000 ,
+                    0b01100 ,
+                    0b11000 ,
+                    0b11110 ,
+                    0b11010 ,
+                    0b01100 ,
+                    0b00000 ,
+                    0b00000 ]
+
 
     #---------------------------------------------------------------------------
     # constructor
@@ -160,13 +168,13 @@ class display():
     #---------------------------------------------------------------------------
     def __init__( self, type, cols, rows, fps ):
 
-        self.run            = True
+        self.spin           = True
         self.update         = False
         self.type           = type
         self.fps            = 1 / fps
         self.rows           = rows
         self.cols           = cols
-        self.buffer         = char_buf( cols, rows )
+        self.buffer         = buffer( cols, rows )
         self.draw_buffer    = self.buffer
         self.i2c_addr       = 0
         self.backlight_ctl  = self.LCD_BACKLIGHT_ON
@@ -181,17 +189,17 @@ class display():
             self.i2c_addr = self.OLED_I2C_ADDR
             self.init_oled()
 
-        self.store_glyph( 0, self.GLYPH_0_BYTES )
-        self.store_glyph( 1, self.GLYPH_1_BYTES )
-        self.store_glyph( 2, self.GLYPH_2_BYTES )
-        self.store_glyph( 3, self.GLYPH_3_BYTES )
-        self.store_glyph( 4, self.GLYPH_4_BYTES )
-        self.store_glyph( 5, self.GLYPH_5_BYTES )
-        self.store_glyph( 6, self.GLYPH_6_BYTES )
-        self.store_glyph( 7, self.GLYPH_7_BYTES )
+        self.store_glyph( 0, self.UP_BYTES )
+        self.store_glyph( 7, self.DN_BYTES )
+        self.store_glyph( 1, self.S1_BYTES )
+        self.store_glyph( 2, self.S2_BYTES )
+        self.store_glyph( 3, self.S3_BYTES )
+        self.store_glyph( 4, self.S4_BYTES )
+        self.store_glyph( 5, self.S5_BYTES )
+        self.store_glyph( 6, self.S6_BYTES )
 
-        threading.stack_size( 65536 )
-        threading.Thread( target = self.draw, name = 'display' ).start()
+        stack_size( 65536 )
+        Thread( target = self.run, name = 'display' ).start()
 
     # command - command handler
     def command( self, *args ):
@@ -214,7 +222,7 @@ class display():
             else:
                 self.write( int( args[ 1 ] ), int( args[ 2 ] ), ' '.join( map( str, args[ 3 : -1 ] ) ) + ' {:.3f}'.format( args[ -1 ] ) )
         elif   args[ 0 ] == 'list'  :   # list 0 0 a b c i                  ~ write item i at ( 0, 0 )
-            if args[ 1 ] == 'clear' :   # list clear 10 0 0 a c b i         ~ clear 10 spaces at ( 0, 0 ) then write item i
+            if args[ 1 ] == 'clear' :   # list clear 10 0 0 a b c i         ~ clear 10 spaces at ( 0, 0 ) then write item i
                 self.write( int( args[ 3 ] ), int( args[ 4 ] ), ' ' * int( args[ 2 ] ) )
                 self.write( int( args[ 3 ] ), int( args[ 4 ] ), str( args[ int( args[ -1 ] ) + 5 ] ) )
             else:
@@ -227,38 +235,42 @@ class display():
                 self.write( int( args[ 2 ] ), int( args[ 3 ] ), ' '.join( map( str, args[ 4 : -1 ] ) ) + ( ' {:' + args[ 1 ] + '}' ).format( args[ -1 ] ) )
         elif args[ 0 ] == 'clear'   :   # clear the display
             self.clear()
-        elif args[ 0 ] == 'off'     :   # turn off the display
-            self.off()
         elif args[ 0 ] == 'on'      :   # turn on the display
             self.on()
+        elif args[ 0 ] == 'off'     :   # turn off the display
+            self.off()
 
 
     #---------------------------------------------------------------------------
     # character buffer methods
     #---------------------------------------------------------------------------
-    # set_buffer - set the char_buf to draw to the screen (internal or external)
-    def set_buffer( self, buffer ):
-        self.draw_buffer = buffer
-        self.update = True
-
-    # write - write a string into the character buffer at ( col, row ) location
+    # write - write a string to the internal character buffer at ( col, row ) location
     def write( self, col, row, string ):
         self.buffer.write( col, row, string )
         self.update = True
 
-    # clear - clear the character buffer
+    # clear - clear the internal character buffer
     def clear( self ):
         self.buffer.clear()
         self.update = True
 
-    # draw - character buffer draw thread callback at fps interval
+    # draw - draw the draw_buffer to the display
     def draw( self ):
+        self.update = True
+
+    # set_buffer - set the buffer to draw to the display (internal or external)
+    def set_buffer( self, buffer ):
+        self.draw_buffer = buffer
+        self.update = True
+
+    # run - character buffer draw thread callback at fps interval
+    def run( self ):
         start_time = 0
-        while self.run:
+        while self.spin:
             start_time = clock_gettime( CLOCK_MONOTONIC )
             if self.update:
                 self.update = False
-                buffer = self.draw_buffer.buffer
+                buffer = str( self.draw_buffer.buffer )
                 # 4 row lcd needs interleaved rows
                 if ( self.rows == 4 ) and ( self.type == self.LCD ) :
                     buffer = buffer[ 0 : 20 ] + buffer[ 40 : 60 ] + buffer[ 20 : 40 ] + buffer[ 60 : 80 ]
@@ -269,7 +281,7 @@ class display():
 
     # shutdown - stop draw thread and turn off display
     def shutdown( self ):
-        self.run = False
+        self.spin = False
         if self.type == 'lcd'  :
             self.backlight_off()
         if self.type == 'oled' :
@@ -516,7 +528,9 @@ class display():
             self.cmd( 0x08 )    # Set 5 x 8 chars, cursor inversion cleared, 1 / 2 line display
         self.cmd ( 0x06 )       # Set Advanced Entry Mode: COM0 -> COM31, SEG99 -> SEG0
         self.cmd ( 0x72 )       # Function Selection B:
-        self.data( 0x00 )       # --> Select ROM A and CGRAM 8 ( which allows for custom characters )
+        # self.data( 0x00 )       # --> Select ROM A and CGRAM 8 ( which allows for custom characters )
+        self.data( 0x04 )       # --> Select ROM B and CGRAM 8 ( which allows for custom characters )
+        # self.data( 0x08 )       # --> Select ROM C and CGRAM 8 ( which allows for custom characters )
         self.cmd ( 0x79 )       # Set SD bit ( RE = 1, IS = 0, SD = 1 )
         self.cmd ( 0xDA )       # Set SEG Pins Hardware Configuration:
         self.cmd ( 0x10 )       # --> Enable SEG Left, Seq SEG pin config
