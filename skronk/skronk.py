@@ -147,14 +147,7 @@ menu( skronk )
 # main
 #-------------------------------------------------------------------------------
 def main():
-
-### put this in an object
-    # ask rnbo to send this script osc messages
-    skronk.osc.send( '/rnbo/listeners/add', skronk.osc.in_ip + ':' + str( skronk.osc.in_port ) )
-### put this in an object
-
     skronk.hello()
-
 
 main()
 
