@@ -12,7 +12,10 @@ echo ""
 
 cd "$(dirname "$0")"
 
-rsync --rsync-path="rsync" --exclude "upload.command" --exclude ".*" --exclude "__pycache__" --delete --times --perms --verbose --archive --recursive --group --human-readable --progress ./skronk ./pd "$USERNAME"@"$HOSTNAME":/home/pi/
+# rsync --exclude "upload.command" --exclude ".*" --exclude "__pycache__" --delete --times --perms --verbose --archive --recursive --group --human-readable --progress ./skronk ./pd "$USERNAME"@"$HOSTNAME":/home/pi/
+
+# dev with sudo rsync
+rsync --rsync-path="sudo rsync" --exclude "upload.command" --exclude ".*" --exclude "__pycache__" --delete --times --perms --verbose --archive --recursive --group --human-readable --progress ./skronk ./pd "$USERNAME"@"$HOSTNAME":/home/pi/
 
 echo ""
 echo -e "\033[1mSync Complete"
