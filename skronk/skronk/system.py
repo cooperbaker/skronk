@@ -35,6 +35,10 @@ class system():
         # linux process name
         with open( '/proc/self/comm', 'w' ) as f: f.write( 'skronk' )
 
+        # check for pd and rnbo
+        self.has_pd   = which( '/usr/bin/pd' )
+        self.has_rnbo = which( '/usr/bin/rnbooscquery' )
+
         # object handles
         self.adc1  = None
         self.adc2  = None
