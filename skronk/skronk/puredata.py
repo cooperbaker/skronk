@@ -39,8 +39,8 @@ class puredata():
         # process handle
         self.proc = False
 
-    # run - starts pd subprocess with patch at path
-    def run( self, path ):
+    # load - starts pd subprocess and opens patch at path
+    def load( self, path ):
         if self.proc is False:
             # note: must run as root
             self.proc = Popen( [ '/usr/bin/pd',
