@@ -32,7 +32,6 @@ class rainbow():
         # patch names
         self.patch   = []
         self.patches = 0
-        self.current_patch = ''
 
         # tell rnbo skronk is listening so rnbo will send osc messages
         osc.send( '/rnbo/listeners/add', osc.in_ip + ':' + str( osc.in_port ) )
@@ -65,18 +64,28 @@ class rainbow():
             self.patch = []
             self.patches = 0
 
-    # current_patch - put current patch name in self.current_patch
-    def get_current_patch( self ):
+    # current_patch - return current patch name string
+    def current_patch( self ):
         try :
             json = loads( urlopen( self.url + '/rnbo/inst/0/name' ).read() )
-            self.current_patch = json[ 'VALUE' ]
+            return json[ 'VALUE' ]
         except:
-            self.current_patch = ''
+            return ''
+
+    # active - report state of rnbo/jack
+    def active( self ):
+        try :
+            json = loads( urlopen( self.url + '/rnbo/jack/active' ).read() )
+            state = json[ 'TYPE' ]
+        except :
+            state = 'F'
+        if state == 'T' :
+            return 1
+        return 0
 
     # load - load a patch ( activates jack if inactive )
     def load( self, patch ):
         self.osc.send( '/rnbo/inst/control/load', [ 0, patch ]  )
-        self.current_patch = patch
 
     # stop - unload a patch
     def stop( self ):
