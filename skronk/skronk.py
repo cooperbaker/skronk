@@ -89,6 +89,22 @@ def sw_event( channel, value ):
     if not skronk.menu.visible :
         skronk.osc.send( OSC_SW + str( channel ), value )
 
+    ### dev sandbox begin ------------------------------------------------------
+    if ( channel == 8 ) and value :
+        skronk.rnbo.off()
+    if ( channel == 9 ) and value :
+        print( 'rnbo active: ' + str( skronk.rnbo.active() ) )
+
+    if ( channel == 10 ) and value :
+        skronk.ssid()
+
+
+    if ( channel == 15 ) and value :
+        skronk.pd.load( '/home/pi/pd/jam.pd' )
+    if ( channel == 16 ) and value :
+        skronk.pd.stop()
+    ### dev sandbox end --------------------------------------------------------
+
  # create switch object: switch( [ pin_numbers ], event_callback )
 skronk.sw = switch( sw_pins, sw_event )
 
