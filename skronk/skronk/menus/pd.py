@@ -24,6 +24,20 @@ class pd( page ):
         # patch list scroll offset
         self.offset = 0
 
+    # def tick( self ):
+    #
+    #    if LOAD FLAG
+    #
+    #     if self.skronk.rnbo.current_patch != '' :
+    #         self.skronk.rnbo.stop()
+    #     elif self.skronk.rnbo.active() :
+    #         self.skronk.rnbo.off()
+    #     elif self.skronk.pd.proc :
+    #         self.skronk.pd.stop()
+    #     else :
+    #         self.skronk.pd.load( 'name' )
+    #         RESET LOAD FLAG
+
     # draw page
     def draw( self ):
                         #  ....................
