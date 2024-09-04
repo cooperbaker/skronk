@@ -24,6 +24,12 @@ class rnbo( page ):
         # patch list scroll offset
         self.offset = 0
 
+    # def tick( self ):
+    #     if self.skronk.pd.proc :
+    #         self.skronk.pd.stop
+    #     else :
+    #         self.skronk.rnbo.load( 'name' )
+
     # draw page
     def draw( self ):
                         #  ....................
@@ -40,8 +46,7 @@ class rnbo( page ):
             if i == self.PAGE_ROWS :
                 break
             self.write( 12, i, self.skronk.rnbo.patch[ ( i + self.offset ) % self.skronk.rnbo.patches ][ : 8 ] )
-        self.skronk.rnbo.get_current_patch()
-        self.write( 0, 1, self.skronk.rnbo.current_patch[ : 8 ] )
+        self.write( 0, 1, self.skronk.rnbo.current_patch()[ : 8 ] )
         self.display()
 
     # sw1 - navigate left
