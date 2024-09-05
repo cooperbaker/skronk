@@ -29,9 +29,11 @@ class rainbow():
         self.port = 5678
         self.url = 'http://' + self.ip + ':' + str( self.port )
 
-        # patch names
+        # patches and presets
         self.patch   = []
         self.patches = 0
+        self.preset  = []
+        self.presets = 0
 
         # tell rnbo skronk is listening so rnbo will send osc messages
         osc.send( '/rnbo/listeners/add', osc.in_ip + ':' + str( osc.in_port ) )
@@ -56,10 +58,9 @@ class rainbow():
             for name in json[ 'CONTENTS' ]:
                 self.patch.append( name )
             self.patch.sort( key = lambda x:x[ 0 ] )
-            self.patches = len( self.patch )
-            while self.patches < 4 :
+            while len( self.patches ) < 4 :
                 self.patch.append( '' )
-                self.patches = self.patches + 1
+            self.patches = len( self.patch )
         except :
             self.patch = []
             self.patches = 0
@@ -71,6 +72,33 @@ class rainbow():
             return json[ 'VALUE' ]
         except:
             return ''
+
+### TEST -----------------------------------------------------------------------
+    def ls_preset( self ):
+        self.presets = 0
+        self.preset = []
+        try :
+            json = loads( urlopen( self.url + '/rnbo/inst/0/presets/entries' ).read() )
+            for name in json[ 'CONTENTS' ]:
+                self.preset.append( name )
+            self.preset.sort( key = lambda x:x[ 0 ] )
+            while len( self.preset ) < 4 :
+                self.preset.append( '' )
+            self.presets = len( self.preset )
+        except :
+            self.preset = []
+            self.presets = 0
+
+    # current_preset - return current patch name string
+    def current_preset( self ):
+        try :
+            json = loads( urlopen( self.url + '/rnbo/inst/0/presets/loaded' ).read() )
+            return json[ 'VALUE' ]
+        except:
+            return ''
+
+### TEST END -------------------------------------------------------------------
+
 
     # active - report state of rnbo/jack
     def active( self ):
