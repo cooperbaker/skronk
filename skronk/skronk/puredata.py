@@ -75,10 +75,9 @@ class puredata():
                 if( name[ 1 ] == '.pd' ) :
                     self.patch.append( name[ 0 ] )
         self.patch.sort( key = lambda x:x[ 0 ] )
-        self.patches = len( self.patch )
-        while self.patches < 4 :
+        while len( self.patch ) < 4 :
             self.patch.append( '' )
-            self.patches = self.patches + 1
+        self.patches = len( self.patch )
 
     # stop - terminates pd subprocess
     def stop( self ):
