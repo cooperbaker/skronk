@@ -34,7 +34,7 @@ class rnbo( page ):
     def draw( self ):
                         #  ....................
                         #  RNBO_<12>3^.filename
-                        #  filename.5>.filename
+                        #  filename.5>>filename
                         #  5.load....|.filename
                         #  6.stop...4v.filename
         self.write( 0, 0, 'RNBO_\x11\x01\x02\x10\x03\x00         ' )

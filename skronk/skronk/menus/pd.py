@@ -42,7 +42,7 @@ class pd( page ):
     def draw( self ):
                         #  ....................
                         #  PD___<12>3^.filename
-                        #  filename.5>.filename
+                        #  filename.5>>filename
                         #  5.load....|.filename
                         #  6.stop...4v.filename
         self.write( 0, 0, 'PD___\x11\x01\x02\x10\x03\x00         ' )
