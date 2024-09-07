@@ -39,6 +39,7 @@ skronk.disp = display( 'oled', 20, 4, 30 )
 #-------------------------------------------------------------------------------
 # input addresses
 OSC_DISP = '/disp'  # display
+OSC_RNBO = '/rnbo'  # rnbo
 OSC_CMD  = '/cmd'   # command
 
 # output addresses
@@ -55,10 +56,9 @@ def osc_message( address, *args ):
     address, *args = skronk.rnbo.osc_format( address, *args )
 
     # route osc messages to command handlers
-    if address == OSC_DISP :
-        skronk.disp.command( *args )
-    elif address == OSC_CMD :
-        skronk.command( *args )
+    if   address == OSC_DISP : skronk.disp.command( *args )
+    elif address == OSC_RNBO : skronk.rnbo.command( *args )
+    elif address == OSC_CMD  : skronk.command( *args )
 
 # create osc server: open_sound_control( message_callback )
 skronk.osc = osc( osc_message )
@@ -95,8 +95,8 @@ def sw_event( channel, value ):
     if ( channel == 9 ) and value :
         print( 'rnbo active: ' + str( skronk.rnbo.active() ) )
 
-    if ( channel == 10 ) and value :
-        skronk.ssid()
+    # if ( channel == 10 ) and value :
+    #     skronk.ssid()
 
 
     if ( channel == 15 ) and value :
