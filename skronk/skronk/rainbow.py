@@ -14,6 +14,7 @@
 from urllib.request import urlopen
 from json           import loads
 
+
 #-------------------------------------------------------------------------------
 # rainbow class
 #-------------------------------------------------------------------------------
@@ -39,7 +40,7 @@ class rainbow():
     # command - command handler
     def command( self, *args ):
         if args[ 0 ] == 'preset' :   # preset name     ~ load preset "name"
-            self.preset( args[ 1 ] )
+            self.preset( str( args[ 1 ] ) )
 
     # osc_format - turn rnbo @meta {'osc':'/messages'} into normal osc messages
     def osc_format( self, address, *args ):
@@ -61,12 +62,13 @@ class rainbow():
             for name in json[ 'CONTENTS' ]:
                 self.patch.append( name )
             self.patch.sort( key = lambda x:x[ 0 ] )
-            while len( self.patches ) < 4 :
+            while len( self.patch ) < 4 :
                 self.patch.append( '' )
             self.patches = len( self.patch )
         except :
             self.patch = []
             self.patches = 0
+
 
     # current_patch - return current patch name string
     def current_patch( self ):
@@ -78,7 +80,8 @@ class rainbow():
 
     # preset - load a preset by name
     def preset( self, name ) :
-        self.osc.send( '/rnbo/inst/0/presets/load', [ 's', name ] )
+        self.osc.send( '/rnbo/inst/0/presets/load', name )
+
 
     # active - report state of rnbo/jack
     def active( self ):
