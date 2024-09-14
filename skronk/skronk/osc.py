@@ -30,27 +30,26 @@ class osc():
     #constructor
     def __init__( self, message_callback ):
 
-        self.message = message_callback
-
         # clients
         self.client_pd   = SimpleUDPClient( self.out_ip, self.pd_port )
         self.client_rnbo = SimpleUDPClient( self.out_ip, self.rnbo_port )
 
         # server
         self.dispatcher = Dispatcher()
-        self.dispatcher.set_default_handler( self.message )
+        self.dispatcher.set_default_handler( message_callback )
         self.server     = ThreadingOSCUDPServer( ( self.in_ip, self.in_port ), self.dispatcher )
-
 
         stack_size( 65536 )
         Thread( target = self.server.serve_forever ).start()
 
-
-    # send a message
+    # send - send a message
     def send( self, addr, val ):
         self.client_pd.send_message( addr, val )
         self.client_rnbo.send_message( addr, val )
 
+    # callback - set default message handler callback
+    def callback( self, message_callback ):
+        self.dispatcher.set_default_handler( message_callback )
 
 #-------------------------------------------------------------------------------
 # eof
