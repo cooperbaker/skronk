@@ -24,11 +24,11 @@ class switch():
     # constructor
     # def callback( channel, state )
     def __init__( self, pins, callback ):
-        self.obj  = []
-        self.now  = []
-        self.old  = []
-        self.pin  = pins
-        self.call = callback
+        self.obj      = []
+        self.now      = []
+        self.old      = []
+        self.pin      = pins
+        self.callback = callback
 
         # set up gpio line objects
         for i, pin in enumerate( self.pin ):
@@ -48,12 +48,12 @@ class switch():
         for i, obj in enumerate( self.obj ):
             # press detect
             if self.now[ i ] and ( self.now[ i ] != self.old[ i ] ):
-                self.call( i + 1, 1 )
+                self.callback( i + 1, 1 )
                 self.old[ i ] = self.now[ i ]
 
             # release detect
             if not( self.now[ i ] ) and ( self.now[ i ] != self.old[ i ] ):
-                self.call( i + 1, 0 )
+                self.callback( i + 1, 0 )
                 self.old[ i ] = self.now[ i ]
 
 
