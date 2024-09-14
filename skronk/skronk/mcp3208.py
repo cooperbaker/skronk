@@ -113,10 +113,7 @@ class mcp3208():
     # filter - adc input filter
     def filter( self, channel, x ):
 
-        # note: this would obviously be much faster as a c module,
-        # however, it is nice in python for the pedagogy and quick coding.
-        # Please get in touch if you know of filter optimizations that might
-        # improve performance here :)
+        # Please get in touch with any pure python filter optimizations
 
         # iir lowpass filter cascade : y = y1 + a * ( x - y1 )
         self.y0[ channel ] = self.y0[ channel ] + self.a * (                  x - self.y0[ channel ] )
