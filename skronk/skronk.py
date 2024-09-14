@@ -98,7 +98,6 @@ def sw_event( channel, value ):
     # if ( channel == 10 ) and value :
     #     skronk.ssid()
 
-
     if ( channel == 15 ) and value :
         skronk.pd.load( '/home/pi/pd/jam.pd' )
     if ( channel == 16 ) and value :
