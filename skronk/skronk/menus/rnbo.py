@@ -62,20 +62,23 @@ class rnbo( page ):
     # sw3 - scroll up the patch list
     def sw3( self, value ):
         if value :
-            self.offset = ( self.offset + self.skronk.rnbo.patches - 1 ) % self.skronk.rnbo.patches
-            self.draw()
+            if self.skronk.rnbo.patches :
+                self.offset = ( self.offset + self.skronk.rnbo.patches - 1 ) % self.skronk.rnbo.patches
+                self.draw()
 
-    # sw3 - scroll down the patch list
+    # sw4 - scroll down the patch list
     def sw4( self, value ):
         if value :
-            self.offset = ( self.offset + 1 ) % self.skronk.rnbo.patches
-            self.draw()
+            if self.skronk.rnbo.patches :
+                self.offset = ( self.offset + 1 ) % self.skronk.rnbo.patches
+                self.draw()
 
     # sw5 - load patch
     def sw5( self, value ):
         if value :
-            self.skronk.rnbo.load( self.skronk.rnbo.patch[ ( self.offset + 1 ) % self.skronk.rnbo.patches ] )
-            self.skronk.menu.toggle()
+            if self.skronk.rnbo.patches :
+                self.skronk.rnbo.load( self.skronk.rnbo.patch[ ( self.offset + 1 ) % self.skronk.rnbo.patches ] )
+                self.skronk.menu.toggle()
 
     # sw6 - stop patch
     def sw6( self, value ):
