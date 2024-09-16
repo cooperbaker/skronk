@@ -95,8 +95,8 @@ def sw_event( channel, value ):
     if ( channel == 9 ) and value :
         print( 'rnbo active: ' + str( skronk.rnbo.active() ) )
 
-    # if ( channel == 10 ) and value :
-    #     skronk.ssid()
+    if ( channel == 10 ) and value :
+        skronk.ssid()
 
     if ( channel == 15 ) and value :
         skronk.pd.load( '/home/pi/pd/jam.pd' )
@@ -162,7 +162,10 @@ menu( skronk )
 # main
 #-------------------------------------------------------------------------------
 def main():
+    from time import sleep
     skronk.hello()
+    sleep( 0.5 )
+    skronk.disp.clear()
 
 main()
 
