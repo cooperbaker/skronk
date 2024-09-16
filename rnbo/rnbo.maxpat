@@ -437,7 +437,7 @@
 									"maxclass" : "newobj",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 838.5, 919.0, 143.0, 23.0 ],
+									"patching_rect" : [ 837.0, 919.0, 143.0, 23.0 ],
 									"rnbo_classname" : "outport",
 									"rnbo_extra_attributes" : 									{
 										"meta" : ""
