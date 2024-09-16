@@ -3,6 +3,7 @@
 # Superclass for menu pages
 #
 # Cooper Baker (c) 2024
+#
 # pylint: disable = multiple-statements
 #-------------------------------------------------------------------------------
 
