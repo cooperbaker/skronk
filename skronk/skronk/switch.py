@@ -24,37 +24,42 @@ class switch():
     # constructor
     # def callback( channel, state )
     def __init__( self, pins, callback ):
-        self.obj      = []
-        self.now      = []
-        self.old      = []
+        self.line     = []
+        self.value    = []
+        self.prev     = []
         self.pin      = pins
         self.callback = callback
+
+        self.state = []
 
         # set up gpio line objects
         for i, pin in enumerate( self.pin ):
             obj = self.gpio.get_line( pin )
             obj.request( consumer = __file__, type = LINE_REQ_DIR_IN )
-            self.obj.append( obj )
-            self.now.append( 0 )
-            self.old.append( 0 )
+            self.line.append( obj )
+            self.value.append( 0 )
+            self.prev.append( 0 )
+            self.state.append( int( 0 ) )
 
     # read button states - polling thread
     def read( self ):
-        for i, obj in enumerate( self.obj ):
-            self.now[ i ] = int( not obj.get_value() )
+        for i, line in enumerate( self.line ):
+            # bit-shift debounce - shift in bits until enough consecutive bits match
+            self.state[ i ] = ( ( self.state[ i ] << 1 ) | int( not line.get_value() ) ) & 0xF
+            self.value[ i ] = 1 if self.state[ i ] == 0xF else 0
 
     # detect events and run callbacks - event thread
     def events( self ):
-        for i, obj in enumerate( self.obj ):
+        for i, obj in enumerate( self.line ):
             # press detect
-            if self.now[ i ] and ( self.now[ i ] != self.old[ i ] ):
+            if self.value[ i ] and ( self.value[ i ] != self.prev[ i ] ):
                 self.callback( i + 1, 1 )
-                self.old[ i ] = self.now[ i ]
+                self.prev[ i ] = self.value[ i ]
 
             # release detect
-            if not( self.now[ i ] ) and ( self.now[ i ] != self.old[ i ] ):
+            if not( self.value[ i ] ) and ( self.value[ i ] != self.prev[ i ] ):
                 self.callback( i + 1, 0 )
-                self.old[ i ] = self.now[ i ]
+                self.prev[ i ] = self.value[ i ]
 
 
 #-------------------------------------------------------------------------------
