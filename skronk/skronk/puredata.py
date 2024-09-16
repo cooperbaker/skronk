@@ -29,7 +29,7 @@ class puredata():
         # alsa audio device
         # change this to match your system - list devices with the command:
         # $ pd -stderr -listdev -nogui -send "pd quit"
-        self.device = 'USB Audio CODEC' # UCA202
+        self.device = 'USB Audio CODEC' # Behringer UCA202
 
         # patch path
         self.path    = '/home/pi/pd'
