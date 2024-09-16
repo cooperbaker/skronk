@@ -26,6 +26,8 @@ class pd( page ):
 
     # def tick( self ):
     #
+    #   HANDLE THIS IN puredata/rainbow OBJECTS
+    #
     #    if LOAD FLAG
     #
     #     if self.skronk.rnbo.current_patch != '' :
@@ -66,17 +68,19 @@ class pd( page ):
         if value :
             self.right()
 
-    # sw3 - scroll down the patch list
+    # sw3 - scroll up the patch list
     def sw3( self, value ):
         if value :
-            self.offset = ( self.offset + self.skronk.pd.patches - 1 ) % self.skronk.pd.patches
-            self.draw()
+            if self.skronk.pd.patches :
+                self.offset = ( self.offset + self.skronk.pd.patches - 1 ) % self.skronk.pd.patches
+                self.draw()
 
-    # sw4 - scroll up the patch list
+    # sw4 - scroll down the patch list
     def sw4( self, value ):
         if value :
-            self.offset = ( self.offset + 1 ) % self.skronk.pd.patches
-            self.draw()
+            if self.skronk.pd.patches :
+                self.offset = ( self.offset + 1 ) % self.skronk.pd.patches
+                self.draw()
 
 
 #-------------------------------------------------------------------------------
