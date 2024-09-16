@@ -12,14 +12,15 @@
 #-------------------------------------------------------------------------------
 # imports
 #-------------------------------------------------------------------------------
-from sys    import exit as sys_exit
-from signal import signal, SIGHUP, SIGINT, SIGQUIT, SIGABRT, SIGTERM
-from fcntl  import ioctl
-from socket import socket, inet_ntoa, AF_INET, SOCK_DGRAM, gethostname
-from struct import pack
-from time   import sleep
-from shutil import which
-
+from sys        import exit as sys_exit
+from signal     import signal, SIGHUP, SIGINT, SIGQUIT, SIGABRT, SIGTERM
+from fcntl      import ioctl
+from socket     import socket, inet_ntoa, AF_INET, SOCK_DGRAM, gethostname
+from struct     import pack
+from time       import sleep
+from shutil     import which
+from subprocess import check_output
+from logging    import disable, WARNING
 
 #-------------------------------------------------------------------------------
 # system class
@@ -34,6 +35,9 @@ class system():
 
         # linux process name
         with open( '/proc/self/comm', 'w' ) as f: f.write( 'skronk' )
+
+        # no warning logging (pythonosc console spam)
+        disable( WARNING )
 
         # check for pd and rnbo
         self.has_pd   = which( '/usr/bin/pd' )
@@ -76,6 +80,14 @@ class system():
         except:
             addr = '0:0:0:0'
         return addr
+
+    # ssid - name string of wifi access point
+    def ssid( self ) :
+        name = check_output( 'nmcli -c no -f ap.ssid device show wlan0', shell=True, text=True ).split()
+        if name[ 1 ] :
+            return name[ 1 ]
+        return ''
+
 
     # mac - mac address string ( name: 'eth0', 'wlan0' )
     def mac( self, name ):
@@ -121,10 +133,19 @@ class system():
 
     # hello - display hello message
     def hello( self ):
-        self.disp.write( 0, 0, self.hostname() )
-        self.disp.write( 0, 1, self.ip( 'wlan0' ) )
-        self.disp.write( 0, 2, self.mac( 'wlan0' ) )
-        self.disp.write( 0, 3, 'skronk firmware ' + str( self.version ) )
+        self.disp.clear()
+        self.disp.write( 7, 1, 'Hello' )
+        if self.disp.type is self.disp.OLED :
+            self.disp.write(  0, 0, '\x17' )
+            self.disp.write( 19, 0, '\x17' )
+            self.disp.write(  0, 3, '\x17' )
+            self.disp.write( 19, 3, '\x17' )
+        else :
+            self.disp.write(  0, 0, '\x91' )
+            self.disp.write( 19, 0, '\x91' )
+            self.disp.write(  0, 3, '\x91' )
+            self.disp.write( 19, 3, '\x91' )
+        self.disp.set_buffer( self.disp.buffer )
 
     # goodbye - display goodbye message
     def goodbye( self ):
