@@ -10,6 +10,7 @@
 # imports
 #-------------------------------------------------------------------------------
 from .thread     import thread
+from .menus.net  import net
 from .menus.pd   import pd
 from .menus.rnbo import rnbo
 from .menus.stat import stat
@@ -36,14 +37,16 @@ class menu():
         self.skronk = skronk
 
         # create pages
+        self.net  = net ( skronk )
         self.stat = stat( skronk )
         self.pd   = pd  ( skronk )
         self.rnbo = rnbo( skronk )
 
         # set up page navigation: nav( up, down, left, right )
-        self.stat.nav( None, None, self.rnbo, self.pd   )
+        self.net.nav ( None, None, self.rnbo, self.stat )
+        self.stat.nav( None, None, self.net,  self.pd   )
         self.pd.nav  ( None, None, self.stat, self.rnbo )
-        self.rnbo.nav( None, None, self.pd,   self.stat )
+        self.rnbo.nav( None, None, self.pd,   self.net  )
 
         # current active page
         self.page = self.stat
