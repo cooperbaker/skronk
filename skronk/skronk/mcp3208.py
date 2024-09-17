@@ -3,6 +3,8 @@
 # MCP3208 analog-to-digital converter interface
 #
 # Cooper Baker (c) 2024
+#
+# pylint: disable = line-too-long
 #-------------------------------------------------------------------------------
 
 
@@ -22,12 +24,11 @@ class mcp3208():
 
     # constructor
     # def callback( channel, value ):
-    def __init__( self, bus, device, callback ):
+    def __init__( self, bus, device ):
 
         # init vars
         self.bus      = bus
         self.device   = device
-        self.callback = callback
 
         # channel values
         self.steps     = 200
@@ -109,6 +110,10 @@ class mcp3208():
             if self.value[ channel ] != self.value_old[ channel ]:
                 self.callback( channel + 1, self.value[ channel ] )
             self.value_old[ channel ] = self.value[ channel ]
+
+    # callback - event callback
+    def callback( self, channel, value ):
+        pass
 
     # filter - adc input filter
     def filter( self, channel, x ):
