@@ -28,7 +28,7 @@ class osc():
     out_ip    = in_ip
 
     #constructor
-    def __init__( self, message_callback ):
+    def __init__( self ):
 
         # clients
         self.client_pd   = SimpleUDPClient( self.out_ip, self.pd_port )
@@ -36,7 +36,6 @@ class osc():
 
         # server
         self.dispatcher = Dispatcher()
-        self.dispatcher.set_default_handler( message_callback )
         self.server     = ThreadingOSCUDPServer( ( self.in_ip, self.in_port ), self.dispatcher )
 
         stack_size( 65536 )
