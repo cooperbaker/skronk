@@ -30,9 +30,6 @@ class menu():
     # constructor
     def __init__( self, skronk ):
 
-        # store this object in the skronk object
-        skronk.menu = self
-
         # store the skronk object
         self.skronk = skronk
 
