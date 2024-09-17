@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 # net.py
-# Menu page for skronk
+# Menu page for network info
 #
 # displays network info
 #
@@ -20,8 +20,8 @@ from .page import page
 class net( page ):
 
     # constructor
-    def __init__( self, skronk ):
-        super().__init__( skronk )
+    def __init__( self, system ):
+        super().__init__( system )
 
     # # tick callback
     # def tick( self ):
@@ -35,11 +35,11 @@ class net( page ):
                         #  000.000.000.000.....
                         #  hostname.ssid.......
                         #  00.00.00.00.00.00...
-        hostname_ssid = self.skronk.hostname() + ' @ ' + self.skronk.ssid()
+        hostname_ssid = self.system.hostname() + ' @ ' + self.system.ssid()
         self.write( 0, 0, 'NET_____________\x11\x01\x02\x10' )
-        self.write( 0, 1, self.skronk.ip( 'wlan0' ) )
+        self.write( 0, 1, self.system.ip( 'wlan0' ) )
         self.write( 0, 2, f'{hostname_ssid:20s}' )
-        self.write( 0, 3, self.skronk.mac( 'wlan0' ) )
+        self.write( 0, 3, self.system.mac( 'wlan0' ) )
         self.display()
 
     # sw1 - navigate left

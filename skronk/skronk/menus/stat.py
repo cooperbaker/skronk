@@ -1,6 +1,6 @@
 #-------------------------------------------------------------------------------
 # stat.py
-# Menu page for skronk
+# Menu page for system status
 #
 # displays cpu percent, mem percent, cpu temperature
 #
@@ -20,8 +20,8 @@ from .page import page
 class stat( page ):
 
     # constructor
-    def __init__( self, skronk ):
-        super().__init__( skronk )
+    def __init__( self, system ):
+        super().__init__( system )
 
     # tick callback
     def tick( self ):
@@ -37,8 +37,8 @@ class stat( page ):
                         #  mem 99.9%...........
         self.write( 0, 0, 'STAT____________\x11\x01\x02\x10' )
         self.write( 0, 1, '                    ' )
-        self.write( 0, 2, f'cpu { self.skronk.cpu() }% temp { self.skronk.temp() }c' )
-        self.write( 0, 3, f'mem { self.skronk.mem() }%           ' )
+        self.write( 0, 2, f'cpu { self.system.cpu() }% temp { self.system.temp() }c' )
+        self.write( 0, 3, f'mem { self.system.mem() }%           ' )
         self.display()
 
     # sw1 - navigate left

@@ -18,17 +18,17 @@ from .page import page
 # rnbo class
 #-------------------------------------------------------------------------------
 class rnbo( page ):
-    def __init__( self, skronk ):
-        super().__init__( skronk )
+    def __init__( self, system ):
+        super().__init__( system )
 
         # patch list scroll offset
         self.offset = 0
 
     # def tick( self ):
-    #     if self.skronk.pd.proc :
-    #         self.skronk.pd.stop
+    #     if self.system.pd.proc :
+    #         self.system.pd.stop
     #     else :
-    #         self.skronk.rnbo.load( 'name' )
+    #         self.system.rnbo.load( 'name' )
 
     # draw page
     def draw( self ):
@@ -41,12 +41,12 @@ class rnbo( page ):
         self.write( 0, 1, '         \x05\x10\x10        ' )
         self.write( 0, 2, '\x05 load    |         ' )
         self.write( 0, 3, '\x06 stop   \x04\x07         ' )
-        self.skronk.rnbo.ls()
-        for i in range( self.skronk.rnbo.patches ):
+        self.system.rnbo.ls()
+        for i in range( self.system.rnbo.patches ):
             if i == self.PAGE_ROWS :
                 break
-            self.write( 12, i, self.skronk.rnbo.patch[ ( i + self.offset ) % self.skronk.rnbo.patches ][ : 8 ] )
-        self.write( 0, 1, self.skronk.rnbo.current_patch()[ : 8 ] )
+            self.write( 12, i, self.system.rnbo.patch[ ( i + self.offset ) % self.system.rnbo.patches ][ : 8 ] )
+        self.write( 0, 1, self.system.rnbo.current_patch()[ : 8 ] )
         self.display()
 
     # sw1 - navigate left
@@ -62,28 +62,28 @@ class rnbo( page ):
     # sw3 - scroll up the patch list
     def sw3( self, value ):
         if value :
-            if self.skronk.rnbo.patches :
-                self.offset = ( self.offset + self.skronk.rnbo.patches - 1 ) % self.skronk.rnbo.patches
+            if self.system.rnbo.patches :
+                self.offset = ( self.offset + self.system.rnbo.patches - 1 ) % self.system.rnbo.patches
                 self.draw()
 
     # sw4 - scroll down the patch list
     def sw4( self, value ):
         if value :
-            if self.skronk.rnbo.patches :
-                self.offset = ( self.offset + 1 ) % self.skronk.rnbo.patches
+            if self.system.rnbo.patches :
+                self.offset = ( self.offset + 1 ) % self.system.rnbo.patches
                 self.draw()
 
     # sw5 - load patch
     def sw5( self, value ):
         if value :
-            if self.skronk.rnbo.patches :
-                self.skronk.rnbo.load( self.skronk.rnbo.patch[ ( self.offset + 1 ) % self.skronk.rnbo.patches ] )
-                self.skronk.menu.toggle()
+            if self.system.rnbo.patches :
+                self.system.rnbo.load( self.system.rnbo.patch[ ( self.offset + 1 ) % self.system.rnbo.patches ] )
+                self.system.menu.toggle()
 
     # sw6 - stop patch
     def sw6( self, value ):
         if value :
-            self.skronk.rnbo.stop()
+            self.system.rnbo.stop()
             self.draw()
 
 

@@ -24,10 +24,10 @@ class page():
     PAGE_ROWS = 4
 
     # constructor
-    def __init__( self, skronk ):
+    def __init__( self, system ):
 
-        # skronk object
-        self.skronk = skronk
+        # system object
+        self.system = system
 
         # menu navigation
         self.up_page    = None
@@ -41,7 +41,7 @@ class page():
         # sugar lets you type less
         self.write   = self.buffer.write   # write to the page buffer
         self.clear   = self.buffer.clear   # clear the page buffer
-        self.display = skronk.disp.draw    # display the page buffer
+        self.display = self.system.disp.draw    # display the page buffer
 
     # nav - configure page navigation
     def nav( self, up, down, left, right ):
@@ -51,10 +51,10 @@ class page():
         self.right_page = right
 
     # navigation - go to a page
-    def up   ( self ): self.skronk.menu.set_page( self.up_page    )
-    def down ( self ): self.skronk.menu.set_page( self.down_page  )
-    def left ( self ): self.skronk.menu.set_page( self.left_page  )
-    def right( self ): self.skronk.menu.set_page( self.right_page )
+    def up   ( self ): self.system.menu.set_page( self.up_page    )
+    def down ( self ): self.system.menu.set_page( self.down_page  )
+    def left ( self ): self.system.menu.set_page( self.left_page  )
+    def right( self ): self.system.menu.set_page( self.right_page )
 
     # draw - draw the page
     def draw( self ): pass

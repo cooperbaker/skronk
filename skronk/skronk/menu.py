@@ -28,16 +28,16 @@ class menu():
     TICK_MSEC = 333.333
 
     # constructor
-    def __init__( self, skronk ):
+    def __init__( self, system ):
 
-        # store the skronk object
-        self.skronk = skronk
+        # store the system object
+        self.system = system
 
         # create pages
-        self.net  = net ( skronk )
-        self.stat = stat( skronk )
-        self.pd   = pd  ( skronk )
-        self.rnbo = rnbo( skronk )
+        self.net  = net ( system )
+        self.stat = stat( system )
+        self.pd   = pd  ( system )
+        self.rnbo = rnbo( system )
 
         # set up page navigation: nav( up, down, left, right )
         self.net.nav ( None, None, self.rnbo, self.stat )
@@ -78,9 +78,9 @@ class menu():
         if self.visible :
             self.page.tick()
             self.page.draw()
-            self.skronk.disp.set_buffer( self.page.buffer )
+            self.system.disp.set_buffer( self.page.buffer )
         else :
-            self.skronk.disp.set_buffer( self.skronk.disp.buffer )
+            self.system.disp.set_buffer( self.system.disp.buffer )
 
     # set_page - set the active page
     def set_page( self, page ):
@@ -89,7 +89,7 @@ class menu():
             if self.visible :
                 self.page.tick()
                 self.page.draw()
-                self.skronk.disp.set_buffer( self.page.buffer )
+                self.system.disp.set_buffer( self.page.buffer )
 
 
 #-------------------------------------------------------------------------------
