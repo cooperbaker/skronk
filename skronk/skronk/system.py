@@ -3,6 +3,7 @@
 # System object for skronk
 #
 # Cooper Baker (c) 2024
+#
 # pylint: disable = bare-except
 # pylint: disable = multiple-statements
 # pylint: disable = unspecified-encoding
@@ -51,7 +52,7 @@ class system():
         # linux process name
         with open( '/proc/self/comm', 'w' ) as f: f.write( 'skronk' )
 
-        # no warning logging to prevent pythonosc console spam
+        # disable warning logging to prevent pythonosc console spam
         disable( WARNING )
 
         # check for pd and rnbo
@@ -105,7 +106,6 @@ class system():
         if name[ 1 ] :
             return name[ 1 ]
         return ''
-
 
     # mac - mac address string ( name: 'eth0', 'wlan0' )
     def mac( self, name ):
