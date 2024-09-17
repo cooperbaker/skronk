@@ -80,11 +80,13 @@ class system():
         if args[ 0 ] == 'off':
             self.shutdown()
 
+    # read_thread - switch / adc read callback
     def read_thread( self ):
         self.sw.read()
         self.adc1.read()
         self.adc2.read()
 
+    # event_thread - switch / adc event callback
     def event_thread( self ):
         self.sw.events()
         self.adc1.events()
@@ -214,4 +216,3 @@ class system():
 #-------------------------------------------------------------------------------
 # eof
 #-------------------------------------------------------------------------------
-
