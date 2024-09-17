@@ -11,27 +11,26 @@
 # imports
 #-------------------------------------------------------------------------------
 from skronk.display     import display
-from skronk.mcp3208     import mcp3208
 from skronk.menu        import menu
-from skronk.osc         import osc
-from skronk.pins        import sw_pins
-from skronk.puredata    import puredata
-from skronk.rainbow     import rainbow
-from skronk.switch      import switch
 from skronk.system      import system
-from skronk.thread      import thread
 
 
 #-------------------------------------------------------------------------------
-# system
+# system object
 #-------------------------------------------------------------------------------
 skronk = system()
 
 
 #-------------------------------------------------------------------------------
-# display
+# display object ( type, cols, rows, fps )
 #-------------------------------------------------------------------------------
 skronk.disp = display( 'oled', 20, 4, 30 )
+
+
+#-------------------------------------------------------------------------------
+# menu object
+#-------------------------------------------------------------------------------
+skronk.menu = menu( skronk )
 
 
 #-------------------------------------------------------------------------------
@@ -60,26 +59,14 @@ def osc_message( address, *args ):
     elif address == OSC_RNBO : skronk.rnbo.command( *args )
     elif address == OSC_CMD  : skronk.command( *args )
 
-# create osc server: open_sound_control( message_callback )
-skronk.osc = osc( osc_message )
-
-
-#-------------------------------------------------------------------------------
-# rnbo
-#-------------------------------------------------------------------------------
-skronk.rnbo = rainbow( skronk.osc )
-
-
-#-------------------------------------------------------------------------------
-# pure data
-#-------------------------------------------------------------------------------
-skronk.pd = puredata()
+# set osc message callback
+skronk.osc.callback( osc_message )
 
 
 #-------------------------------------------------------------------------------
 # switches
 #-------------------------------------------------------------------------------
-# switch event handler callback
+# define switch event handler callback
 def sw_event( channel, value ):
 
     # give events to menu
@@ -89,23 +76,8 @@ def sw_event( channel, value ):
     if not skronk.menu.visible :
         skronk.osc.send( OSC_SW + str( channel ), value )
 
-    ### dev sandbox begin ------------------------------------------------------
-    if ( channel == 8 ) and value :
-        skronk.rnbo.off()
-    if ( channel == 9 ) and value :
-        print( 'rnbo active: ' + str( skronk.rnbo.active() ) )
-
-    if ( channel == 10 ) and value :
-        skronk.ssid()
-
-    if ( channel == 15 ) and value :
-        skronk.pd.load( '/home/pi/pd/jam.pd' )
-    if ( channel == 16 ) and value :
-        skronk.pd.stop()
-    ### dev sandbox end --------------------------------------------------------
-
- # create switch object: switch( [ pin_numbers ], event_callback )
-skronk.sw = switch( sw_pins, sw_event )
+# set switch callback
+skronk.sw.callback = sw_event
 
 
 #-------------------------------------------------------------------------------
@@ -123,39 +95,9 @@ def adc1_event( channel, value ):
 def adc2_event( channel, value ):
     adc_event( channel + 8, value )
 
-# create adc objects: mcp3208( i2s_bus, i2s_device, event_callback )
-skronk.adc1 = mcp3208( 0, 0, adc1_event )
-skronk.adc2 = mcp3208( 0, 1, adc2_event )
-
-
-#-------------------------------------------------------------------------------
-# read thread
-#-------------------------------------------------------------------------------
-def read_thread():
-    skronk.sw.read()
-    skronk.adc1.read()
-    skronk.adc2.read()
-
-# create read thread at 1 msec interval
-skronk.read = thread( read_thread, 1 )
-
-
-#-------------------------------------------------------------------------------
-# event thread
-#-------------------------------------------------------------------------------
-def event_thread():
-    skronk.sw.events()
-    skronk.adc1.events()
-    skronk.adc2.events()
-
-# create event thread at 1 msec interval
-skronk.event = thread( event_thread, 1 )
-
-
-#-------------------------------------------------------------------------------
-# menu
-#-------------------------------------------------------------------------------
-menu( skronk )
+# set adc callbacks
+skronk.adc1.callback = adc1_event
+skronk.adc2.callback = adc2_event
 
 
 #-------------------------------------------------------------------------------
