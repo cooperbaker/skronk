@@ -25,6 +25,7 @@ skronk = system()
 # display object ( type, cols, rows, fps )
 #-------------------------------------------------------------------------------
 skronk.disp = display( 'oled', 20, 4, 30 )
+skronk.hello()
 
 
 #-------------------------------------------------------------------------------
@@ -98,18 +99,6 @@ def adc2_event( channel, value ):
 # set adc callbacks
 skronk.adc1.callback = adc1_event
 skronk.adc2.callback = adc2_event
-
-
-#-------------------------------------------------------------------------------
-# main
-#-------------------------------------------------------------------------------
-def main():
-    from time import sleep
-    skronk.hello()
-    sleep( 0.5 )
-    skronk.disp.clear()
-
-main()
 
 
 #-------------------------------------------------------------------------------
