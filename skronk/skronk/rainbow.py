@@ -21,9 +21,9 @@ from json           import loads
 class rainbow():
 
     # constructor
-    def __init__( self, osc ):
+    def __init__( self, skronk ):
 
-        self.osc = osc
+        self.osc = skronk.osc
 
         # local rnbo @ http://127.0.0.1:5678
         self.ip = '127.0.0.1'
@@ -35,7 +35,7 @@ class rainbow():
         self.patches = 0
 
         # tell rnbo skronk is listening so rnbo will send osc messages
-        osc.send( '/rnbo/listeners/add', osc.in_ip + ':' + str( osc.in_port ) )
+        self.osc.send( '/rnbo/listeners/add', self.osc.in_ip + ':' + str( self.osc.in_port ) )
 
     # command - command handler
     def command( self, *args ):
@@ -69,7 +69,6 @@ class rainbow():
             self.patch = []
             self.patches = 0
 
-
     # current_patch - return current patch name string
     def current_patch( self ):
         try :
@@ -81,7 +80,6 @@ class rainbow():
     # preset - load a preset by name
     def preset( self, name ) :
         self.osc.send( '/rnbo/inst/0/presets/load', name )
-
 
     # active - report state of rnbo/jack
     def active( self ):
@@ -105,7 +103,6 @@ class rainbow():
     # off - deactivate jack
     def off( self ):
         self.osc.send( '/rnbo/jack/active', 0 )
-
 
 #-------------------------------------------------------------------------------
 # to do ...
