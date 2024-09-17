@@ -48,7 +48,7 @@ OSC_ADC = '/adc/'   # analog to digital converters
 # osc message handler callback
 def osc_message( address, *args ):
 
-    # show all osc input :
+    # print all osc input to console:
     # print( address + ' ' + str( args ) )
 
     # turn rnbo @meta {'osc':'/messages'} into normal osc messages
