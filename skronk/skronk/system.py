@@ -164,6 +164,8 @@ class system():
             self.disp.write(  0, 3, '\x91' )
             self.disp.write( 19, 3, '\x91' )
         self.disp.set_buffer( self.disp.buffer )
+        sleep( 0.5 )
+        self.disp.clear()
 
     # goodbye - display goodbye message
     def goodbye( self ):
@@ -180,6 +182,7 @@ class system():
             self.disp.write(  0, 3, '\x91' )
             self.disp.write( 19, 3, '\x91' )
         self.disp.set_buffer( self.disp.buffer )
+        sleep( 0.5 )
 
     # sig - os signal handler callback
     def sig( self, sig, frame ):
@@ -204,7 +207,6 @@ class system():
         self.pd.stop()
         self.menu.stop()
         self.goodbye()
-        sleep( 0.5 )
         self.disp.shutdown()
         sys_exit()
 
