@@ -22,6 +22,14 @@ from shutil     import which
 from subprocess import check_output
 from logging    import disable, WARNING
 
+from .mcp3208   import mcp3208
+from .osc       import osc
+from .puredata  import puredata
+from .rainbow   import rainbow
+from .switch    import switch
+from .thread    import thread
+
+
 #-------------------------------------------------------------------------------
 # system class
 #-------------------------------------------------------------------------------
@@ -33,34 +41,34 @@ class system():
     # constructor
     def __init__( self ):
 
-        # linux process name
-        with open( '/proc/self/comm', 'w' ) as f: f.write( 'skronk' )
-
-        # no warning logging (pythonosc console spam)
-        disable( WARNING )
-
-        # check for pd and rnbo
-        self.has_pd   = which( '/usr/bin/pd' )
-        self.has_rnbo = which( '/usr/bin/rnbooscquery' )
-
-        # object handles
-        self.adc1  = None
-        self.adc2  = None
-        self.disp  = None
-        self.event = None
-        self.menu  = None
-        self.osc   = None
-        self.pd    = None
-        self.read  = None
-        self.rnbo  = None
-        self.sw    = None
-
         # install signal callbacks
         signal( SIGHUP,  self.sig )
         signal( SIGINT,  self.sig )
         signal( SIGQUIT, self.sig )
         signal( SIGABRT, self.sig )
         signal( SIGTERM, self.sig )
+
+        # linux process name
+        with open( '/proc/self/comm', 'w' ) as f: f.write( 'skronk' )
+
+        # no warning logging to prevent pythonosc console spam
+        disable( WARNING )
+
+        # check for pd and rnbo
+        self.has_pd   = which( '/usr/bin/pd' )
+        self.has_rnbo = which( '/usr/bin/rnbooscquery' )
+
+        # objects
+        self.adc1  = mcp3208( 0, 0 )
+        self.adc2  = mcp3208( 0, 1 )
+        self.osc   = osc()
+        self.pd    = puredata()
+        self.rnbo  = rainbow( self )
+        self.sw    = switch()
+        self.read  = thread( self.read_thread, 1 )
+        self.event = thread( self.event_thread, 1 )
+        self.disp  = None
+        self.menu  = None
 
         # cpu percent calc vars
         self.work = 0
@@ -70,6 +78,16 @@ class system():
     def command( self, *args ):
         if args[ 0 ] == 'off':
             self.shutdown()
+
+    def read_thread( self ):
+        self.sw.read()
+        self.adc1.read()
+        self.adc2.read()
+
+    def event_thread( self ):
+        self.sw.events()
+        self.adc1.events()
+        self.adc2.events()
 
     # ip - ip address string ( name: 'eth0', 'wlan0' )
     def ip( self, name ):
