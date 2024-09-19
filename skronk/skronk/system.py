@@ -15,14 +15,8 @@
 #-------------------------------------------------------------------------------
 from sys        import exit as sys_exit
 from signal     import signal, SIGHUP, SIGINT, SIGQUIT, SIGABRT, SIGTERM
-from fcntl      import ioctl
-from socket     import socket, inet_ntoa, AF_INET, SOCK_DGRAM, gethostname
-from struct     import pack
-from time       import sleep
 from shutil     import which
-from subprocess import check_output
 from logging    import disable, WARNING
-
 from .mcp3208   import mcp3208
 from .osc       import osc
 from .puredata  import puredata
@@ -71,9 +65,8 @@ class system():
         self.disp  = None
         self.menu  = None
 
-        # cpu percent calc vars
-        self.work = 0
-        self.idle = 0
+        print( 'Skronk Firmware v' + self.version )
+        print( '(c) 2024 Cooper Baker - All Rights Reserved' )
 
     # command - command handler ( args is list of words/values )
     def command( self, *args ):
@@ -91,100 +84,6 @@ class system():
         self.sw.events()
         self.adc1.events()
         self.adc2.events()
-
-    # ip - ip address string ( name: 'eth0', 'wlan0' )
-    def ip( self, name ):
-        sock  = socket( AF_INET, SOCK_DGRAM )
-        iface = pack( '256s', name.encode( 'utf_8' ) )
-        try:
-            addr = inet_ntoa( ioctl( sock.fileno(), 0x8915, iface )[ 20 : 24 ] )
-        except:
-            addr = '0:0:0:0'
-        return addr
-
-    # ssid - name string of wifi access point
-    def ssid( self ) :
-        name = check_output( 'nmcli -c no -f ap.ssid device show wlan0', shell=True, text=True ).split()
-        if name[ 1 ] :
-            return name[ 1 ]
-        return ''
-
-    # mac - mac address string ( name: 'eth0', 'wlan0' )
-    def mac( self, name ):
-        f = open( '/sys/class/net/' + name + '/address','r' )
-        m = f.readline()
-        f.close()
-        return m
-
-    # hostname - hostname string
-    def hostname( self ):
-        return gethostname()
-
-    # cpu - percent cpu usage string
-    def cpu( self ):
-        f   = open( '/proc/stat','r' )
-        cpu = f.readline()
-        f.close()
-        cpu       = cpu.split()
-        work      = int( cpu[ 1 ] ) + int( cpu[ 2 ] ) + int( cpu[ 3 ] )
-        idle      = int( cpu[ 4 ] )
-        d_work    = work - self.work
-        d_idle    = idle - self.idle
-        self.work = work
-        self.idle = idle
-        return '{:4.1f}'.format( ( float( d_work + 0.000000001 ) / ( d_idle + d_work + 0.000000001 )  ) * 100.0 )
-
-    # mem - percent mem usage string
-    def mem( self ):
-        f     = open( '/proc/meminfo','r' )
-        total = f.readline()
-        free  = f.readline()
-        f.close()
-        total = total.split()
-        free  = free.split()
-        return '{:4.1f}'.format( float( free[ 1 ] ) / ( float( total[ 1 ] ) ) )
-
-    # temp - cpu celsius degrees string
-    def temp( self ):
-        f = open( '/sys/class/thermal/thermal_zone0/temp' ) # millidegrees celsius
-        c = f.readline()
-        f.close()
-        return '{:4.1f}'.format( float( c ) / 1000.0 )
-
-    # hello - display hello message
-    def hello( self ):
-        self.disp.clear()
-        self.disp.write( 7, 1, 'Hello' )
-        if self.disp.type is self.disp.OLED :
-            self.disp.write(  0, 0, '\x17' )
-            self.disp.write( 19, 0, '\x17' )
-            self.disp.write(  0, 3, '\x17' )
-            self.disp.write( 19, 3, '\x17' )
-        else :
-            self.disp.write(  0, 0, '\x91' )
-            self.disp.write( 19, 0, '\x91' )
-            self.disp.write(  0, 3, '\x91' )
-            self.disp.write( 19, 3, '\x91' )
-        self.disp.set_buffer( self.disp.buffer )
-        sleep( 0.5 )
-        self.disp.clear()
-
-    # goodbye - display goodbye message
-    def goodbye( self ):
-        self.disp.clear()
-        self.disp.write( 6, 1, 'Goodbye' )
-        if self.disp.type is self.disp.OLED :
-            self.disp.write(  0, 0, '\x17' )
-            self.disp.write( 19, 0, '\x17' )
-            self.disp.write(  0, 3, '\x17' )
-            self.disp.write( 19, 3, '\x17' )
-        else :
-            self.disp.write(  0, 0, '\x91' )
-            self.disp.write( 19, 0, '\x91' )
-            self.disp.write(  0, 3, '\x91' )
-            self.disp.write( 19, 3, '\x91' )
-        self.disp.set_buffer( self.disp.buffer )
-        sleep( 0.5 )
 
     # sig - os signal handler callback
     def sig( self, sig, frame ):
