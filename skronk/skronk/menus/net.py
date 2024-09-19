@@ -12,7 +12,7 @@
 # imports
 #-------------------------------------------------------------------------------
 from .page import page
-
+from ..utility import hostname, ip, mac, ssid
 
 #-------------------------------------------------------------------------------
 # net class
@@ -35,11 +35,11 @@ class net( page ):
                         #  000.000.000.000.....
                         #  hostname.ssid.......
                         #  00.00.00.00.00.00...
-        hostname_ssid = self.system.hostname() + ' @ ' + self.system.ssid()
+        hostname_ssid = hostname() + ' @ ' + ssid()
         self.write( 0, 0, 'NET_____________\x11\x01\x02\x10' )
-        self.write( 0, 1, self.system.ip( 'wlan0' ) )
+        self.write( 0, 1, ip( 'wlan0' ) )
         self.write( 0, 2, f'{hostname_ssid:20s}' )
-        self.write( 0, 3, self.system.mac( 'wlan0' ) )
+        self.write( 0, 3, mac( 'wlan0' ) )
         self.display()
 
     # sw1 - navigate left
