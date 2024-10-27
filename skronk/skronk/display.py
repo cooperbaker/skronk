@@ -20,6 +20,7 @@ from threading import stack_size, Thread
 from time import sleep, clock_gettime, CLOCK_MONOTONIC
 from smbus2 import SMBus
 from .buffer import buffer
+from .utility import hello, goodbye
 
 
 #-------------------------------------------------------------------------------
@@ -200,6 +201,7 @@ class display():
 
         stack_size( 65536 )
         Thread( target = self.run, name = 'display' ).start()
+        hello( self )
 
     # command - command handler
     def command( self, *args ):
@@ -281,6 +283,8 @@ class display():
 
     # shutdown - stop draw thread and turn off display
     def shutdown( self ):
+        goodbye( self )
+        sleep( 0.5 )
         self.spin = False
         if self.type == 'lcd'  :
             self.backlight_off()
