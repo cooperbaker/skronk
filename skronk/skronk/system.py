@@ -23,6 +23,7 @@ from .puredata  import puredata
 from .rainbow   import rainbow
 from .switch    import switch
 from .thread    import thread
+from .utility   import goodbye
 
 
 #-------------------------------------------------------------------------------
@@ -36,7 +37,7 @@ class system():
     # constructor
     def __init__( self ):
 
-        # install signal callbacks
+        # install signal handler
         signal( SIGHUP,  self.sig )
         signal( SIGINT,  self.sig )
         signal( SIGQUIT, self.sig )
@@ -65,8 +66,13 @@ class system():
         self.disp  = None
         self.menu  = None
 
-        print( 'Skronk Firmware v' + self.version )
-        print( '(c) 2024 Cooper Baker - All Rights Reserved' )
+        # announce
+        print()
+        print( 'Skronk Hat Firmware ' + str( self.version ) )
+        print( 'https://nyquist.dev/skronk' )
+        print( '(c) 2024 Cooper Baker' )
+        print()
+
 
     # command - command handler ( args is list of words/values )
     def command( self, *args ):
@@ -107,7 +113,6 @@ class system():
         self.read.stop()
         self.pd.stop()
         self.menu.stop()
-        self.goodbye()
         self.disp.shutdown()
         sys_exit()
 
