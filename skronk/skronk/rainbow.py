@@ -105,11 +105,10 @@ class rainbow():
         self.osc.send( '/rnbo/jack/active', 0 )
 
 #-------------------------------------------------------------------------------
-# to do ...
+# sandbox
 #-------------------------------------------------------------------------------
     # def on( self ):
     #     self.osc.send( '/rnbo/jack/active', 1 )
-
 
     # def device( self, name ):
         # osc.send( '/rnbo/jack/config/card', [ 's', name ] )
@@ -117,7 +116,7 @@ class rainbow():
         # osc.send( '/rnbo/jack/active, 1' )
 
     # def get_devices( self ):
-
+        # ?
 
 #-------------------------------------------------------------------------------
 # eof
