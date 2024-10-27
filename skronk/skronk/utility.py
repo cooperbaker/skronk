@@ -1,3 +1,6 @@
+# pylint: disable = bare-except
+# pylint: disable = unspecified-encoding
+
 from fcntl      import ioctl
 from socket     import socket, inet_ntoa, AF_INET, SOCK_DGRAM, gethostname
 from struct     import pack
@@ -6,8 +9,7 @@ from subprocess import check_output
 
 # cpu - percent cpu usage string
 class cpu():
-
-    def __init__():
+    def __init__( self ):
         self.work = 0
         self.idle = 0
 
@@ -25,11 +27,11 @@ class cpu():
         return '{:4.1f}'.format( ( float( d_work + 0.000000001 ) / ( d_idle + d_work + 0.000000001 )  ) * 100.0 )
 
 # hostname - hostname string
-def hostname( self ):
+def hostname():
     return gethostname()
 
 # ip - ip address string ( name: 'eth0', 'wlan0' )
-def ip( self, name ):
+def ip( name ):
     sock  = socket( AF_INET, SOCK_DGRAM )
     iface = pack( '256s', name.encode( 'utf_8' ) )
     try:
@@ -38,15 +40,15 @@ def ip( self, name ):
         addr = '0:0:0:0'
     return addr
 
-# mac - mac address string ( name: 'eth0', 'wlan0' )
-def mac( self, name ):
-    f = open( '/sys/class/net/' + name + '/address','r' )
+# mac - mac address string ( interface_name: 'eth0', 'wlan0' )
+def mac( interface_name ):
+    f = open( '/sys/class/net/' + interface_name + '/address','r' )
     m = f.readline()
     f.close()
     return m
 
 # mem - percent mem usage string
-def mem( self ):
+def mem():
     f     = open( '/proc/meminfo','r' )
     total = f.readline()
     free  = f.readline()
@@ -56,14 +58,14 @@ def mem( self ):
     return '{:4.1f}'.format( float( free[ 1 ] ) / ( float( total[ 1 ] ) ) )
 
 # ssid - name string of wifi access point
-def ssid( self ) :
+def ssid() :
     name = check_output( 'nmcli -c no -f ap.ssid device show wlan0', shell=True, text=True ).split()
     if name[ 1 ] :
         return name[ 1 ]
     return ''
 
 # temp - cpu celsius degrees string
-def temp( self ):
+def temp():
     f = open( '/sys/class/thermal/thermal_zone0/temp' ) # millidegrees celsius
     c = f.readline()
     f.close()
