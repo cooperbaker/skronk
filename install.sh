@@ -58,8 +58,7 @@ echo -e "\033[0m\033[1A"
 echo "  Interface Options → I2C → Yes"
 echo "  Interface Options → SPI → Yes"
 echo ""
-read -rsn1 -p'Press any key to run sudo raspi-config...';echo
-
+read -n 1 -r -s -p $'Press any key to run sudo raspi-config...\n'
 sudo raspi-config
 echo ""
 
@@ -76,7 +75,9 @@ echo -e "\033[1mSkronk Install Complete"
 echo -e "\033[0m\033[1A"
 echo ""
 
-# read -rsn1 -p'Press any key to reboot...' && sudo reboot now
+read -n 1 -r -s -p $'Press any key to reboot...\n'
+# sudo reboot now
+echo "reboot disabled"
 
 #-------------------------------------------------------------------------------
 # eof
