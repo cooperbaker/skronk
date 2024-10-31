@@ -71,6 +71,8 @@ sudo raspi-config nonint do_spi 1
 # create system service
 echo -e "\033[1mCreating Skronk Service"
 echo -e "\033[0m\033[1A"
+sudo systemctl disable skronk.service
+sudo systemctl status skronk.service
 sudo ln -sv /home/pi/skronk/skronk/skronk.service /etc/systemd/system/skronk.service
 sudo systemctl enable skronk.service
 echo ""
