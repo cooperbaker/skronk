@@ -12,9 +12,8 @@ echo ""
 echo -e "\033[1mUpdating Skronk Library..."
 echo -e "\033[0m\033[1A"
 echo ""
-cd ~
-cd skronk
 git pull
+rm -v install.sh
 chmod -v 755 skronk.py
 echo ""
 echo -e "\033[1mUpdate Complete"
