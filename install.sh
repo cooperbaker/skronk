@@ -37,8 +37,8 @@ sudo apt -y autoremove
 sudo apt -y autoclean
 
 # clone repositories
-# git clone --depth 1 https://github.com/cooperbaker/skronk
-# chmod -v 755 ./skronk/skronk.py
+git clone --depth 1 https://github.com/cooperbaker/skronk
+chmod -v 755 ./skronk/skronk.py
 # git clone --depth 1 https://github.com/cooperbaker/skronk-pd pd
 echo ""
 
