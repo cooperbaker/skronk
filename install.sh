@@ -88,7 +88,6 @@ echo ""
 echo -e "\033[1mCreating Skronk Service..."
 echo -e "\033[0m\033[1A"
 echo ""
-sudo systemctl stop skronk.service
 sudo systemctl disable skronk.service
 sudo ln -sv /home/pi/skronk/skronk/skronk.service /etc/systemd/system/skronk.service
 sudo systemctl enable skronk.service
