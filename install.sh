@@ -18,9 +18,15 @@ echo -e "\033[0m\033[1A"
 echo ""
 
 # update packages
+echo -e "\033[1mUpdating Package Lists"
+echo -e "\033[0m\033[1A"
+echo ""
 sudo apt -y update
 
 # install packages
+echo -e "\033[1mInstalling Packages"
+echo -e "\033[0m\033[1A"
+echo ""
 sudo apt -y install jack_transport_link
 sudo apt -y install rnbo-runner-panel
 sudo apt -y install python3-smbus
@@ -28,6 +34,9 @@ sudo apt -y install puredata
 sudo apt -y install git
 
 # update everything and clean packages
+echo -e "\033[1mUpgrading Packages"
+echo -e "\033[0m\033[1A"
+echo ""
 sudo apt -y update
 sudo apt -y upgrade
 sudo apt -y clean
@@ -35,7 +44,10 @@ sudo apt -y autoremove
 sudo apt -y autoclean
 
 
-# clone skronk
+# install skronk library
+echo -e "\033[1mInstalling Skronk Library"
+echo -e "\033[0m\033[1A"
+echo ""
 cd ~
 git clone --depth 1 https://github.com/cooperbaker/skronk
 cd skronk
@@ -44,7 +56,10 @@ git pull
 chmod -v 755 skronk.py
 echo ""
 
-# clone skronk-pd
+# install skronk-pd
+# echo -e "\033[1mInstalling Skronk-Pd Library"
+# echo -e "\033[0m\033[1A"
+# echo ""
 # cd ~
 # git clone --depth 1 https://github.com/cooperbaker/skronk-pd pd
 # cd pd
@@ -56,16 +71,6 @@ echo ""
 # enable i2c and spi
 sudo raspi-config nonint do_i2c 0
 sudo raspi-config nonint do_spi 0
-
-# echo -e "\033[1mEnable I2C And SPI In The Raspi-Config Menus:"
-# echo -e "\033[0m\033[1A"
-# echo "  Interface Options → I2C → Yes"
-# echo "  Interface Options → SPI → Yes"
-# echo ""
-# read -n 1 -r -s -p $'Press any key to run sudo raspi-config...\n'
-# echo ""
-# sudo raspi-config
-# echo ""
 
 # create system service
 echo -e "\033[1mCreating Skronk Service"
