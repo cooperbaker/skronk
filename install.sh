@@ -53,6 +53,7 @@ echo "  Interface Options → I2C → Yes"
 echo "  Interface Options → SPI → Yes"
 echo ""
 read -rsp $'Press any key to run sudo raspi-config...\n' -n1 key
+echo ""
 sudo raspi-config
 echo ""
 
@@ -63,6 +64,7 @@ echo "  paste the following line at the end:"
 echo "  pi ALL=(ALL) NOPASSWD: ALL"
 echo ""
 read -rsp $'Press any key to run sudo visudo...\n' -n1 key
+echo ""
 sudo visudo
 echo ""
 
@@ -80,7 +82,8 @@ echo -e "\033[0m\033[1A"
 echo ""
 
 read -rsp $'Press any key to reboot...\n' -n1 key
-sudo reboot now
+echo ""
+# sudo reboot now
 
 #-------------------------------------------------------------------------------
 # eof
