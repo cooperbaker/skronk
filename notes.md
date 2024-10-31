@@ -120,31 +120,57 @@
 
 ---
 
-Download the latest Cycling 74 RNBO Raspberry Pi image from\
-[https://rnbo.cycling74.com/resources](https://rnbo.cycling74.com/resources)
+Download the latest Cycling 74 RNBO Raspberry Pi image\
+[https://rnbo.cycling74.com/resources#raspberry-pi-images](https://rnbo.cycling74.com/resources#raspberry-pi-images)
 
-Flash to SD card using Raspberry Pi Imager
+Unzip the image
+
+Flash to SD card using Raspberry Pi Imager with the following settings\
+[https://www.raspberrypi.com/software/](https://www.raspberrypi.com/software/)
+
+
+- Raspberry Pi Device
+  - Raspberry Pi 5
+- Operating System
+  - Use Custom
+    - Enable "All Files (*)"
+    - Select the .dmg that you just unzipped
+- Storage
+  - *your SD card*
+- [ NEXT ]
+- Use OS customisation?
+  - [ EDIT SETTINGS ]
 - General
   - Set hostname
     - skronk *. . . or whatever you want*
-
-  - Set username and password
+  - Set username and password ( *RNBO requires username 'pi'* )
     - pi
-    - raspberry
-
+    - *your password*
   - Configure wireless LAN
     - *your wifi name*
     - *your wifi password*
     - *your country*
-
-  - Set locale Settings
+    - *hidden ssid?*
+  - Set locale settings
     - *your time zone*
     - *your keyboard layout*
-
 - Services
   - Enable SSH
     - Use password authentication
-
 - [ SAVE ]
-- Use OS customisation?
+- Would you like to apply OS customisation settings?
   - [ YES ]
+  - Warning
+    - [ YES ]
+- Write and Verify
+  - Remove SD card
+    - [ CONTINUE ]
+    - Quit Raspberry Pi Imager
+
+Boot the Pi with the fresh SD card
+
+Reboot ( the activity light will flash red / green several times )
+
+SSH into the pi
+
+```$  curl https://raw.githubusercontent.com/cooperbaker/skronk/refs/heads/main/install.sh | bash```
