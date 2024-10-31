@@ -58,7 +58,8 @@ echo -e "\033[0m\033[1A"
 echo "  Interface Options → I2C → Yes"
 echo "  Interface Options → SPI → Yes"
 echo ""
-read -rsn1 -p'Press any key to run sudo raspi-config...'; sudo raspi-config
+read -rsn1 -p'Press any key to run sudo raspi-config...';
+sudo raspi-config
 echo ""
 
 # create system service
