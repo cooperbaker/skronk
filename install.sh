@@ -20,6 +20,7 @@ echo -e "\033[1mInstalling Skronk"
 echo -e "\033[0m\033[1A"
 echo ""
 
+
 #-------------------------------------------------------------------------------
 # update packages
 #-------------------------------------------------------------------------------
@@ -28,6 +29,7 @@ echo -e "\033[0m\033[1A"
 echo ""
 sudo apt -y update
 echo ""
+
 
 #-------------------------------------------------------------------------------
 # install packages
@@ -42,6 +44,7 @@ sudo apt -y install puredata
 sudo apt -y install git
 echo""
 
+
 #-------------------------------------------------------------------------------
 # upgrade packages
 #-------------------------------------------------------------------------------
@@ -55,6 +58,7 @@ sudo apt -y autoremove
 sudo apt -y autoclean
 echo""
 
+
 #-------------------------------------------------------------------------------
 # install skronk library
 #-------------------------------------------------------------------------------
@@ -67,6 +71,7 @@ git clone --depth 1 https://github.com/cooperbaker/skronk
 rm -v ./skronk/install.sh
 chmod -v 755 ./skronk/skronk.py
 echo ""
+
 
 #-------------------------------------------------------------------------------
 # install skronk-pd library
@@ -85,6 +90,7 @@ echo ""
 # cd ~
 # echo ""
 
+
 #-------------------------------------------------------------------------------
 # enable i2c and spi
 #-------------------------------------------------------------------------------
@@ -97,6 +103,7 @@ echo "sudo raspi-config nonint do_spi 0"
 sudo raspi-config nonint do_spi 0
 echo ""
 
+
 #-------------------------------------------------------------------------------
 # create system service
 #-------------------------------------------------------------------------------
@@ -108,6 +115,7 @@ sudo ln -sv /home/pi/skronk/skronk/skronk.service /etc/systemd/system/skronk.ser
 sudo systemctl enable skronk.service
 sudo systemctl start skronk.service
 echo ""
+
 
 #-------------------------------------------------------------------------------
 # install complete

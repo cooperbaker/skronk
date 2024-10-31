@@ -51,11 +51,11 @@ Raspberry Pi Imager Settings:
     - [ CONTINUE ]
     - Quit Raspberry Pi Imager
 
-Boot the Pi with the fresh SD card
+Boot with the fresh SD card
 
-Reboot, the activity light will flash red/green several times
+Reboot
 
-
+Activity light will flash red/green eventually stay green
 
 ## Installation Instructions
 - SSH into the pi\
@@ -63,12 +63,9 @@ Reboot, the activity light will flash red/green several times
 - Enter the following command\
   $ ```curl https://raw.githubusercontent.com/cooperbaker/skronk/refs/heads/main/install.sh | bash```
 
-
 ## Notes
 
-
 ### skronk systemctl service
-
   - display status\
     $ ```sudo systemctl status skronk.service```
   - start now\
