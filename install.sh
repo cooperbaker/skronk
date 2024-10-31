@@ -44,7 +44,7 @@ git pull
 chmod -v 755 skronk.py
 echo ""
 
-# cloneskronk-pd
+# clone skronk-pd
 # cd ~
 # git clone --depth 1 https://github.com/cooperbaker/skronk-pd pd
 # cd pd
@@ -54,8 +54,8 @@ echo ""
 # echo ""
 
 # enable i2c and spi
-sudo raspi-config nonint do_i2c 1
-sudo raspi-config nonint do_spi 1
+sudo raspi-config nonint do_i2c 0
+sudo raspi-config nonint do_spi 0
 
 # echo -e "\033[1mEnable I2C And SPI In The Raspi-Config Menus:"
 # echo -e "\033[0m\033[1A"
