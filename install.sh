@@ -39,7 +39,10 @@ sudo apt -y autoclean
 
 # clone repositories
 git clone --depth 1 https://github.com/cooperbaker/skronk
-chmod -v 755 ./skronk/skronk.py
+cd skronk
+git pull
+chmod -v 755 skronk.py
+cd ..
 # git clone --depth 1 https://github.com/cooperbaker/skronk-pd pd
 echo ""
 
