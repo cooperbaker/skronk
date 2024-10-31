@@ -64,7 +64,8 @@ echo ""
 cd ~
 sudo rm -r skronk
 git clone --depth 1 https://github.com/cooperbaker/skronk
-chmod -v 755 ./skronk/skronk.py
+rm ./skronk/install.sh
+chmod 755 ./skronk/skronk.py
 echo ""
 
 #-------------------------------------------------------------------------------
