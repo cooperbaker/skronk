@@ -40,7 +40,7 @@ class puredata():
         self.proc = False
 
     # load - starts pd subprocess and opens patch at path
-    def load( self, path ):
+    def load( self, filepath ):
         if self.proc is False:
             # note: must run as root
             self.proc = Popen( [ '/usr/bin/pd',
@@ -51,7 +51,7 @@ class puredata():
                                  '-realtime',
                                  '-nogui',
                                  '-path', str( Path( path ).parent.resolve() ),
-                                 '-open', path ],
+                                 '-open', filepath ],
                                  preexec_fn = setsid )
 
     # dev_id - returns first id number of name from "pd -listdev", or 0
@@ -69,11 +69,12 @@ class puredata():
         self.patch   = []
         self.patches = 0
         name         = {}
-        for node in scandir( self.path ) :
-            if node.is_file :
-                name = path.splitext( node.name )
-                if( name[ 1 ] == '.pd' ) :
-                    self.patch.append( name[ 0 ] )
+        if path.exists( self.path )
+            for node in scandir( self.path ) :
+                if node.is_file :
+                    name = path.splitext( node.name )
+                    if( name[ 1 ] == '.pd' ) :
+                        self.patch.append( name[ 0 ] )
         self.patch.sort( key = lambda x:x[ 0 ] )
         while len( self.patch ) < 4 :
             self.patch.append( '' )
