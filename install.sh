@@ -17,9 +17,6 @@ echo -e "\033[1mInstalling Skronk"
 echo -e "\033[0m\033[1A"
 echo ""
 
-# go home
-cd ~
-
 # update packages
 sudo apt -y update
 
@@ -38,12 +35,21 @@ sudo apt -y autoremove
 sudo apt -y autoclean
 
 # clone repositories
+cd ~
 git clone --depth 1 https://github.com/cooperbaker/skronk
+# git clone --depth 1 https://github.com/cooperbaker/skronk-pd pd
+
+# update repositories
+echo ""
 cd skronk
+pwd
 git pull
 chmod -v 755 skronk.py
-cd ..
-# git clone --depth 1 https://github.com/cooperbaker/skronk-pd pd
+cd ~
+cd pd
+pwd
+git pull
+cd ~
 echo ""
 
 # enable i2c and spi
@@ -68,9 +74,7 @@ echo -e "\033[1mSkronk Install Complete"
 echo -e "\033[0m\033[1A"
 echo ""
 
-read -rsn1 -p'Press any key to reboot...';echo
-echo ""
-# sudo reboot now
+# read -rsn1 -p'Press any key to reboot...' && sudo reboot now
 
 #-------------------------------------------------------------------------------
 # eof
