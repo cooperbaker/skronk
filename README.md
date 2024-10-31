@@ -1,7 +1,6 @@
 # Skronk Hat
 
-
-
+&nbsp;
 ## SD Card Flashing Instructions
 
 Download the latest Cycling 74 RNBO Raspberry Pi image\
@@ -55,16 +54,17 @@ Boot with the fresh SD card
 
 Reboot
 
-Activity light will flash red/green eventually stay green
+Activity light will flash red/green, and eventually stay green...
 
-## Installation Instructions
+&nbsp;
+## Skronk Installation Instructions
 - SSH into the pi\
   $ ```ssh pi@skronk```( pi@*your_hostname*)
 - Enter the following command\
   $ ```curl https://raw.githubusercontent.com/cooperbaker/skronk/refs/heads/main/install.sh | bash```
 
-## Notes
-
+&nbsp;
+# Notes
 ### skronk systemctl service
   - display status\
     $ ```sudo systemctl status skronk.service```
@@ -75,7 +75,6 @@ Activity light will flash red/green eventually stay green
   - stop now\
     $ ```sudo systemctl stop skronk.service```
 ### skronk command-line
----
 - stop skronk service\
   $ ```sudo systemctl stop skronk.service```
 - run skronk\
@@ -83,13 +82,10 @@ Activity light will flash red/green eventually stay green
 - stop skronk\
   $ ```ctrl-c```
 ### alsa audio system
----
 - list all devices\
   ```$ aplay -l```
-
 - list device names only\
   ```$ aplay -l | awk -F \: '/,/{print $2}' | awk '{print $1}' | uniq```
-
 - termainal-based mixer\
   ```$ alsamixer```
 
