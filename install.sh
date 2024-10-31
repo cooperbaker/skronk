@@ -6,7 +6,7 @@
 #
 # 1. Follow skronk sd card flashing instructons URL
 # 2. Run this raspberry pi command to install skronk:
-# $  curl https://raw.githubusercontent.com/cooperbaker/skronk/refs/heads/main/install.sh | bash
+# $  curl --raw https://raw.githubusercontent.com/cooperbaker/skronk/refs/heads/main/install.sh | bash
 #
 # Cooper Baker (c) 2024
 #-------------------------------------------------------------------------------
@@ -34,25 +34,24 @@ sudo apt -y clean
 sudo apt -y autoremove
 sudo apt -y autoclean
 
-# clone repositories
+
+# clone skronk
 cd ~
 git clone --depth 1 https://github.com/cooperbaker/skronk
-git clone --depth 1 https://github.com/cooperbaker/skronk-pd pd
-echo ""
-
-# update repositories
-cd ~
 cd skronk
 pwd
 git pull
 chmod -v 755 skronk.py
 echo ""
-cd ~
-cd pd
-pwd
-git pull
-cd ~
-echo ""
+
+# cloneskronk-pd
+# cd ~
+# git clone --depth 1 https://github.com/cooperbaker/skronk-pd pd
+# cd pd
+# pwd
+# git pull
+# cd ~
+# echo ""
 
 # enable i2c and spi
 sudo raspi-config nonint do_i2c 1
@@ -72,7 +71,6 @@ sudo raspi-config nonint do_spi 1
 echo -e "\033[1mCreating Skronk Service"
 echo -e "\033[0m\033[1A"
 sudo systemctl disable skronk.service
-sudo systemctl status skronk.service
 sudo ln -sv /home/pi/skronk/skronk/skronk.service /etc/systemd/system/skronk.service
 sudo systemctl enable skronk.service
 echo ""
