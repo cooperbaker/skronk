@@ -11,6 +11,7 @@ echo -e "\033[0m\033[1A"
 echo ""
 
 cd "$(dirname "$0")"
+cd ..
 
 # rsync --exclude "upload.command" --exclude ".*" --exclude "__pycache__" --delete --times --perms --verbose --archive --recursive --group --human-readable --progress ./skronk ./pd "$USERNAME"@"$HOSTNAME":/home/pi/
 
