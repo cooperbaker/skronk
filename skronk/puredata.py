@@ -69,7 +69,7 @@ class puredata():
         self.patch   = []
         self.patches = 0
         name         = {}
-        if path.exists( self.path )
+        if path.exists( self.path ) :
             for node in scandir( self.path ) :
                 if node.is_file :
                     name = path.splitext( node.name )

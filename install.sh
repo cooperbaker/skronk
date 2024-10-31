@@ -70,6 +70,7 @@ sudo rm -r skronk
 git clone --depth 1 https://github.com/cooperbaker/skronk
 rm -v ./skronk/install.sh
 chmod -v 755 ./skronk/skronk.py
+chmod -v 755 ./skronk/update.py
 echo ""
 
 
