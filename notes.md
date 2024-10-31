@@ -173,4 +173,4 @@ Reboot ( the activity light will flash red / green several times )
 
 SSH into the pi
 
-```$  curl https://raw.githubusercontent.com/cooperbaker/skronk/refs/heads/main/install.sh | bash```
+$ ```curl https://raw.githubusercontent.com/cooperbaker/skronk/refs/heads/main/install.sh | bash```
