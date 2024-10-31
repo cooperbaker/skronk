@@ -53,6 +53,7 @@ echo ""
 cd ~
 sudo rm -r skronk
 git clone --depth 1 https://github.com/cooperbaker/skronk
+chmod -v 755 ./skronk/skronk.py
 echo ""
 # # update
 # cd skronk
@@ -79,6 +80,7 @@ echo ""
 # enable i2c and spi
 echo -e "\033[1mEnabling I2C and SPI..."
 echo -e "\033[0m\033[1A"
+echo ""
 echo "sudo raspi-config nonint do_i2c 0"
 echo "sudo raspi-config nonint do_spi 0"
 sudo raspi-config nonint do_i2c 0
@@ -95,7 +97,6 @@ sudo systemctl enable skronk.service
 echo ""
 
 # goodbye
-echo ""
 echo -e "\033[1mSkronk Install Complete"
 echo -e "\033[0m\033[1A"
 echo ""
