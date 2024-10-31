@@ -38,13 +38,15 @@ sudo apt -y autoclean
 cd ~
 git clone --depth 1 https://github.com/cooperbaker/skronk
 # git clone --depth 1 https://github.com/cooperbaker/skronk-pd pd
+echo ""
 
 # update repositories
-echo ""
+cd ~
 cd skronk
 pwd
 git pull
 chmod -v 755 skronk.py
+echo ""
 cd ~
 cd pd
 pwd
@@ -59,6 +61,7 @@ echo "  Interface Options → I2C → Yes"
 echo "  Interface Options → SPI → Yes"
 echo ""
 read -n 1 -r -s -p $'Press any key to run sudo raspi-config...\n'
+echo " "
 sudo raspi-config
 echo ""
 
