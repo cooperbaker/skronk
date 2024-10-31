@@ -1,10 +1,16 @@
 # skronk notes
 
 &nbsp;
-### copy skronk library
+### get git
 ---
-- run the upload script\
-  ```$ ./upload.command```
+- run the git install command\
+  ```$ sudo apt install git```
+
+&nbsp;
+### git the skronk library
+---
+- run the git clone command\
+  ```$ git clone --depth 1 https://github.com/cooperbaker/skronk```
 
 &nbsp;
 ### sudo without password
@@ -71,11 +77,14 @@
 &nbsp;
 ### command-line skronk
 ---
-- run skronk from the command line\
-  ```$ cd /home/pi/skronk```
+- stop skronk service\
+  ```$ sudo systemctl stop skronk.service```
+
+- run skronk by hand\
+  ```$ cd ~/skronk```
 
   ```$ sudo python3 skronk.py```
-    - note: must stop skronk.service first
+
 
 &nbsp;
 ### cpu and memory monitor
@@ -107,3 +116,35 @@
 
 - display status\
   ```$ sudo systemctl status rnbooscquery.service```
+
+
+---
+
+Download the latest Cycling 74 RNBO Raspberry Pi image from\
+[https://rnbo.cycling74.com/resources](https://rnbo.cycling74.com/resources)
+
+Flash to SD card using Raspberry Pi Imager
+- General
+  - Set hostname
+    - skronk *. . . or whatever you want*
+
+  - Set username and password
+    - pi
+    - raspberry
+
+  - Configure wireless LAN
+    - *your wifi name*
+    - *your wifi password*
+    - *your country*
+
+  - Set locale Settings
+    - *your time zone*
+    - *your keyboard layout*
+
+- Services
+  - Enable SSH
+    - Use password authentication
+
+- [ SAVE ]
+- Use OS customisation?
+  - [ YES ]
