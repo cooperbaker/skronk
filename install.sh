@@ -60,8 +60,9 @@ echo -e "\033[0m\033[1A"
 echo "  Interface Options → I2C → Yes"
 echo "  Interface Options → SPI → Yes"
 echo ""
-read -n 1 -r -s -p $'Press any key to run sudo raspi-config...\n'
-echo " "
+read -p "Press any key to run sudo raspi-config... " -n1 -s
+# read -n 1 -r -s -p $'Press any key to run sudo raspi-config...\n'
+echo ""
 sudo raspi-config
 echo ""
 
@@ -80,7 +81,7 @@ echo ""
 
 read -n 1 -r -s -p $'Press any key to reboot...\n'
 # sudo reboot now
-echo "reboot disabled"
+# echo "reboot disabled"
 
 #-------------------------------------------------------------------------------
 # eof
