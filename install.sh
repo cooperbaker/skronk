@@ -37,7 +37,7 @@ sudo apt -y autoclean
 # clone repositories
 cd ~
 git clone --depth 1 https://github.com/cooperbaker/skronk
-# git clone --depth 1 https://github.com/cooperbaker/skronk-pd pd
+git clone --depth 1 https://github.com/cooperbaker/skronk-pd pd
 echo ""
 
 # update repositories
