@@ -69,7 +69,7 @@ cd /home/pi
 sudo rm -rf skronk
 git clone --depth 1 https://github.com/cooperbaker/skronk /home/pi/skronk
 chmod -v 755 ./skronk/skronk.py
-chmod -v 755 ./skronk/skronk/scripts/update.py
+chmod -v 755 ./skronk/skronk/scripts/update.sh
 chmod -v 555 ./skronk/skronk/scripts/install.sh
 echo ""
 
