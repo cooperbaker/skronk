@@ -67,7 +67,7 @@ Activity light will flash red/green, then stay green...
 
 &nbsp;
 # Notes
-## skronk systemctl service
+## Skronk systemctl service
   - display status\
     $ ```sudo systemctl status skronk.service```
   - start now\
@@ -76,19 +76,21 @@ Activity light will flash red/green, then stay green...
     $ ```sudo systemctl restart skronk.service```
   - stop now\
     $ ```sudo systemctl stop skronk.service```
-## skronk command-line
+## Skronk command-line
 - stop skronk service\
   $ ```sudo systemctl stop skronk.service```
 - run skronk\
   $ ```sudo python3 /home/pi/skronk/skronk.py```
 - stop skronk\
   $ ```ctrl-c```
-## alsa audio system
+## Alsa audio system
 - list all devices\
-  ```$ aplay -l```
+  $ ```aplay -l```
 - list device names only\
-  ```$ aplay -l | awk -F \: '/,/{print $2}' | awk '{print $1}' | uniq```
+  $ ```aplay -l | awk -F \: '/,/{print $2}' | awk '{print $1}' | uniq```
 - termainal-based mixer\
-  ```$ alsamixer```
-## miscellaneous
-- switch 17 toggles the menu system
+  $ ```alsamixer```
+## Miscellaneous
+- Switch 17 toggles menu visibility
+- Bold numbers indicate active switches on menus
+  - For example: **<1 2>** indicates left / right navigation with switches **1** and **2**
