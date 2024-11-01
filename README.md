@@ -75,17 +75,17 @@ Activity light will flash red/green, then stay green...
 ## Skronk Pd Patches
 [https://github.com/cooperbaker/skronk-rnbo](https://github.com/cooperbaker/skronk-pd)
 ## Skronk service
-  - display status\
-    $ ```sudo systemctl status skronk.service```
-  - start now\
-    $ ```sudo systemctl start skronk.service```
-  - restart now\
-    $ ```sudo systemctl restart skronk.service```
-  - stop now\
-    $ ```sudo systemctl stop skronk.service```
+- display status\
+  $ ```sudo systemctl status skronk```
+- start now\
+  $ ```sudo systemctl start skronk```
+- restart now\
+  $ ```sudo systemctl restart skronk```
+- stop now\
+  $ ```sudo systemctl stop skronk```
 ## Skronk command-line
 - stop skronk service\
-  $ ```sudo systemctl stop skronk.service```
+  $ ```sudo systemctl stop skronk```
 - run skronk\
   $ ```cd /home/pi/skronk```\
   $ ```sudo python3 skronk.py```
