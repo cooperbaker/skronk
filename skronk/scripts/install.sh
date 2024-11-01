@@ -66,7 +66,7 @@ echo -e "\033[1mInstalling Skronk Library..."
 echo -e "\033[0m\033[1A"
 echo ""
 cd /home/pi
-sudo rm -rv skronk
+sudo rm -rf skronk
 git clone --depth 1 https://github.com/cooperbaker/skronk /home/pi/skronk
 chmod -v 755 ./skronk/skronk.py
 chmod -v 755 ./skronk/skronk/scripts/update.py
@@ -81,9 +81,9 @@ echo -e "\033[1mInstalling Skronk Pd Patches"
 echo -e "\033[0m\033[1A"
 echo ""
 cd /home/pi
-sudo rm -r pd
+sudo rm -rf pd
 git clone --depth 1 https://github.com/cooperbaker/skronk-pd /home/pi/pd
-
+echo ""
 
 #-------------------------------------------------------------------------------
 # enable i2c and spi
