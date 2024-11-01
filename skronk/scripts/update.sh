@@ -26,7 +26,7 @@ echo -e "\033[0m\033[1A"
 echo ""
 cd ~
 chmod -v 755 ./skronk/skronk.py
-chmod -v 755 ./skronk/skronk/scripts/update.py
+chmod -v 755 ./skronk/skronk/scripts/update.sh
 chmod -v 555 ./skronk/skronk/scripts/install.sh
 echo ""
 
