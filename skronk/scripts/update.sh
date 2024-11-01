@@ -2,38 +2,51 @@
 #-------------------------------------------------------------------------------
 # update.sh
 #
-# Skronk library update script
+# Skronk Firmware Update Script
 #
 # Cooper Baker (c) 2024
 #-------------------------------------------------------------------------------
 
 
+#-------------------------------------------------------------------------------
+# update skronk
+#-------------------------------------------------------------------------------
 echo ""
-echo -e "\033[1mUpdating Skronk Library"
+echo -e "\033[1mUpdating Skronk"
 echo -e "\033[0m\033[1A"
 echo ""
 
+
+#-------------------------------------------------------------------------------
+# sync with github
+#-------------------------------------------------------------------------------
 echo -e "\033[1mSyncing With Github..."
 echo -e "\033[0m\033[1A"
 echo ""
-cd ~
-cd skronk
+cd /home/pi/skronk
 git pull
 echo ""
 
+
+#-------------------------------------------------------------------------------
+# set permissions
+#-------------------------------------------------------------------------------
 echo -e "\033[1mSetting Permissions..."
 echo -e "\033[0m\033[1A"
 echo ""
-cd ~
+cd /home/pi
 chmod -v 755 ./skronk/skronk.py
-chmod -v 755 ./skronk/skronk/scripts/update.sh
-chmod -v 555 ./skronk/skronk/scripts/install.sh
+chmod -v 700 ./skronk/skronk/scripts/update.sh
+chmod -v 400 ./skronk/skronk/scripts/install.sh
+chmod -v 400 ./skronk/skronk/scripts/upload.command
 echo ""
 
+
+#-------------------------------------------------------------------------------
+# update complete
+#-------------------------------------------------------------------------------
 echo -e "\033[1mUpdate Complete"
 echo -e "\033[0m\033[1A"
-echo ""
-echo "Goodbye :)"
 echo ""
 
 
