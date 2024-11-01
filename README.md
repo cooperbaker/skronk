@@ -59,9 +59,8 @@ Reboot
 Activity light will flash red/green, then stay green...
 &nbsp;
 ## Skronk Installation Instructions
-- SSH into the pi\
-  ( pi@*your_hostname*)
-  $ ```ssh pi@skronk```
+- SSH into the pi
+  $ ```ssh pi@your_hostname```
 - Enter the following command\
   $ ```curl https://raw.githubusercontent.com/cooperbaker/skronk/refs/heads/main/skronk/scripts/install.sh | bash```
 
