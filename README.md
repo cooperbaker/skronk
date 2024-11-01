@@ -1,4 +1,4 @@
-# Skronk Hat
+# Skronk Hat Firmware
 
 &nbsp;
 ## SD Card Flashing Instructions
