@@ -1,6 +1,18 @@
+#-------------------------------------------------------------------------------
+# utility.py
+#
+# Skronk Utility Functions
+#
+# Cooper Baker (c) 2024
+#
 # pylint: disable = bare-except
 # pylint: disable = unspecified-encoding
+#-------------------------------------------------------------------------------
 
+
+#-------------------------------------------------------------------------------
+# imports
+#-------------------------------------------------------------------------------
 from fcntl      import ioctl
 from socket     import socket, inet_ntoa, AF_INET, SOCK_DGRAM, gethostname
 from struct     import pack
@@ -132,6 +144,7 @@ def goodbye( display ):
         display.write( 19, 3, '\x91' )
     display.set_buffer( display.buffer )
     sleep( 0.5 )
+
 
 #-------------------------------------------------------------------------------
 # eof
