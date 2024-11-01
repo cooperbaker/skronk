@@ -87,7 +87,7 @@ Activity light will flash red/green, then stay green...
 - stop skronk service\
   $ ```sudo systemctl stop skronk.service```
 - run skronk\
-  $ ```cd /home/pi/skronk```
+  $ ```cd /home/pi/skronk```\
   $ ```sudo python3 skronk.py```
 - stop skronk\
   $ ```ctrl-c```
