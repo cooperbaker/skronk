@@ -1,5 +1,7 @@
 # Skronk Hat Firmware
 
+<img src="https://nyquist.dev/skronk/lib/img/skronk.png" />
+
 &nbsp;
 ## SD Card Flashing Instructions
 - Download the latest Cycling 74 RNBO Raspberry Pi image
