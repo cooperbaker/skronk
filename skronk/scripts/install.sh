@@ -5,7 +5,7 @@
 # Skronk Install Script For RNBO Raspbian OS Image
 #
 # 1. Follow skronk sd card flashing instructons in README.md
-# 2. Run this command from a fresh os image to install skronk:
+# 2. Run this command from a fresh OS image to install skronk:
 # $  curl https://raw.githubusercontent.com/cooperbaker/skronk/refs/heads/main/skronk/scripts/install.sh | bash
 #
 # Cooper Baker (c) 2024
@@ -69,8 +69,9 @@ cd /home/pi
 sudo rm -rf skronk
 git clone --depth 1 https://github.com/cooperbaker/skronk /home/pi/skronk
 chmod -v 755 ./skronk/skronk.py
-chmod -v 755 ./skronk/skronk/scripts/update.sh
-chmod -v 555 ./skronk/skronk/scripts/install.sh
+chmod -v 700 ./skronk/skronk/scripts/update.sh
+chmod -v 400 ./skronk/skronk/scripts/install.sh
+chmod -v 400 ./skronk/skronk/scripts/upload.command
 echo ""
 
 
