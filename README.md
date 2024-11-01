@@ -17,7 +17,7 @@ Raspberry Pi Imager Settings:
 - Operating System
   - Use Custom
     - Enable "All Files (*)"
-    - Select the .dmg that you just unzipped
+    - Select the .dmg you just unzipped
 - Storage
   - *your SD card*
 - [ NEXT ]
@@ -45,6 +45,7 @@ Raspberry Pi Imager Settings:
   - [ YES ]
   - Warning
     - [ YES ]
+    - enter password
 - Write and Verify
   - Remove SD card
     - [ CONTINUE ]
@@ -58,8 +59,11 @@ Activity light will flash red/green, and eventually stay green...
 
 &nbsp;
 ## Skronk Installation Instructions
-- SSH into the pi\
-  $ ```ssh pi@skronk```( pi@*your_hostname*)
+- SSH into the pi
+  ```
+  $ ssh pi@skronk
+  ```
+  ( pi@*your_hostname*)
 - Enter the following command\
   $ ```curl https://raw.githubusercontent.com/cooperbaker/skronk/refs/heads/main/skronk/scripts/install.sh | bash```
 
