@@ -56,18 +56,18 @@ sudo apt -y upgrade
 sudo apt -y clean
 sudo apt -y autoremove
 sudo apt -y autoclean
-echo""
+echo ""
 
 
 #-------------------------------------------------------------------------------
-# install skronk library
+# install skronk library to /home/pi/skronk
 #-------------------------------------------------------------------------------
 echo -e "\033[1mInstalling Skronk Library..."
 echo -e "\033[0m\033[1A"
 echo ""
-cd ~
-sudo rm -r skronk
-git clone --depth 1 https://github.com/cooperbaker/skronk
+cd /home/pi
+sudo rm -rv skronk
+git clone --depth 1 https://github.com/cooperbaker/skronk /home/pi/skronk
 chmod -v 755 ./skronk/skronk.py
 chmod -v 755 ./skronk/skronk/scripts/update.py
 chmod -v 555 ./skronk/skronk/scripts/install.sh
@@ -75,21 +75,14 @@ echo ""
 
 
 #-------------------------------------------------------------------------------
-# install skronk-pd library
+# install skronk-pd patches to /home/pi/pd
 #-------------------------------------------------------------------------------
-# echo -e "\033[1mInstalling Skronk-Pd Library"
-# echo -e "\033[0m\033[1A"
-# echo ""
-# cd ~
-# sudo rm -r pd
-# git clone --depth 1 https://github.com/cooperbaker/skronk-pd pd
-
-# # update
-# cd pd
-# pwd
-# git pull
-# cd ~
-# echo ""
+echo -e "\033[1mInstalling Skronk Pd Patches"
+echo -e "\033[0m\033[1A"
+echo ""
+cd /home/pi
+sudo rm -r pd
+git clone --depth 1 https://github.com/cooperbaker/skronk-pd /home/pi/pd
 
 
 #-------------------------------------------------------------------------------
@@ -106,7 +99,7 @@ echo ""
 
 
 #-------------------------------------------------------------------------------
-# create system service
+# create skronk service
 #-------------------------------------------------------------------------------
 echo -e "\033[1mCreating Skronk Service..."
 echo -e "\033[0m\033[1A"
@@ -124,8 +117,6 @@ echo ""
 #-------------------------------------------------------------------------------
 echo -e "\033[1mSkronk Install Complete"
 echo -e "\033[0m\033[1A"
-echo ""
-echo "Goodbye :)"
 echo ""
 
 
