@@ -6,7 +6,7 @@
 #
 # 1. Follow skronk sd card flashing instructons in README.md
 # 2. Run this command from a fresh os image to install skronk:
-# $  curl https://raw.githubusercontent.com/cooperbaker/skronk/refs/heads/main/install.sh | bash
+# $  curl https://raw.githubusercontent.com/cooperbaker/skronk/skronk/scripts/refs/heads/main/install.sh | bash
 #
 # Cooper Baker (c) 2024
 #-------------------------------------------------------------------------------
@@ -68,9 +68,9 @@ echo ""
 cd ~
 sudo rm -r skronk
 git clone --depth 1 https://github.com/cooperbaker/skronk
-rm -v ./skronk/install.sh
 chmod -v 755 ./skronk/skronk.py
-chmod -v 755 ./skronk/update.py
+chmod -v 755 ./skronk/skronk/scripts/update.py
+chmod -v 555 ./skronk/skronk/scripts/install.sh
 echo ""
 
 
@@ -112,7 +112,7 @@ echo -e "\033[1mCreating Skronk Service..."
 echo -e "\033[0m\033[1A"
 echo ""
 sudo systemctl disable skronk.service
-sudo ln -sv /home/pi/skronk/skronk/skronk.service /etc/systemd/system/skronk.service
+sudo ln -sv /home/pi/skronk/skronk/scripts/skronk.service /etc/systemd/system/skronk.service
 sudo systemctl enable skronk.service
 sudo systemctl daemon-reload
 sudo systemctl start skronk.service
