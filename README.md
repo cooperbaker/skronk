@@ -50,7 +50,7 @@
 - Boot with the fresh SD card
   - Pi will power down
 - Reboot
-  - Activity light will flash red/green a few times, then stay green
+  - Activity light will flash red/green repeatedly, then stay green
 - Install Skronk
 ## Skronk Installation Instructions
 - SSH into the pi\
