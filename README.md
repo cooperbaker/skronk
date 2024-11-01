@@ -53,8 +53,8 @@
   - Pi will power down
 - Reboot
   - Activity light will flash red/green repeatedly, then stay green
-- Install Skronk
-## Skronk Installation Instructions
+- Install Skronk Firmware
+## Skronk Firmware Install Instructions
 - SSH into the pi\
   $ ```ssh pi@your_hostname```
 - Enter the following command\
