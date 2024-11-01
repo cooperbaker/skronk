@@ -21,11 +21,11 @@ from .menus.stat import stat
 #-------------------------------------------------------------------------------
 class menu():
 
-    # toggle switch for menu activation
+    # toggle switch for menu visibility
     MENU_SWITCH = 17
 
     # tick rate
-    TICK_MSEC = 333.333
+    TICK_MSEC = 100
 
     # constructor
     def __init__( self, system ):
