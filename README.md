@@ -87,7 +87,8 @@ Activity light will flash red/green, then stay green...
 - stop skronk service\
   $ ```sudo systemctl stop skronk.service```
 - run skronk\
-  $ ```sudo python3 /home/pi/skronk/skronk.py```
+  $ ```cd /home/pi/skronk```
+  $ ```sudo python3 skronk.py```
 - stop skronk\
   $ ```ctrl-c```
 ## Alsa audio system
