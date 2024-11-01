@@ -77,7 +77,7 @@ echo ""
 #-------------------------------------------------------------------------------
 # install skronk-pd patches to /home/pi/pd
 #-------------------------------------------------------------------------------
-echo -e "\033[1mInstalling Skronk Pd Patches"
+echo -e "\033[1mInstalling Skronk Pd Patches..."
 echo -e "\033[0m\033[1A"
 echo ""
 cd /home/pi
