@@ -57,7 +57,6 @@ Boot with the fresh SD card
 Reboot
 
 Activity light will flash red/green, then stay green...
-
 &nbsp;
 ## Skronk Installation Instructions
 - SSH into the pi\
@@ -67,7 +66,15 @@ Activity light will flash red/green, then stay green...
 
 &nbsp;
 # Notes
-## Skronk systemctl service
+## Menus
+- Switch 17 toggles menu visibility
+- Bold numbers indicate active switches on menus\
+  *For example:* **<1 2>** *indicates left / right navigation with switches* **1** *and* **2**
+## Skronk RNBO Patches
+[https://github.com/cooperbaker/skronk-rnbo](https://github.com/cooperbaker/skronk-rnbo)
+## Skronk Pd Patches
+[https://github.com/cooperbaker/skronk-rnbo](https://github.com/cooperbaker/skronk-pd)
+## Skronk service
   - display status\
     $ ```sudo systemctl status skronk.service```
   - start now\
@@ -90,7 +97,3 @@ Activity light will flash red/green, then stay green...
   $ ```aplay -l | awk -F \: '/,/{print $2}' | awk '{print $1}' | uniq```
 - termainal-based mixer\
   $ ```alsamixer```
-## Miscellaneous
-- Switch 17 toggles menu visibility
-- Bold numbers indicate active switches on menus
-  - For example: **<1 2>** indicates left / right navigation with switches **1** and **2**
