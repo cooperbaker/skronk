@@ -67,7 +67,7 @@
 ## Skronk RNBO Patches
 [https://github.com/cooperbaker/skronk-rnbo](https://github.com/cooperbaker/skronk-rnbo)
 ## Skronk Pd Patches
-[https://github.com/cooperbaker/skronk-rnbo](https://github.com/cooperbaker/skronk-pd)
+[https://github.com/cooperbaker/skronk-pd](https://github.com/cooperbaker/skronk-pd)
 ## Skronk service
 - display status\
   $ ```sudo systemctl status skronk```
