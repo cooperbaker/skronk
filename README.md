@@ -61,7 +61,7 @@ Activity light will flash red/green, and eventually stay green...
 - SSH into the pi\
   $ ```ssh pi@skronk```( pi@*your_hostname*)
 - Enter the following command\
-  $ ```curl https://raw.githubusercontent.com/cooperbaker/skronk/refs/heads/main/install.sh | bash```
+  $ ```curl https://raw.githubusercontent.com/cooperbaker/skronk/refs/heads/main/skronk/scripts/install.sh | bash```
 
 &nbsp;
 # Notes
