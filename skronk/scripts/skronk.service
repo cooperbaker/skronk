@@ -17,7 +17,7 @@
 
 
 [Unit]
-Description=Skronk Script
+Description=Skronk Firmware
 After=network.target
 
 [Service]
