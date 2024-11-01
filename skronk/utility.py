@@ -4,7 +4,8 @@
 # Skronk Utility Functions
 #
 # Cooper Baker (c) 2024
-#
+# http://nyquist.dev/skronk
+#-------------------------------------------------------------------------------
 # pylint: disable = bare-except
 # pylint: disable = unspecified-encoding
 #-------------------------------------------------------------------------------

@@ -1,10 +1,11 @@
 #-------------------------------------------------------------------------------
 # rnbo.py
-# Menu page for RNBO
 #
+# Skronk Menu Page For RNBO
 # Load and stop RNBO patches
 #
 # Cooper Baker (c) 2024
+# http://nyquist.dev/skronk
 #-------------------------------------------------------------------------------
 
 

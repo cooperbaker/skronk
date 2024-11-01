@@ -9,6 +9,7 @@
 # $  curl https://raw.githubusercontent.com/cooperbaker/skronk/refs/heads/main/skronk/scripts/install.sh | bash
 #
 # Cooper Baker (c) 2024
+# http://nyquist.dev/skronk
 #-------------------------------------------------------------------------------
 
 

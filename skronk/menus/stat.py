@@ -1,10 +1,11 @@
 #-------------------------------------------------------------------------------
 # stat.py
-# Menu page for system status
 #
-# displays cpu percent, mem percent, cpu temperature
+# Skronk Menu Page For System Status
+# Display cpu percent, mem percent, cpu temperature
 #
 # Cooper Baker (c) 2024
+# http://nyquist.dev/skronk
 #-------------------------------------------------------------------------------
 
 

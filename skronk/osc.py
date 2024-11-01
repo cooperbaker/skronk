@@ -1,8 +1,10 @@
 #-------------------------------------------------------------------------------
 # osc.py
-# Threaded full-duplex open sound control client/server
+#
+# Skronk Threaded Full-Duplex Open Sound Control Client / Server
 #
 # Cooper Baker (c) 2024
+# http://nyquist.dev/skronk
 #-------------------------------------------------------------------------------
 
 

@@ -1,9 +1,11 @@
 #-------------------------------------------------------------------------------
 # mcp3208.py
-# MCP3208 analog-to-digital converter interface
+#
+# Skronk MCP3208 Analog-To-Digital Converter Interface
 #
 # Cooper Baker (c) 2024
-#
+# http://nyquist.dev/skronk
+#-------------------------------------------------------------------------------
 # pylint: disable = line-too-long
 #-------------------------------------------------------------------------------
 

@@ -1,8 +1,10 @@
 #-------------------------------------------------------------------------------
 # encoder.py
-# GPIO rotary encoder reader for raspberry pi
+#
+# Skronk GPIO Rotary Encoder Reader
 #
 # Cooper Baker (c) 2024
+# http://nyquist.dev/skronk
 #-------------------------------------------------------------------------------
 
 

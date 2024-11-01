@@ -1,8 +1,9 @@
 #-------------------------------------------------------------------------------
 # skronk.service
-# Systemd service configuration file for skronk firmware
 #
-# Start skronk at boot as a persistent systemd service:
+# Skronk Systemd Service Configuration File
+#
+# Start Skronk at boot as a persistent systemd service:
 # $ sudo ln -s /home/pi/skronk/skronk/skronk.service /etc/systemd/system/skronk.service
 # $ sudo systemctl enable skronk.service
 #
@@ -13,6 +14,7 @@
 # $ sudo systemctl stop skronk      # stop now
 #
 # Cooper Baker (c) 2024
+# http://nyquist.dev/skronk
 #-------------------------------------------------------------------------------
 
 

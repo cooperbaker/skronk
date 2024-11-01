@@ -1,9 +1,11 @@
 #-------------------------------------------------------------------------------
 # puredata.py
-# Pure Data interface object
+#
+# Skronk Pure Data Interface Object
 #
 # Cooper Baker (c) 2024
-#
+# http://nyquist.dev/skronk
+#-------------------------------------------------------------------------------
 # pylint: disable = bare-except
 # pylint: disable = subprocess-popen-preexec-fn
 #-------------------------------------------------------------------------------

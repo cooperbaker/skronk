@@ -1,8 +1,10 @@
 #-------------------------------------------------------------------------------
 # switch.py
-# GPIO switch reader for raspberry pi
+#
+# Skronk GPIO Switch Reader
 #
 # Cooper Baker (c) 2024
+# http://nyquist.dev/skronk
 #-------------------------------------------------------------------------------
 
 

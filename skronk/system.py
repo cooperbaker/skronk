@@ -1,9 +1,11 @@
 #-------------------------------------------------------------------------------
 # system.py
-# System object for skronk
+#
+# Skronk System Object
 #
 # Cooper Baker (c) 2024
-#
+# http://nyquist.dev/skronk
+#-------------------------------------------------------------------------------
 # pylint: disable = bare-except
 # pylint: disable = multiple-statements
 # pylint: disable = unspecified-encoding

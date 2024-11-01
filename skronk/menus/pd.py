@@ -1,10 +1,11 @@
 #-------------------------------------------------------------------------------
 # pd.py
-# Menu page for Pure Data
 #
+# Skronk Menu Page For Pure Data
 # Load and stop Pure Data patches
 #
 # Cooper Baker (c) 2024
+# http://nyquist.dev/skronk
 #-------------------------------------------------------------------------------
 
 

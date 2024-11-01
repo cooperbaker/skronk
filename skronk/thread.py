@@ -1,8 +1,10 @@
 #-------------------------------------------------------------------------------
 # thread.py
-# Threaded callback at millisecond intervals
+#
+# Skronk Threaded Callback
 #
 # Cooper Baker (c) 2024
+# http://nyquist.dev/skronk
 #-------------------------------------------------------------------------------
 
 

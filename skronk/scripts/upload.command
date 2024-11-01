@@ -3,11 +3,11 @@
 # upload.sh
 #
 # Skronk Firmware Development Upload Script
-#
-# rsyncs all skronk files onto the raspberry pi
-# see README.md for install instructions
+# Ryncs all Skronk files onto the Raspberry Pi
+# See README.md for install instructions
 #
 # Cooper Baker (c) 2024
+# http://nyquist.dev/skronk
 #-------------------------------------------------------------------------------
 
 

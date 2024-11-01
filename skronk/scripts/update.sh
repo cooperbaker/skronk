@@ -5,6 +5,7 @@
 # Skronk Firmware Update Script
 #
 # Cooper Baker (c) 2024
+# http://nyquist.dev/skronk
 #-------------------------------------------------------------------------------
 
 

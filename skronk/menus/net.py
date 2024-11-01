@@ -1,10 +1,11 @@
 #-------------------------------------------------------------------------------
 # net.py
-# Menu page for network info
 #
-# displays network info
+# Skronk Menu Page For Network Info
+# Display wifi ip, mac, connected ssid
 #
 # Cooper Baker (c) 2024
+# http://nyquist.dev/skronk
 #-------------------------------------------------------------------------------
 
 

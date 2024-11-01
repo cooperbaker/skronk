@@ -1,17 +1,18 @@
 #-------------------------------------------------------------------------------
 # display.py
-# I2C driver for PCA8574 + HD44780 lcd or US2066 oled character displays
+#
+# Skronk I2C Character Display Driver
+# Supports PCA8574 / HD44780 LCD and US2066 OLED displays
 #
 # disp = display(  'lcd', 16, 2, 10 ) : 16x2 lcd  @ 10fps
 # disp = display( 'oled', 20, 4, 30 ) : 20x4 oled @ 30fps
 #                                     : 20x4 full frame ≈ 25 msec i2c tx time
 # Cooper Baker (c) 2024
-#
+# http://nyquist.dev/skronk
+#-------------------------------------------------------------------------------
 # pylint: disable = line-too-long
 #-------------------------------------------------------------------------------
 
-
-# buffer overlay...
 
 #-------------------------------------------------------------------------------
 # imports
