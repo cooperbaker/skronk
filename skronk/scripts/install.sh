@@ -60,9 +60,9 @@ echo ""
 
 
 #-------------------------------------------------------------------------------
-# install skronk library to /home/pi/skronk
+# install skronk firmware to /home/pi/skronk
 #-------------------------------------------------------------------------------
-echo -e "\033[1mInstalling Skronk Library..."
+echo -e "\033[1mInstalling Skronk Firmware..."
 echo -e "\033[0m\033[1A"
 echo ""
 cd /home/pi
