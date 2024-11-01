@@ -25,8 +25,9 @@ Raspberry Pi Imager Settings:
   - [ EDIT SETTINGS ]
 - General
   - Set hostname
-    - skronk *. . . or whatever hostname you want*
-  - Set username and password ( *RNBO requires username* pi *)*
+    - *your hostname*
+  - Set username and password\
+    ( *username* pi *is required )*
     - pi
     - *your password*
   - Configure wireless LAN
